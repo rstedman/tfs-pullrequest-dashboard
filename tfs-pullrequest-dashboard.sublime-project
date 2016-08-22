@@ -1,0 +1,10 @@
+{
+    "folders":
+    [
+        {
+             "path": ".",
+             "file_exclude_patterns": ["*.sublime-workspace", "*.cache", "*.log", "typings/index.d.ts"],
+             "folder_exclude_patterns": ["dist", "node_modules", "build", "cache", "typings/global"]
+        }
+    ],
+}

@@ -1,0 +1,6 @@
+{
+    "name": "tfs-tray",
+    "verson": "0.1.0",
+    "description": "A dashboard app for tfs pull requests",
+    "main": "main.js"
+}
