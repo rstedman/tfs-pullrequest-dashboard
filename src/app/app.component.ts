@@ -13,8 +13,23 @@ export class AppComponent implements OnInit {
 
     public pullRequests: PullRequest[] = [];
 
-    ngOnInit(): void {
-        this.tfsService.getPullRequests()
-            .then(x => {this.pullRequests = x; });
+    async ngOnInit() {
+        this.refresh();
+    }
+
+    async refresh() {
+        this.pullRequests = [];
+        let repos = await this.tfsService.getRepositories();
+        let promises = new Array<Promise<PullRequest[]>>();
+        for (let repo of repos) {
+            promises.push(this.tfsService.getPullRequests(repo));
+        }
+
+        for (let p of promises) {
+            let prs = await p;
+            if (prs.length > 0) {
+                this.pullRequests = this.pullRequests.concat(prs);
+            }
+        }
     }
 }

@@ -9,9 +9,17 @@ export class TfsService {
     constructor(private http: Http) {}
 
     // temp - uri to fetch the list of pull requests
-    private uri: string = "..enter api uri..";
+    private uri: string = "";
 
-    public getPullRequests(): Promise<PullRequest[]> {
+    public getPullRequests(repo: Repository): Promise<PullRequest[]> {
+        let url = `${repo.url}/pullRequests?status=active`;
+        return this.http.get(url)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+    }
+
+    public getRepositories(): Promise<Repository[]> {
         return this.http.get(this.uri)
             .toPromise()
             .then(this.extractData)

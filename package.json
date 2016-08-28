@@ -35,14 +35,15 @@
     "zone.js": "^0.6.12"
   },
   "devDependencies": {
+    "del": "^2.2.1",
     "electron-prebuilt": "^1.2.0",
+    "gulp": "^3.9.1",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-typescript": "^2.13.6",
+    "run-sequence": "^1.2.2",
+    "systemjs-builder": "^0.15.26",
     "ts-loader": "^0.8.2",
     "typescript": "^1.8.10",
-    "typings": "^0.8.1",
-    "gulp": "^3.9.1",
-    "gulp-typescript": "^2.13.6",
-    "gulp-sourcemaps": "^1.6.0",
-    "systemjs-builder": "^0.15.26",
-    "del": "^2.2.1"
+    "typings": "^0.8.1"
   }
 }

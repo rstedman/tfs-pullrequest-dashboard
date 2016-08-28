@@ -2,6 +2,7 @@ var gulp = require('gulp');
 var del = require('del');
 var ts = require('gulp-typescript');
 var sourcemaps = require('gulp-sourcemaps');
+var runSequence = require('run-sequence');
 
 var tsProject = ts.createProject('tsconfig.json');
 
@@ -15,13 +16,13 @@ gulp.task('clean', function() {
     return del(['build']);
 })
 
-gulp.task('copy:static', ['clean'], function(){
+gulp.task('copy:static', function(){
     return gulp
         .src(paths.static)
         .pipe(gulp.dest('build'));
 })
 
-gulp.task('compile:ts', ['clean'], function () {
+gulp.task('compile:ts', function () {
     var tsResult = gulp.src(paths.tsSource)
         .pipe(sourcemaps.init())
         .pipe(ts(tsProject));
@@ -33,11 +34,13 @@ gulp.task('compile:ts', ['clean'], function () {
         .pipe(gulp.dest("build/"));
 });
 
-gulp.task('build', ['clean', 'compile:ts', 'copy:static'])
+gulp.task('build', function(callback) {
+    runSequence('clean', ['copy:static', 'compile:ts'], callback);
+})
 
 gulp.task('watch', function() {
-    gulp.watch(paths.static, ['copy']);
-    gulp.watch('./src/*.ts', ['ts']);
+    gulp.watch(paths.static, ['copy:static']);
+    gulp.watch(paths.tsSource, ['compile:ts']);
 })
 
 gulp.task('default', ['build'])
