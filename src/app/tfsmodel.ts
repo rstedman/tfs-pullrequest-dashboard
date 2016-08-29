@@ -13,19 +13,36 @@ export class Repository {
     public remoteUrl: string;
 }
 
+export class Descriptor {
+    public IdentityType: string;
+
+    public Identifier: string;
+}
+
 /** Represents an identity in tfs.  Can be a person or group **/
 export class Identity {
     /** The guid id of the identity **/
-    public id: string;
+    public Id: string;
+
+    public Descriptor: Descriptor;
 
     /** The displayname of the identity **/
-    public displayName: string;
+    public DisplayName: string;
 
     /** The unique name of the indenity **/
-    public uniqueName: string;
+    public UniqueName: string;
 
     /** The url to the image representing the identity **/
-    public imageUrl: string;
+    public ImageUrl: string;
+
+    /** bag of additional properties about the identity**/
+    public Properties: Map<string, string>;
+
+    /** other identities that are a member of this identity **/
+    public Members: Array<Identity>;
+
+    /** other identities this identity is a member of **/
+    public MembersOf: Array<Identity>;
 }
 
 /** Represents a pull request in tfs **/
@@ -40,7 +57,7 @@ export class PullRequest {
     public status: string;
 
     /** The identity that created the pull request **/
-    public createdBy: Identity;
+    public createdBy: Reviewer;
 
     /** The datetime that the pullrequest was created, as an ISO8601 string **/
     public creationDate: string;
@@ -62,10 +79,25 @@ export class PullRequest {
 
     /** Guid Id of the merge **/
     public mergeId: string;
+
+    /** The reviewers assigned to the pull request **/
+    public reviewers: Array<Reviewer>;
 }
 
 /** Represents a reviewer on a pull request **/
-export class Reviewer extends Identity {
+export class Reviewer {
+    /** The guid id of the identity **/
+    public id: string;
+
+    /** The displayname of the identity **/
+    public displayName: string;
+
+    /** The unique name of the indenity **/
+    public uniqueName: string;
+
+    /** The url to the image representing the identity **/
+    public imageUrl: string;
+
     /** numeric id representing how the reviewer has voted on the pull request **/
     public vote: number;
 

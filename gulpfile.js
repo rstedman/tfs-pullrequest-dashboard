@@ -8,7 +8,7 @@ var tsProject = ts.createProject('tsconfig.json');
 
 var paths = {
     static: ['src/**/*', '!**/*.ts'],
-    tsSource: ['src/**/*.ts'],
+    tsSource: ['src/**/*.ts', 'typings/index.d.ts'],
     vendor: ['node_modules/@angular/**/*', 'node_modules/rxjs/**/*']
 }
 

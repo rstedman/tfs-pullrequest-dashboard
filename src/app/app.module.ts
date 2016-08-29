@@ -4,6 +4,7 @@ import { BrowserModule } from "@angular/platform-browser";
 
 import { AppComponent } from "./app.component";
 import { TfsService } from "./tfsService";
+import { OpenExternalDirective } from "./openexternal.directive";
 
 @NgModule({
   imports: [
@@ -12,6 +13,7 @@ import { TfsService } from "./tfsService";
   ],
   declarations: [
     AppComponent,
+    OpenExternalDirective
   ],
   providers: [
     TfsService

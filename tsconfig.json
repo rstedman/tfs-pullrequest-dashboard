@@ -9,7 +9,10 @@
     "moduleResolution": "node"
   },
   "exclude": [
-    "node_modules",
-    "typings"
+    "node_modules"
+  ],
+  "filesGlob": [
+    "src/**/*.ts",
+    "typings/index.d.ts"
   ]
 }

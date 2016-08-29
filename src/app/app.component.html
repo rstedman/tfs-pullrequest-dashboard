@@ -1,5 +1,5 @@
 <div>
   <ul>
-    <li *ngFor="let pr of pullRequests">{{pr.title}}</li>
+    <li *ngFor="let pr of pullRequests"><span *ngIf="pr.requestedByMe">[MINE]</span><span *ngIf="pr.assignedToMe">[ME]</span><span *ngIf="pr.assignedToMyTeam">[TEAM]</span><a href="{{pr.remoteUrl}}" openExternal>{{pr.pullRequest.title}}</a></li>
   </ul>
 </div>
