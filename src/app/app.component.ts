@@ -47,9 +47,11 @@ class PullRequestViewModel {
         this.requestedByMe = pullRequest.createdBy.id === currentUser.Id;
 
         for (let reviewer of pullRequest.reviewers) {
-            this.assignedToMe = reviewer.id === currentUser.Id;
+            if (!this.assignedToMe)
+                this.assignedToMe = reviewer.id === currentUser.Id;
             for (let team of currentUser.MembersOf) {
-                this.assignedToMyTeam = team.Id === reviewer.id;
+                if (!this.assignedToMyTeam)
+                    this.assignedToMyTeam = team.Id === reviewer.id;
             }
         }
     }
