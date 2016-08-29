@@ -1,5 +1,18 @@
-<div>
-  <ul>
-    <li *ngFor="let pr of pullRequests"><span *ngIf="pr.requestedByMe">[MINE]</span><span *ngIf="pr.assignedToMe">[ME]</span><span *ngIf="pr.assignedToMyTeam">[TEAM]</span><a href="{{pr.remoteUrl}}" openExternal>{{pr.pullRequest.title}}</a></li>
-  </ul>
+<div class="container">
+  <div *ngFor="let pr of pullRequests" class="row pull-request">
+    <div class="identity-image-container">
+      <img src="{{pr.pullRequest.createdBy.imageUrl}}" class="identity-image">
+    </div>
+    <div class="pull-request-details">
+      <div class="pull-request-title">
+        <a href="{{pr.remoteUrl}}" openExternal>{{pr.pullRequest.title}}</a>
+      </div>
+      <div>
+        by {{pr.pullRequest.createdBy.displayName}}, from <i class="fa fa-code-fork"></i> {{pr.pullRequest.sourceRefName}} to <i class="fa fa-code-fork"></i> {{pr.pullRequest.targetRefName}}
+      </div>
+      <div>
+        <span *ngFor="let reviewer of pr.pullRequest.reviewers"><i class={{getVoteClasses(reviewer)}}></i> {{reviewer.displayName}}, </span>
+      </div>
+    </div>
+  </div>
 </div>

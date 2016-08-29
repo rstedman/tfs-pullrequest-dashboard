@@ -1,0 +1,51 @@
+.pull-requests {
+}
+
+.pull-request {
+  display: flex;
+  align-items: center;
+  margin: 5px;
+}
+
+.identity-image-container {
+  margin-right: 5px;
+  margin-left: 5px;
+}
+
+.identity-image {
+  width: 32px;
+  height: 32px;
+}
+
+.pull-request-details {
+  flex-grow: 1;
+  color: #6d6d6d;
+  font-size: 12px;
+}
+
+.pull-request-details .fa {
+  font-size: 14px;
+}
+
+.pull-request-title {
+  font-size: 14px;
+  color: #007acc;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.vote {
+  font-size: 16px !important;
+}
+
+.approved {
+  color: #006600;
+}
+
+.rejected {
+  color: #e60000;
+}
+
+.waiting {
+  .color: #ffff00;
+}

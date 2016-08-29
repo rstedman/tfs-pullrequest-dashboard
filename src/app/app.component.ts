@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 
 import { TfsService } from "./tfsservice";
-import { PullRequest, Repository, Identity } from "./tfsmodel";
+import { PullRequest, Repository, Identity, Reviewer } from "./tfsmodel";
 
 @Component({
     selector: "my-app",
@@ -37,6 +37,20 @@ export class AppComponent implements OnInit {
                 this.pullRequests.push(new PullRequestViewModel(pr, r.repo, this.currentUser));
             }
         }
+    }
+
+    public getVoteClasses(reviewer: Reviewer): string {
+        let result = "fa vote";
+        if (reviewer.vote === 0) {
+            result += " fa-minus-circle";
+        } else if (reviewer.vote === -10) {
+            result += " fa-times-circle rejected";
+        } else if (reviewer.vote === 10 || reviewer.vote === 5) {
+            result += " fa-check-circle approved";
+        } else if (reviewer.vote === -5) {
+            result += " fa-minus-circle waiting";
+        }
+        return result;
     }
 }
 
