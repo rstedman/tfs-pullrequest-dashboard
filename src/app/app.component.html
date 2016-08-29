@@ -1,5 +1,5 @@
 <div class="container">
-  <div *ngFor="let pr of pullRequests" class="row pull-request">
+  <div *ngFor="let pr of pullRequests | prFilter" class="row pull-request">
     <div class="identity-image-container">
       <img src="{{pr.pullRequest.createdBy.imageUrl}}" class="identity-image">
     </div>

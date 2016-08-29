@@ -5,6 +5,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { AppComponent } from "./app.component";
 import { TfsService } from "./tfsService";
 import { OpenExternalDirective } from "./openexternal.directive";
+import { PullRequestFilterPipe } from "./pullRequestFilter.pipe";
 
 @NgModule({
   imports: [
@@ -13,7 +14,8 @@ import { OpenExternalDirective } from "./openexternal.directive";
   ],
   declarations: [
     AppComponent,
-    OpenExternalDirective
+    OpenExternalDirective,
+    PullRequestFilterPipe
   ],
   providers: [
     TfsService
