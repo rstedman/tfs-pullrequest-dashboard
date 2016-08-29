@@ -8,7 +8,7 @@
         <a href="{{pr.remoteUrl}}" openExternal>{{pr.pullRequest.title}}</a>
       </div>
       <div>
-        by {{pr.pullRequest.createdBy.displayName}}, from <i class="fa fa-code-fork"></i> {{pr.pullRequest.sourceRefName}} to <i class="fa fa-code-fork"></i> {{pr.pullRequest.targetRefName}}
+        by {{pr.pullRequest.createdBy.displayName}}, {{pr.repository.name}} from <i class="fa fa-code-fork"></i> {{pr.pullRequest.sourceRefName}} to <i class="fa fa-code-fork"></i> {{pr.pullRequest.targetRefName}}
       </div>
       <div>
         <span *ngFor="let reviewer of pr.pullRequest.reviewers; let i=index;"><span *ngIf="i>0">, </span><i class={{getVoteClasses(reviewer)}}></i> {{reviewer.displayName}}</span>
