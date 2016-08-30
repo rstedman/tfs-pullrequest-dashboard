@@ -1,0 +1,16 @@
+<div class="pull-request">
+  <div class="identity-image-container">
+    <img src="{{pullRequest.pullRequest.createdBy.imageUrl}}" class="identity-image">
+  </div>
+  <div class="pull-request-details">
+    <div class="pull-request-title">
+      <a href="{{pullRequest.remoteUrl}}" openExternal>{{pullRequest.pullRequest.title}}</a>
+    </div>
+    <div>
+      by {{pullRequest.pullRequest.createdBy.displayName}}, {{pullRequest.repository.name}} from <i class="fa fa-code-fork"></i> {{pullRequest.pullRequest.sourceRefName}} to <i class="fa fa-code-fork"></i> {{pullRequest.pullRequest.targetRefName}}
+    </div>
+    <div>
+      <span *ngFor="let reviewer of pullRequest.pullRequest.reviewers; let i=index;"><span *ngIf="i>0">, </span><i class={{getVoteClasses(reviewer)}}></i> {{reviewer.displayName}}</span>
+    </div>
+  </div>
+</div>
