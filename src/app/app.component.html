@@ -1,5 +1,18 @@
 <div class="container">
-  <div *ngFor="let pr of pullRequests | prFilter" class="row">
+  <h4>Requested By Me</h4>
+  <div *ngFor="let pr of pullRequests | prFilter:'requestedByMe'" class="row">
+    <pull-request [pullRequest]="pr"></pull-request>
+  </div>
+  <h4>Assigned To Me</h4>
+  <div *ngFor="let pr of pullRequests | prFilter:'assignedToMe'" class="row">
+    <pull-request [pullRequest]="pr"></pull-request>
+  </div>
+  <h4>Assigned To My Team</h4>
+  <div *ngFor="let pr of pullRequests | prFilter:'assignedToMyTeam'" class="row">
+    <pull-request [pullRequest]="pr"></pull-request>
+  </div>
+  <h4>Other Open Pull Requests</h4>
+  <div *ngFor="let pr of pullRequests | prFilter:'other'" class="row">
     <pull-request [pullRequest]="pr"></pull-request>
   </div>
 </div>

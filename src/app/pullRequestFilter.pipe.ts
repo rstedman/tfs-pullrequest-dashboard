@@ -7,7 +7,12 @@ import { PullRequestViewModel } from "./pullRequestViewModel";
 })
 @Injectable()
 export class PullRequestFilterPipe  implements PipeTransform {
-    transform(items: PullRequestViewModel[], args: any[]): any {
-        return items.filter(x => x.assignedToMe || x.requestedByMe || x.assignedToMyTeam);
+    transform(items: PullRequestViewModel[], arg: string): any {
+        return items.filter(x => {
+            return (arg === "requestedByMe" && x.requestedByMe) ||
+                   (arg === "assignedToMe" && x.assignedToMe) ||
+                   (arg === "assignedToMyTeam" && x.assignedToMyTeam) ||
+                   (arg === "other" && !x.requestedByMe && !x.assignedToMe && !x.assignedToMyTeam);
+        });
     }
 }
