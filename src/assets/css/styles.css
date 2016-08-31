@@ -31,7 +31,10 @@
   font-size: 14px;
   color: #007acc;
   text-decoration: none;
-  cursor: pointer;
+}
+
+.pull-request-title a:hover {
+  text-decoration: none;
 }
 
 .vote {

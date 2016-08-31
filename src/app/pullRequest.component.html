@@ -1,19 +1,19 @@
 <div class="pull-request">
   <div class="identity-image-container">
-    <img src="{{pullRequest.pullRequest.createdBy.imageUrl}}" class="identity-image">
+    <img src="{{pullRequest.createdByImageUrl}}" class="identity-image">
   </div>
   <div class="pull-request-details">
     <div class="pull-request-title">
-      <a href="{{pullRequest.remoteUrl}}" openExternal>{{pullRequest.pullRequest.title}}</a>
+      <a href="{{pullRequest.remoteUrl}}" openExternal>{{pullRequest.title}}</a>
     </div>
     <div>
-      by {{pullRequest.pullRequest.createdBy.displayName}}, {{pullRequest.repository.name}} from <i class="fa fa-code-fork"></i> {{pullRequest.pullRequest.sourceRefName}} to <i class="fa fa-code-fork"></i> {{pullRequest.pullRequest.targetRefName}}
+      by {{pullRequest.createdBy}}, on {{pullRequest.repositoryName}} from <i class="fa fa-code-fork"></i> {{pullRequest.sourceRefName}} to <i class="fa fa-code-fork"></i> {{pullRequest.targetRefName}}
     </div>
-    <div *ngIf="pullRequest.pullRequest.mergeStatus==='conflicts'">
+    <div *ngIf="pullRequest.mergeStatus==='conflicts'">
       <i class="fa fa-exclamation-circle vote rejected"></i> Merge Conflicts
     </div>
     <div>
-      <span *ngFor="let reviewer of pullRequest.pullRequest.reviewers; let i=index;"><span *ngIf="i>0">, </span><i class={{getVoteClasses(reviewer)}} title="{{getVoteTooltip(reviewer)}}"></i> {{reviewer.displayName}}</span>
+      <span *ngFor="let reviewer of pullRequest.reviewers; let i=index;"><span *ngIf="i>0">, </span><i class={{getVoteClasses(reviewer)}} title="{{getVoteTooltip(reviewer)}}"></i> {{reviewer.displayName}}</span>
     </div>
   </div>
 </div>
