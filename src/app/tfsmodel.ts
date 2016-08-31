@@ -107,3 +107,11 @@ export class Reviewer {
     /** Lists any other reviewers that voted on behalf of this viewer.  (Ex. team member voted when team was required) **/
     public votedFor: Reviewer[];
 }
+
+export enum Vote {
+    Approved = 10,
+    ApprovedWithSuggestions = 5,
+    NoResponse = 0,
+    Rejected = -10,
+    WaitingForAuthor = -5
+}
