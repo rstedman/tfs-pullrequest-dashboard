@@ -16,28 +16,37 @@ export class AppComponent implements OnInit {
 
     public currentUser: Identity;
 
-    async ngOnInit() {
+    ngOnInit() {
         this.refresh();
     }
 
-    async refresh() {
-        this.currentUser = await this.tfsService.getCurrentUser();
+    refresh() {
         this.pullRequests = [];
-        let repos = await this.tfsService.getRepositories();
-        let repoPRSearch = [];
-        for (let repo of repos) {
-            repoPRSearch.push({
-                repo: repo,
-                promise: this.tfsService.getPullRequests(repo)
-            });
-        }
 
-        for (let r of repoPRSearch) {
-            let prs = await r.promise;
-            for (let pr of prs) {
-                this.pullRequests.push(new PullRequestViewModel(pr, r.repo, this.currentUser));
-            }
-        }
+        this.tfsService.getCurrentUser()
+            .then((x) => {
+                this.currentUser = x;
+                return this.tfsService.getRepositories();
+            })
+            .then((repos: Repository[]) => {
+
+                let repoPRSearch = [];
+                for (let repo of repos) {
+                    repoPRSearch.push({
+                        repo: repo,
+                        promise: this.tfsService.getPullRequests(repo)
+                    });
+                }
+
+                return repoPRSearch;
+            })
+            .then(xes => {
+                for (let x of xes) {
+                    x.promise.then(y => {
+                        this.pullRequests.push(new PullRequestViewModel(y, x.repo, this.currentUser));
+                    });
+                }
+            });
     }
 
     public getVoteClasses(reviewer: Reviewer): string {

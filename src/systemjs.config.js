@@ -2,8 +2,8 @@
   // map tells the System loader where to look for things
   var map = {
     '@angular':                   '../node_modules/@angular',
-    'rxjs':                       '../node_modules/rxjs',
-    'electron':                   './electron.shim.js'
+    'rxjs':                       '../node_modules/rxjs'//,
+    /*'electron':                   './electron.shim.js'*/
   };
   // packages tells the System loader how to load when no filename and/or no extension
   var packages = {

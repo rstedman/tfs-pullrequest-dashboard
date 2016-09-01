@@ -3,6 +3,7 @@ var del = require('del');
 var ts = require('gulp-typescript');
 var sourcemaps = require('gulp-sourcemaps');
 var runSequence = require('run-sequence');
+var connect = require('gulp-connect');
 
 var tsProject = ts.createProject('tsconfig.json');
 
@@ -41,6 +42,12 @@ gulp.task('build', function(callback) {
 gulp.task('watch', function() {
     gulp.watch(paths.static, ['copy:static']);
     gulp.watch(paths.tsSource, ['compile:ts']);
+});
+
+gulp.task('connect', function() {
+    connect.server({
+        livereload:true
+    });
 })
 
 gulp.task('default', ['build'])
