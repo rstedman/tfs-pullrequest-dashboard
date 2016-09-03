@@ -32,20 +32,15 @@ export class AppComponent implements OnInit {
 
                 let repoPRSearch = [];
                 for (let repo of repos) {
-                    repoPRSearch.push({
-                        repo: repo,
-                        promise: this.tfsService.getPullRequests(repo)
-                    });
+                    this.tfsService.getPullRequests(repo)
+                        .then(prs => {
+                            for (let pr of prs) {
+                                this.pullRequests.push(new PullRequestViewModel(pr, repo, this.currentUser));
+                            }
+                        });
                 }
 
                 return repoPRSearch;
-            })
-            .then(xes => {
-                for (let x of xes) {
-                    x.promise.then(y => {
-                        this.pullRequests.push(new PullRequestViewModel(y, x.repo, this.currentUser));
-                    });
-                }
             });
     }
 

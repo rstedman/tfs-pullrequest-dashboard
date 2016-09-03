@@ -18,15 +18,16 @@ export class TfsService {
         // just do a basic query to tfs to be able to look at response headers
         let user: Identity;
         let userId: string;
-        return this.http.get(`${this.baseUri}/_apis`)
+        return this.http.get(`${this.baseUri}/_apis/projects`, {withCredentials: true})
             .toPromise()
             .then(r => {
+                // aren't actually interested in the projects response body, just the response headers.
                 // tfs adds a header in the response with the current authenticated users id in the format <userid>:<username>
                 let userIdHeader = r.headers.get(this.USER_HEADER_NAME);
                 let headerRegex = /([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})/i;
                 let match = headerRegex.exec(userIdHeader);
                 userId = match[1];
-                return this.http.get(`${this.baseUri}/_apis/Identities/${userId}`).toPromise();
+                return this.http.get(`${this.baseUri}/_apis/Identities/${userId}`, {withCredentials: true}).toPromise();
             })
             .then(r => {
                 user = r.json();
@@ -50,12 +51,13 @@ export class TfsService {
                     }
                 }
                 return user;
-            });
+            })
+            .catch(this.handleError);
     }
 
     private getMembersOf(userId: string): Promise<Identity[]> {
         // get the identities that the current user is a member of
-        return this.http.get(`${this.baseUri}/_apis/Identities/${userId}/membersOf`)
+        return this.http.get(`${this.baseUri}/_apis/Identities/${userId}/membersOf`, {withCredentials: true})
             .toPromise()
             .then(response => {
                 let promises: Promise<Response>[] = [];
@@ -66,9 +68,8 @@ export class TfsService {
                     if (!userId.startsWith("Microsoft.TeamFoundation.Identity"))
                         continue;
 
-                    promises.push(this.http.get(`${this.baseUri}/_apis/Identities/${userId}`)
-                                           .toPromise()
-                                           .then(x => { return x.json(); }));
+                    promises.push(this.http.get(`${this.baseUri}/_apis/Identities/${userId}`, {withCredentials: true})
+                                           .toPromise());
                     return Promise.all(promises);
                 }
             })
@@ -83,14 +84,14 @@ export class TfsService {
 
     public getPullRequests(repo: Repository): Promise<PullRequest[]> {
         let url = `${repo.url}/pullRequests?status=active`;
-        return this.http.get(url)
+        return this.http.get(url, {withCredentials: true})
             .toPromise()
             .then(this.extractData)
             .catch(this.handleError);
     }
 
     public getRepositories(): Promise<Repository[]> {
-        return this.http.get(this.uri)
+        return this.http.get(this.uri, {withCredentials: true})
             .toPromise()
             .then(this.extractData)
             .catch(this.handleError);
