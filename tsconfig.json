@@ -5,8 +5,7 @@
     "experimentalDecorators": true,
     "sourceMap": true,
     "noImplicitAny": false,
-    "module": "commonjs",
-    "moduleResolution": "node"
+    "module": "commonjs"
   },
   "exclude": [
     "node_modules"

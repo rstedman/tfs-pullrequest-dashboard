@@ -40,9 +40,9 @@ export class TfsService {
                     // virtual groups made up of several groups
                     promises.push(this.getMembersOf(m.Id));
                 }
-                return Promise.all(promises);
+                return Promise.all<Identity[]>(promises);
             })
-            .then( (membersOf: Identity[][]) => {
+            .then((membersOf: Identity[][]) => {
                 for (let members of membersOf) {
                     for (let i of members) {
                         user.MembersOf.push(i);
@@ -68,7 +68,7 @@ export class TfsService {
 
                     promises.push(this.http.get(`${this.baseUri}/_apis/Identities/${userId}`, {withCredentials: true})
                                            .toPromise());
-                    return Promise.all(promises);
+                    return Promise.all<Response>(promises);
                 }
             })
             .then( (responses: Response[]) => {
