@@ -45,6 +45,11 @@ export class AppComponent implements OnInit {
 
     ngOnInit() {
         this.refresh();
+
+        let filter = localStorage.getItem("filter");
+        if(filter && filter !== "") {
+            this.filteredRepoIds = JSON.parse(filter);
+        }
     }
 
     refresh() {
@@ -89,6 +94,8 @@ export class AppComponent implements OnInit {
                 this.filteredRepoIds.push(repo.id);
             }
         }
+
+        localStorage.setItem("filter", JSON.stringify(this.filteredRepoIds))
     }
 
     private getRepoByName(name: string): Repository {
