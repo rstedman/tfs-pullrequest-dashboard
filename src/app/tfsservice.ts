@@ -10,9 +10,7 @@ export class TfsService {
 
     private USER_HEADER_NAME: string  = "x-vss-userdata";
 
-    private baseUri: string = "http://jsitfsapp.jsitelecom.com:8080/tfs/DefaultCollection";
-    // temp - uri to fetch the list of pull requests
-    private uri: string = "http://jsitfsapp.jsitelecom.com:8080/tfs/DefaultCollection/_apis/git/repositories/";
+    private baseUri: string = "";
 
     public getCurrentUser(): Promise<Identity> {
         // just do a basic query to tfs to be able to look at response headers
@@ -91,7 +89,7 @@ export class TfsService {
     }
 
     public getRepositories(): Promise<Repository[]> {
-        return this.http.get(this.uri, {withCredentials: true})
+        return this.http.get(`${this.baseUri}/_apis/git/repositories`, {withCredentials: true})
             .toPromise()
             .then(this.extractData)
             .catch(this.handleError);
