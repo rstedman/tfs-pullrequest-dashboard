@@ -44,7 +44,7 @@ gulp.task('watch', function() {
     gulp.watch(paths.tsSource, ['compile:ts']);
 });
 
-gulp.task('connect', function() {
+gulp.task('serve', function() {
     connect.server({
         livereload:true
     });
