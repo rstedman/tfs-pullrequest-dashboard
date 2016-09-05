@@ -8,8 +8,9 @@ var connect = require('gulp-connect');
 var tsProject = ts.createProject('tsconfig.json');
 
 var paths = {
+    buildFiles: ['gulpfile.js', 'package.json', 'typings.json', 'tsconfig.json'],
     static: ['src/**/*', '!**/*.ts'],
-    tsSource: ['src/**/*.ts', 'typings/index.d.ts'],
+    tsSource: ['src/**/*.ts', 'typings/index.d.ts', "node_modules/angular-2-dropdown-multiselect/src/multiselect-dropdown.ts"],
     vendor: ['node_modules/@angular/**/*', 'node_modules/rxjs/**/*']
 }
 
@@ -40,6 +41,7 @@ gulp.task('build', function(callback) {
 })
 
 gulp.task('watch', function() {
+    gulp.watch(paths.buildFiles, ['build']);
     gulp.watch(paths.static, ['copy:static']);
     gulp.watch(paths.tsSource, ['compile:ts']);
 });
