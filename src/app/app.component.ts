@@ -4,6 +4,8 @@ import { TfsService } from "./tfsservice";
 import { PullRequest, Repository, Identity, Reviewer } from "./tfsmodel";
 import { PullRequestViewModel } from "./pullRequestViewModel";
 
+import { IMultiSelectOption, IMultiSelectSettings, IMultiSelectTexts } from "./multiselect-dropdown";
+
 @Component({
     selector: "my-app",
     templateUrl: "app/app.component.html",
@@ -14,7 +16,32 @@ export class AppComponent implements OnInit {
 
     public pullRequests: PullRequestViewModel[] = [];
 
+    public repositories: Repository[] = [];
+
     public currentUser: Identity;
+
+    public filterSettings: IMultiSelectSettings = {
+        enableSearch: true,
+        buttonClasses: 'btn btn-default fa fa-filter',
+        closeOnSelect: false,
+        showCheckAll: true,
+        showUncheckAll: true
+    };
+
+    public filterTexts: IMultiSelectTexts = {
+        checkAll: 'Select all',
+        uncheckAll: 'Unselect all',
+        checked: 'repos selected',
+        checkedPlural: 'repos selected',
+        searchPlaceholder: 'Search...',
+        defaultTitle: 'Select',
+    }
+
+    public filteredRepoIds: string[] = [];
+
+    public unfilteredRepoSelections: number[] = [];
+
+    public repoOptions: IMultiSelectOption[] = [];
 
     ngOnInit() {
         this.refresh();
@@ -30,8 +57,20 @@ export class AppComponent implements OnInit {
             })
             .then((repos: Repository[]) => {
 
-                let repoPRSearch = [];
-                for (let repo of repos) {
+                this.repositories = repos;
+
+                for (let i=0; i < repos.length; i++) {
+                    let repo = repos[i];
+
+                    this.repoOptions.push({
+                        id: i,
+                        name: repo.name
+                    });
+
+                    if (!this.filteredRepoIds.includes(repo.id)) {
+                        this.unfilteredRepoSelections.push(i);
+                    }
+
                     this.tfsService.getPullRequests(repo)
                         .then(prs => {
                             for (let pr of prs) {
@@ -39,9 +78,25 @@ export class AppComponent implements OnInit {
                             }
                         });
                 }
-
-                return repoPRSearch;
             });
+    }
+
+    public onFilteredSelectionsChanged(unfiltered: number[]) {
+        this.filteredRepoIds = [];
+        for(let repoOption of this.repoOptions) {
+            if (!unfiltered.includes(repoOption.id)) {
+                let repo = this.getRepoByName(repoOption.name);
+                this.filteredRepoIds.push(repo.id);
+            }
+        }
+    }
+
+    private getRepoByName(name: string): Repository {
+        for (let repo of this.repositories) {
+            if (repo.name === name) {
+                return repo;
+            }
+        }
     }
 
     public getVoteClasses(reviewer: Reviewer): string {

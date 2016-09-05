@@ -11,8 +11,8 @@
   <div *ngFor="let pr of pullRequests | prFilter:'assignedToMyTeam'" class="row">
     <pull-request [pullRequest]="pr"></pull-request>
   </div>
-  <h4>Other Open Pull Requests</h4>
-  <div *ngFor="let pr of pullRequests | prFilter:'other'" class="row">
+  <h4>Other Open Pull Requests <ss-multiselect-dropdown [options]="repoOptions" [settings]="filterSettings" [texts]="filterTexts" [(ngModel)]="unfilteredRepoSelections" (ngModelChange)="onFilteredSelectionsChanged($event)"></ss-multiselect-dropdown></h4>
+  <div *ngFor="let pr of pullRequests | prFilter:'other' | repoFilter:filteredRepoIds" class="row">
     <pull-request [pullRequest]="pr"></pull-request>
   </div>
 </div>
