@@ -32,7 +32,7 @@ gulp.task('compile:ts', function () {
     tsResult.dts.pipe(gulp.dest('build/'));
 
     return tsResult.js
-        .pipe(sourcemaps.write('.'))
+        .pipe(sourcemaps.write('.', { sourceRoot: './' }))
         .pipe(gulp.dest("build/"));
 });
 
