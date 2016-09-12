@@ -13,7 +13,7 @@ var paths = {
     buildFiles: ['gulpfile.js', 'package.json', 'typings.json', 'tsconfig.json'],
     static: ['src/**/*', '!**/*.ts', '!**/*.js'],
     tsSource: ['src/**/*.ts', 'typings/index.d.ts'],
-    systemjs_vendor: ['node_modules/@angular/**/*', 'node_modules/rxjs/**/*'],
+    systemjs_vendor: ['node_modules/@angular/**/*.umd.js', 'node_modules/rxjs/**/*', '!**/*.ts'],
     vendor_js: ['node_modules/zone.js/dist/zone.js','node_modules/reflect-metadata/Reflect.js', 'node_modules/systemjs/dist/system.src.js', 'node_modules/es6-shim/es6-shim.js'],
     vendor_css: ['node_modules/bootstrap/dist/**/*', 'node_modules/font-awesome/**/*'],
     compileFolder: 'build/compile',
