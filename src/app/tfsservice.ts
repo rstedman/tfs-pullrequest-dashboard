@@ -68,8 +68,8 @@ export class TfsService {
 
                     promises.push(this.http.get(`${this.baseUri}/_apis/Identities/${userId}`, {withCredentials: true})
                                            .toPromise());
-                    return Promise.all<Response>(promises);
                 }
+                return Promise.all<Response>(promises);
             })
             .then( (responses: Response[]) => {
                 let result: Identity[] = [];
