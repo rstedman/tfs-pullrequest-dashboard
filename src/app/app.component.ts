@@ -72,7 +72,7 @@ export class AppComponent implements OnInit {
                         name: repo.name
                     });
 
-                    if (!this.filteredRepoIds.includes(repo.id)) {
+                    if (this.filteredRepoIds.indexOf(repo.id) <= 0) {
                         this.unfilteredRepoSelections.push(i);
                     }
 
@@ -89,7 +89,7 @@ export class AppComponent implements OnInit {
     public onFilteredSelectionsChanged(unfiltered: number[]) {
         this.filteredRepoIds = [];
         for(let repoOption of this.repoOptions) {
-            if (!unfiltered.includes(repoOption.id)) {
+            if (unfiltered.indexOf(repoOption.id) <= 0) {
                 let repo = this.getRepoByName(repoOption.name);
                 this.filteredRepoIds.push(repo.id);
             }
