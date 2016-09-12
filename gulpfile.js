@@ -4,6 +4,7 @@ var ts = require('gulp-typescript');
 var sourcemaps = require('gulp-sourcemaps');
 var runSequence = require('run-sequence');
 var connect = require('gulp-connect');
+var systemjsBuilder = require('systemjs-builder');
 
 var tsProject = ts.createProject('tsconfig.json');
 
@@ -36,8 +37,18 @@ gulp.task('compile:ts', function () {
         .pipe(gulp.dest("build/"));
 });
 
+gulp.task('copy:vendor', function() {
+    return gulp.src(paths.vendor, {base: './node_modules'})
+        .pipe(gulp.dest('build/vendor/'));
+})
+
+gulp.task('bundle:app', function() {
+    var builder = new systemjsBuilder('./build', './build/systemjs.config.js');
+    return builder.buildStatic('app/app.js', 'build/app/app.bundle.js', { sourceMaps:true });
+});
+
 gulp.task('build', function(callback) {
-    runSequence('clean', ['copy:static', 'compile:ts'], callback);
+    runSequence('clean', ['copy:static', 'copy:vendor', 'compile:ts'], 'bundle:app', callback);
 })
 
 gulp.task('watch', function() {
