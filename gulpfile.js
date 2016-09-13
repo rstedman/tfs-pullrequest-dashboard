@@ -13,7 +13,6 @@ var paths = {
     buildFiles: ['gulpfile.js', 'package.json', 'typings.json', 'tsconfig.json'],
     static: ['src/**/*', '!**/*.ts', '!**/*.js'],
     tsSource: ['src/**/*.ts', 'typings/index.d.ts'],
-    systemjs_vendor: ['node_modules/@angular/**/*.umd.js', 'node_modules/rxjs/**/*', '!**/*.ts'],
     vendor_js: ['node_modules/zone.js/dist/zone.js','node_modules/reflect-metadata/Reflect.js', 'node_modules/systemjs/dist/system.src.js', 'node_modules/es6-shim/es6-shim.js'],
     vendor_css: ['node_modules/bootstrap/dist/**/*', 'node_modules/font-awesome/**/*'],
     compileFolder: 'build/compile',
@@ -29,16 +28,6 @@ gulp.task('copy:static', function(){
         .src(paths.static)
         .pipe(gulp.dest(paths.buildOut));
 });
-
-gulp.task('copy:systemjs_modules', function() {
-    return gulp.src(paths.systemjs_vendor, {base: './node_modules'})
-        .pipe(gulp.dest(paths.compileFolder + '/vendor/'));
-});
-
-gulp.task('copy:systemjs_config', function() {
-    return gulp.src(['src/systemjs.config.js'])
-        .pipe(gulp.dest(paths.compileFolder));
-})
 
 gulp.task('copy:bootstrap', function() {
     return gulp.src(['node_modules/bootstrap/dist/css/*.css', 'node_modules/bootstrap/dist/fonts/*'], {base: './node_modules/bootstrap/dist'})
@@ -60,13 +49,18 @@ gulp.task('compile:ts', function () {
     tsResult.dts.pipe(gulp.dest(paths.compileFolder));
 
     return tsResult.js
-        .pipe(sourcemaps.write('.', { sourceRoot: './' }))
+        .pipe(sourcemaps.write({ sourceRoot: './' }))
         .pipe(gulp.dest(paths.compileFolder));
 });
 
 gulp.task('bundle:app', function() {
-    var builder = new systemjsBuilder(paths.compileFolder, paths.compileFolder + '/systemjs.config.js');
-    return builder.buildStatic('app/app.js', paths.buildOut + '/app/app.bundle.js', { sourceMaps:true });
+    var builder = new systemjsBuilder('.', './system.config.js');
+    return builder.buildStatic('src/app/app.ts', paths.buildOut + '/app/app.bundle.js',
+        {
+            sourceMaps:true,
+            runtime:false,
+            sourceMapContents:true
+        });
 });
 
 gulp.task('bundle:vendor', function() {
@@ -78,7 +72,7 @@ gulp.task('bundle:vendor', function() {
 });
 
 gulp.task('build', function(callback) {
-    runSequence('clean', ['copy:static', 'copy:systemjs_config', 'copy:vendor_css', 'copy:systemjs_modules', 'bundle:vendor', 'compile:ts'], 'bundle:app', callback);
+    runSequence('clean', ['copy:static', 'copy:vendor_css', 'bundle:vendor'], 'bundle:app', callback);
 });
 
 gulp.task('watch', function() {

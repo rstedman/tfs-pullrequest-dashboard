@@ -36,6 +36,7 @@
     "gulp-connect": "^5.0.0",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-typescript": "^2.13.6",
+    "plugin-typescript": "^5.1.2",
     "run-sequence": "^1.2.2",
     "systemjs-builder": "^0.15.31",
     "typescript": "^1.8.10",
