@@ -1,12 +1,12 @@
 {
-  "name": "tfs-tray",
+  "name": "tfs-pullrequest-dashboard",
   "verson": "0.1.0",
-  "description": "A tray notifier app for tfs",
+  "description": "A dashboard for tfs pull requests",
   "scripts": {
+    "prepublish": "typings install",
     "build": "gulp build",
     "watch": "gulp watch",
-    "start": "gulp serve",
-    "typings": "typings"
+    "start": "gulp serve"
   },
   "author": "Ryan Stedman",
   "dependencies": {

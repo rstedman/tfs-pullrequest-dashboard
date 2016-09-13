@@ -15,7 +15,6 @@ var paths = {
     compiledFiles: ['src/**/*.ts', 'typings/index.d.ts', 'src/**/*.js'],
     vendor_js: ['node_modules/zone.js/dist/zone.js','node_modules/reflect-metadata/Reflect.js', 'node_modules/systemjs/dist/system.src.js', 'node_modules/es6-shim/es6-shim.js'],
     vendor_css: ['node_modules/bootstrap/dist/**/*', 'node_modules/font-awesome/**/*'],
-    compileFolder: 'build/compile',
     buildOut: 'build/target'
 }
 

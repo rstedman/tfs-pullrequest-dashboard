@@ -56,7 +56,7 @@
       emitDecoratorMetadata: true,
       experimentalDecorators: true,
       noImplicitAny: false,
-      module: 'commonjs'
+      module: 'system'
     },
     map: map,
     packages: packages
