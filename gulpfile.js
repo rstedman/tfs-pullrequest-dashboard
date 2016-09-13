@@ -10,9 +10,9 @@ var concat = require('gulp-concat');
 var tsProject = ts.createProject('tsconfig.json');
 
 var paths = {
-    buildFiles: ['gulpfile.js', 'package.json', 'typings.json', 'tsconfig.json'],
+    buildFiles: ['./gulpfile.js', './package.json', './typings.json', './tsconfig.json', './system.config.js'],
     static: ['src/**/*', '!**/*.ts', '!**/*.js'],
-    tsSource: ['src/**/*.ts', 'typings/index.d.ts'],
+    compiledFiles: ['src/**/*.ts', 'typings/index.d.ts', 'src/**/*.js'],
     vendor_js: ['node_modules/zone.js/dist/zone.js','node_modules/reflect-metadata/Reflect.js', 'node_modules/systemjs/dist/system.src.js', 'node_modules/es6-shim/es6-shim.js'],
     vendor_css: ['node_modules/bootstrap/dist/**/*', 'node_modules/font-awesome/**/*'],
     compileFolder: 'build/compile',
@@ -39,19 +39,7 @@ gulp.task('copy:fa', function() {
         .pipe(gulp.dest(paths.buildOut + '/vendor'));
 })
 
-gulp.task('copy:vendor_css', ['copy:bootstrap', 'copy:fa']);
-
-gulp.task('compile:ts', function () {
-    var tsResult = gulp.src(paths.tsSource)
-        .pipe(sourcemaps.init())
-        .pipe(ts(tsProject));
-
-    tsResult.dts.pipe(gulp.dest(paths.compileFolder));
-
-    return tsResult.js
-        .pipe(sourcemaps.write({ sourceRoot: './' }))
-        .pipe(gulp.dest(paths.compileFolder));
-});
+gulp.task('copy:vendor_assets', ['copy:bootstrap', 'copy:fa']);
 
 gulp.task('bundle:app', function() {
     var builder = new systemjsBuilder('.', './system.config.js');
@@ -72,13 +60,13 @@ gulp.task('bundle:vendor', function() {
 });
 
 gulp.task('build', function(callback) {
-    runSequence('clean', ['copy:static', 'copy:vendor_css', 'bundle:vendor'], 'bundle:app', callback);
+    runSequence('clean', ['copy:static', 'copy:vendor_assets', 'bundle:vendor', 'bundle:app'], callback);
 });
 
 gulp.task('watch', function() {
     gulp.watch(paths.buildFiles, ['build']);
     gulp.watch(paths.static, ['copy:static']);
-    gulp.watch(paths.tsSource, ['compile:ts']);
+    gulp.watch(paths.compiledFiles, ['bundle:app']);
 });
 
 gulp.task('serve', function() {
