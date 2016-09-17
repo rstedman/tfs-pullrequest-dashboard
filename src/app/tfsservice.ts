@@ -2,11 +2,13 @@ import {Injectable} from "@angular/core";
 import {Http, Response} from "@angular/http";
 import "rxjs/Rx";
 
-import {Repository, Identity, PullRequest, Reviewer} from "./tfsmodel";
+import {Repository, Identity, PullRequest, Reviewer, AppConfig} from "./tfsmodel";
 
 @Injectable()
 export class TfsService {
-    constructor(private http: Http) {}
+    constructor(private http: Http, private config: AppConfig) {
+        this.baseUri = config.apiEndpoint;
+    }
 
     private USER_HEADER_NAME: string  = "x-vss-userdata";
 
@@ -16,6 +18,11 @@ export class TfsService {
         // just do a basic query to tfs to be able to look at response headers
         let user: Identity;
         let userId: string;
+        if(this.config.onPrem === false) {
+            // visual studio online apis are different that onprem. not sure how to get the list of groups a user belongs to
+            return new Promise((resolve, reject) => resolve(this.config.user));
+        }
+
         return this.http.get(`${this.baseUri}/_apis/projects`, {withCredentials: true})
             .toPromise()
             .then(r => {

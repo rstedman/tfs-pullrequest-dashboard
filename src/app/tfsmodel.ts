@@ -115,3 +115,10 @@ export enum Vote {
     Rejected = -10,
     WaitingForAuthor = -5
 }
+
+export class AppConfig {
+    public devMode: boolean = false;
+    public onPrem: boolean = true;
+    public apiEndpoint: string = "";
+    public user: Identity = null;
+}

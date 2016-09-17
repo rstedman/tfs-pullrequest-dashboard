@@ -1,48 +1,40 @@
 {
-        "manifestVersion": 1,
-        "id": "tfs-pullrequest-dashboard",
-        "version": "0.1.0",
-        "name": "TFS PullRequest Dashboard",
-        "description": "A pull request dashboard for tfs.",
-        "publisher": "ryan.stedman",
-        "targets": [
-            {
-                "id": "Microsoft.VisualStudio.Services"
-                }
-            ],
-        "icons": {
-            "default": "assets/images/logo.png"
-         },
-        "contributions": [
-            {
-                "id": "ryan.stedman.tfs-pullrequest-dashboard",
-                "type": "ms.vss-web.hub",
-                "description": "Adds a dashboard showing pull requests across all repositories.",
-                "targets": [
-                    "ms.vss-code-web.code-hub-group"
-                    ],
-                "properties": {
-                    "name": "Pull Request Dashboard",
-                    "order": 99,
-                    "uri": "index.html"
-                }
+    "manifestVersion": 1,
+    "id": "tfs-pullrequest-dashboard",
+    "version": "0.1.11",
+    "name": "TFS PullRequest Dashboard",
+    "description": "A pull request dashboard for tfs.",
+    "publisher": "ryanstedman",
+    "tags": ["pull request", "git"],
+    "targets": [{ "id": "Microsoft.VisualStudio.Services" }],
+    "icons": {"default": "assets/images/logo.png"},
+    "categories": ["Code"],
+    "contributions": [
+        {
+            "id": "ryan.stedman.tfs-pullrequest-dashboard",
+            "type": "ms.vss-web.hub",
+            "description": "Adds a dashboard showing pull requests across all repositories.",
+            "targets": ["ms.vss-code-web.code-hub-group"],
+            "properties": {
+                "name": "Pull Request Dashboard",
+                "order": 99,
+                "uri": "index.html"
             }
-        ],
-        "scopes": [
-            "vso.work"
-        ],
-        "files": [
-            {
-                "path": "index.html", "addressable": true
-            },
-            {
-                "path": "app", "addressable": true
-            },
-            {
-                "path": "vendor", "addressable": true
-            },
-            {
-                "path": "assets", "addressable": true
-            }
-        ]
-    }
+        }
+    ],
+    "scopes": ["vso.code"],
+    "files": [
+        {
+            "path": "index.html", "addressable": true
+        },
+        {
+            "path": "app", "addressable": true
+        },
+        {
+            "path": "vendor", "addressable": true
+        },
+        {
+            "path": "assets", "addressable": true
+        }
+    ]
+}
