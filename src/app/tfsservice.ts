@@ -12,7 +12,7 @@ export class TfsService {
 
     private USER_HEADER_NAME: string  = "x-vss-userdata";
 
-    private baseUri: string = "";
+    private baseUri: string;
 
     public getCurrentUser(): Promise<Identity> {
         // just do a basic query to tfs to be able to look at response headers
@@ -23,6 +23,7 @@ export class TfsService {
             return new Promise((resolve, reject) => resolve(this.config.user));
         }
 
+        // only applies to on-premises tfs
         return this.http.get(`${this.baseUri}/_apis/projects`, {withCredentials: true})
             .toPromise()
             .then(r => {
