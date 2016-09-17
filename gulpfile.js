@@ -6,6 +6,7 @@ var runSequence = require('run-sequence');
 var connect = require('gulp-connect');
 var systemjsBuilder = require('systemjs-builder');
 var concat = require('gulp-concat');
+var exec = require('child_process').exec;
 
 var tsProject = ts.createProject('tsconfig.json');
 
@@ -67,6 +68,14 @@ gulp.task('bundle:vendor', function() {
 
 gulp.task('build', function(callback) {
     runSequence('clean', ['copy:static', 'copy:vendor_assets', 'bundle:vendor', 'bundle:app'], callback);
+});
+
+gulp.task('package', ['build'], function(callback) {
+    exec('tfx extension create --root build\\target --manifest-globs \manifest.json  --output-path build\\dist', function(err, stdout, stderr){
+        console.log(stdout);
+        console.log(stderr);
+        callback(err);
+    });
 });
 
 gulp.task('watch', function() {
