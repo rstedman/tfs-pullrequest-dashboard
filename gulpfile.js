@@ -7,6 +7,8 @@ var connect = require('gulp-connect');
 var systemjsBuilder = require('systemjs-builder');
 var concat = require('gulp-concat');
 var exec = require('child_process').exec;
+var uglify = require('gulp-uglify');
+var rename = require('gulp-rename');
 
 var tsProject = ts.createProject('tsconfig.json');
 
@@ -50,11 +52,12 @@ gulp.task('copy:multiselect-src', function() {
 
 gulp.task('bundle:app', ['copy:multiselect-src'], function() {
     var builder = new systemjsBuilder('.', './system.config.js');
-    return builder.buildStatic('src/app/app.ts', paths.buildOut + '/app/app.bundle.js',
+    return builder.buildStatic('src/app/app.ts', paths.buildOut + '/app/app.bundle.min.js',
         {
-            sourceMaps:true,
-            runtime:false,
-            sourceMapContents:true
+            sourceMaps: true,
+            runtime: false,
+            sourceMapContents: true,
+            minify: true
         });
 });
 
@@ -62,6 +65,8 @@ gulp.task('bundle:vendor', function() {
     return gulp.src(paths.vendor_js)
         .pipe(sourcemaps.init())
         .pipe(concat('vendor.bundle.js'))
+        .pipe(uglify())
+        .pipe(rename('vendor.bundle.min.js'))
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest(paths.buildOut + '/vendor'));
 });
@@ -71,9 +76,12 @@ gulp.task('build', function(callback) {
 });
 
 gulp.task('package', ['build'], function(callback) {
-    exec('tfx extension create --root build\\target --manifest-globs \manifest.json  --output-path build\\dist', function(err, stdout, stderr){
-        console.log(stdout);
-        console.log(stderr);
+    exec('tfx extension create --root build\\target --manifest-globs \manifest.json  --output-path build\\dist', function(err, stdout, stderr) {
+        // only write to the console if an error occurred
+        if (err) {
+            console.log(stdout);
+            console.log(stderr);
+        }
         callback(err);
     });
 });

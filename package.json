@@ -3,7 +3,6 @@
   "verson": "0.1.0",
   "description": "A dashboard for tfs pull requests",
   "scripts": {
-    "prepublish": "typings install",
     "build": "gulp build",
     "watch": "gulp watch",
     "start": "gulp serve"
@@ -35,8 +34,10 @@
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.0",
     "gulp-connect": "^5.0.0",
+    "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-typescript": "^2.13.6",
+    "gulp-uglify": "^2.0.0",
     "plugin-typescript": "^5.1.2",
     "run-sequence": "^1.2.2",
     "systemjs-builder": "^0.15.31",
