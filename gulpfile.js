@@ -31,16 +31,23 @@ gulp.task('copy:static', function(){
 gulp.task('copy:bootstrap', function() {
     return gulp.src(['node_modules/bootstrap/dist/css/*.css', 'node_modules/bootstrap/dist/fonts/*'], {base: './node_modules/bootstrap/dist'})
         .pipe(gulp.dest(paths.buildOut + '/vendor/bootstrap'));
-})
+});
 
 gulp.task('copy:fa', function() {
     return gulp.src(['node_modules/font-awesome/css/*.css', 'node_modules/font-awesome/fonts/*'], {base: './node_modules'})
         .pipe(gulp.dest(paths.buildOut + '/vendor'));
-})
+});
 
 gulp.task('copy:vendor_assets', ['copy:bootstrap', 'copy:fa']);
 
-gulp.task('bundle:app', function() {
+gulp.task('copy:multiselect-src', function() {
+    // the multiselect-src module isn't packaged with compiled sources, so instead copy it into the app so it can be
+    // compiled with it.
+    return gulp.src(['./node_modules/angular-2-dropdown-multiselect/src/multiselect-dropdown.ts'])
+        .pipe(gulp.dest('./src/app/'));
+});
+
+gulp.task('bundle:app', ['copy:multiselect-src'], function() {
     var builder = new systemjsBuilder('.', './system.config.js');
     return builder.buildStatic('src/app/app.ts', paths.buildOut + '/app/app.bundle.js',
         {
