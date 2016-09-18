@@ -25,7 +25,7 @@ gulp.task('clean', function() {
     return del(['build']);
 });
 
-gulp.task('copy:static', function(){
+gulp.task('copy:static', function() {
     return gulp
         .src(paths.static)
         .pipe(gulp.dest(paths.buildOut));

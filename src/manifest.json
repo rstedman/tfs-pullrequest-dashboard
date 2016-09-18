@@ -5,6 +5,9 @@
     "name": "TFS PullRequest Dashboard",
     "description": "A pull request dashboard for tfs.",
     "publisher": "ryanstedman",
+    "links": {
+        "home":{"uri": "https://github.com/rstedman/tfs-pullrequest-dashboard"}
+    },
     "tags": ["pull request", "git"],
     "targets": [{ "id": "Microsoft.VisualStudio.Services" }],
     "icons": {"default": "assets/images/logo.png"},

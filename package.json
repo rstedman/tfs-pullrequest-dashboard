@@ -5,7 +5,8 @@
   "scripts": {
     "build": "gulp build",
     "watch": "gulp watch",
-    "start": "gulp serve"
+    "start": "gulp serve",
+    "package": "gulp package"
   },
   "author": "Ryan Stedman",
   "dependencies": {

@@ -2,6 +2,9 @@ import { platformBrowserDynamic  } from "@angular/platform-browser-dynamic";
 import { AppModule, AppConfigSettings } from "./app.module";
 import { enableProdMode } from "@angular/core";
 
+// AppConfigSettings.devMode = true;
+// AppConfigSettings.apiEndpoint = ""; // change this to the endpoint of the tfs service that you wish to develop against
+
 if (AppConfigSettings.devMode === false) {
 
     enableProdMode();
