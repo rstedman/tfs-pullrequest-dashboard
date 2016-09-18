@@ -1,7 +1,7 @@
 {
     "manifestVersion": 1,
     "id": "tfs-pullrequest-dashboard",
-    "version": "0.1.17",
+    "version": "0.1.18",
     "name": "TFS PullRequest Dashboard",
     "description": "A pull request dashboard for tfs.",
     "publisher": "ryanstedman",
@@ -11,7 +11,7 @@
     "categories": ["Code"],
     "contributions": [
         {
-            "id": "ryan.stedman.tfs-pullrequest-dashboard",
+            "id": "tfs-pullrequest-dashboard",
             "type": "ms.vss-web.hub",
             "description": "Adds a dashboard showing pull requests across all repositories.",
             "targets": ["ms.vss-code-web.code-hub-group"],

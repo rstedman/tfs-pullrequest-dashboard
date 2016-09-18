@@ -7,8 +7,8 @@ if (AppConfigSettings.devMode === false) {
     enableProdMode();
 
     VSS.init({
-        usePlatformScripts: true,
-        usePlatformStyles: true,
+        usePlatformScripts: false,
+        usePlatformStyles: false,
         explicitNotifyLoaded: false
     });
 
