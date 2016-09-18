@@ -6,9 +6,9 @@ var runSequence = require('run-sequence');
 var connect = require('gulp-connect');
 var systemjsBuilder = require('systemjs-builder');
 var concat = require('gulp-concat');
-var exec = require('child_process').exec;
 var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
+var run = require('gulp-run');
 
 var tsProject = ts.createProject('tsconfig.json');
 
@@ -75,15 +75,8 @@ gulp.task('build', function(callback) {
     runSequence('clean', ['copy:static', 'copy:vendor_assets', 'bundle:vendor', 'bundle:app'], callback);
 });
 
-gulp.task('package', ['build'], function(callback) {
-    exec('tfx extension create --root build\\target --manifest-globs \manifest.json  --output-path build\\dist', function(err, stdout, stderr) {
-        // only write to the console if an error occurred
-        if (err) {
-            console.log(stdout);
-            console.log(stderr);
-        }
-        callback(err);
-    });
+gulp.task('package', ['build'], function() {
+    return run('tfx extension create --root build\\target --manifest-globs manifest.json  --output-path build\\dist').exec()
 });
 
 gulp.task('watch', function() {
