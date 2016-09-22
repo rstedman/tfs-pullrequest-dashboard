@@ -7,9 +7,6 @@
     "noImplicitAny": false,
     "module": "commonjs"
   },
-  "exclude": [
-    "node_modules"
-  ],
   "filesGlob": [
     "src/**/*.ts",
     "typings/index.d.ts",

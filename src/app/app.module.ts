@@ -28,7 +28,6 @@ export let AppConfigSettings = new AppConfig();
     RepoFilterPipe
   ],
   providers: [
-    TfsService,
     { provide: AppConfig, useValue: AppConfigSettings }
   ],
   bootstrap: [ AppComponent ]

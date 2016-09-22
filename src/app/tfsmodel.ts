@@ -54,13 +54,13 @@ export class PullRequest {
     public pullRequestId: number;
 
     /** The status of the pull request **/
-    public status: string;
+    public status: number;
 
     /** The identity that created the pull request **/
-    public createdBy: Reviewer;
+    public createdBy: ReviewerBase;
 
     /** The datetime that the pullrequest was created, as an ISO8601 string **/
-    public creationDate: string;
+    public creationDate: Date;
 
     /** Title of the pull request **/
     public title: string;
@@ -84,8 +84,7 @@ export class PullRequest {
     public reviewers: Array<Reviewer>;
 }
 
-/** Represents a reviewer on a pull request **/
-export class Reviewer {
+export class ReviewerBase {
     /** The guid id of the identity **/
     public id: string;
 
@@ -97,7 +96,10 @@ export class Reviewer {
 
     /** The url to the image representing the identity **/
     public imageUrl: string;
+}
 
+/** Represents a reviewer on a pull request **/
+export class Reviewer extends ReviewerBase {
     /** numeric id representing how the reviewer has voted on the pull request **/
     public vote: number;
 
@@ -121,4 +123,11 @@ export class AppConfig {
     public onPrem: boolean = true;
     public apiEndpoint: string = "";
     public user: Identity = null;
+}
+
+export abstract class TfsService {
+    abstract setConfig(config: AppConfig);
+    abstract getCurrentUser(): IPromise<Identity>;
+    abstract getPullRequests(repo: Repository): IPromise<PullRequest[]>;
+    abstract getRepositories(): IPromise<Repository[]>;
 }

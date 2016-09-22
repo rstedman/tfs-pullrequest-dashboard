@@ -45,7 +45,6 @@
   // Add package entries for angular packages
   ngPackageNames.forEach(setPackageConfig);
   var config = {
-    //defaultJSExtensions: true,
     baseURL: './src',
     transpiler: 'ts',
     typescriptOptions: {
@@ -59,7 +58,10 @@
       module: 'system'
     },
     map: map,
-    packages: packages
+    packages: packages,
+    meta: {
+      'TFS/*': {build:false}
+    }
   };
   System.config(config);
 })(this);

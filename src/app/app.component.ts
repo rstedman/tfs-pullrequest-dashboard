@@ -1,15 +1,16 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Provider } from "@angular/core";
 
-import { TfsService } from "./tfsservice";
-import { PullRequest, Repository, Identity, Reviewer } from "./tfsmodel";
+import { PullRequest, Repository, Identity, Reviewer, TfsService } from "./tfsmodel";
 import { PullRequestViewModel } from "./pullRequestViewModel";
 
 import { IMultiSelectOption, IMultiSelectSettings, IMultiSelectTexts } from "./multiselect-dropdown";
 
+import { TfsServiceProvider } from "./tfsService.provider";
+
 @Component({
     selector: "my-app",
     templateUrl: "app/app.component.html",
-    providers: [TfsService]
+    providers: [new TfsServiceProvider()]
 })
 export class AppComponent implements OnInit {
     constructor(private tfsService: TfsService) { }

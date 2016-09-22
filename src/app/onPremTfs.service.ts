@@ -2,11 +2,16 @@ import {Injectable} from "@angular/core";
 import {Http, Response} from "@angular/http";
 import "rxjs/Rx";
 
-import {Repository, Identity, PullRequest, Reviewer, AppConfig} from "./tfsmodel";
+import {Repository, Identity, PullRequest, Reviewer, AppConfig, TfsService} from "./tfsmodel";
 
 @Injectable()
-export class TfsService {
-    constructor(private http: Http, private config: AppConfig) {
+/** Interacts with TFS APis for an on-prem installation **/
+export class OnPremTfsService extends TfsService {
+    constructor(private http: Http) {
+        super();
+    }
+
+    public setConfig(config: AppConfig) {
         this.baseUri = config.apiEndpoint;
     }
 
@@ -14,16 +19,11 @@ export class TfsService {
 
     private baseUri: string;
 
-    public getCurrentUser(): Promise<Identity> {
+    public getCurrentUser(): IPromise<Identity> {
         // just do a basic query to tfs to be able to look at response headers
         let user: Identity;
         let userId: string;
-        if(this.config.onPrem === false) {
-            // visual studio online apis are different that onprem. not sure how to get the list of groups a user belongs to
-            return new Promise((resolve, reject) => resolve(this.config.user));
-        }
 
-        // only applies to on-premises tfs
         return this.http.get(`${this.baseUri}/_apis/projects`, {withCredentials: true})
             .toPromise()
             .then(r => {
@@ -41,7 +41,7 @@ export class TfsService {
                 return this.getMembersOf(userId);
             })
             .then(membersOf => {
-                let promises: Promise<Identity[]>[] = [];
+                let promises: IPromise<Identity[]>[] = [];
                 for (let m of membersOf) {
                     user.MembersOf.push(m);
                     // now recurse once into the subgroups of each group the member is a member of, to include
@@ -61,7 +61,7 @@ export class TfsService {
             .catch(this.handleError);
     }
 
-    private getMembersOf(userId: string): Promise<Identity[]> {
+    private getMembersOf(userId: string): IPromise<Identity[]> {
         // get the identities that the current user is a member of
         return this.http.get(`${this.baseUri}/_apis/Identities/${userId}/membersOf`, {withCredentials: true})
             .toPromise()
@@ -88,7 +88,7 @@ export class TfsService {
             });
     }
 
-    public getPullRequests(repo: Repository): Promise<PullRequest[]> {
+    public getPullRequests(repo: Repository): IPromise<PullRequest[]> {
         let url = `${repo.url}/pullRequests?status=active`;
         return this.http.get(url, {withCredentials: true})
             .toPromise()
@@ -96,7 +96,7 @@ export class TfsService {
             .catch(this.handleError);
     }
 
-    public getRepositories(): Promise<Repository[]> {
+    public getRepositories(): IPromise<Repository[]> {
         return this.http.get(`${this.baseUri}/_apis/git/repositories`, {withCredentials: true})
             .toPromise()
             .then(this.extractData)
