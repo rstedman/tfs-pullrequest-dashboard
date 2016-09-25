@@ -4,25 +4,27 @@ import "rxjs/Rx";
 
 import {Repository, Identity, PullRequest, Reviewer, AppConfig, TfsService} from "./tfsmodel";
 
-import * as GitClientLib from "TFS/VersionControl/GitRestClient";
-import  { PullRequestStatus, GitPullRequest, PullRequestAsyncStatus } from "TFS/VersionControl/Contracts";
+// can't reference these types without them attempting to import as modules, which will fail since the VSS.SDK does module resolution in a non-standard way
+//import { GitHttpClient } from "TFS/VersionControl/GitRestClient";
+//import { PullRequestStatus, GitPullRequest, PullRequestAsyncStatus } from "TFS/VersionControl/Contracts";
 
-@Injectable()
 /**
  ** Uses the TFS GitHttpClient if running in tfs online.
  ** Need to use the TFS client as it's not possible to interact with the apis directly due to CORS restrictions.
  **/
+@Injectable()
 export class OnlineTfsService extends TfsService {
-    private client: GitClientLib.GitHttpClient2_3;
+    private getClientPromise: IPromise<any>;
 
-    private config: AppConfig;
+    constructor(private config: AppConfig) {
+        super();
 
-    private USER_HEADER_NAME: string  = "x-vss-userdata";
-
-    private baseUri: string;
-
-    public setConfig(config:AppConfig){
-        this.config = config;
+        this.getClientPromise = new Promise<any>((resolve,reject) => {
+            VSS.require(['TFS/VersionControl/GitRestClient'], (TFS_Git_WebApi) =>{
+                let client = TFS_Git_WebApi.getClient();
+                resolve(client);
+            })
+        });
     }
 
     public getCurrentUser(): Promise<Identity> {
@@ -34,7 +36,8 @@ export class OnlineTfsService extends TfsService {
     }
 
     public getPullRequests(repo: Repository): IPromise<PullRequest[]> {
-        return this.client.getPullRequests(repo.id, {includeLinks: true, creatorId: null, repositoryId: repo.id, reviewerId: null, sourceRefName: null, status: PullRequestStatus.Active, targetRefName: null})
+        return this.getClientPromise
+            .then(client => client.getPullRequests(repo.id, {includeLinks: true, creatorId: null, repositoryId: repo.id, reviewerId: null, sourceRefName: null, status: 1, targetRefName: null})
             .then(prs => {
                 let res = new Array<PullRequest>();
                 for(let pr of prs) {
@@ -64,11 +67,11 @@ export class OnlineTfsService extends TfsService {
                     })
                 }
                 return res;
-            });
+            }));
     }
 
-    private mergeStatusToString(status: PullRequestAsyncStatus): string {
-        if (status == PullRequestAsyncStatus.Conflicts) {
+    private mergeStatusToString(status: number): string {
+        if (status == 2) {
             return "conflicts";
         }
         // don't really care about other statuses.  extension only does something if there's a conflict.
@@ -76,13 +79,14 @@ export class OnlineTfsService extends TfsService {
     }
 
     public getRepositories(): IPromise<Repository[]> {
-        return this.client.getRepositories(VSS.getWebContext().project.name, true)
-            .then(repos => {
-                let res = new Array<Repository>();
-                for(let repo of repos) {
-                    res.push(repo);
-                }
-                return res;
-            });
+        return this.getClientPromise
+            .then(client => client.getRepositories(VSS.getWebContext().project.name, true)
+                .then(repos => {
+                    let res = new Array<Repository>();
+                    for(let repo of repos) {
+                        res.push(repo);
+                    }
+                    return res;
+                }));
     }
 }

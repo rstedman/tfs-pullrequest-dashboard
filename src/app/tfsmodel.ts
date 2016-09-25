@@ -126,7 +126,6 @@ export class AppConfig {
 }
 
 export abstract class TfsService {
-    abstract setConfig(config: AppConfig);
     abstract getCurrentUser(): IPromise<Identity>;
     abstract getPullRequests(repo: Repository): IPromise<PullRequest[]>;
     abstract getRepositories(): IPromise<Repository[]>;

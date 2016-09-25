@@ -7,13 +7,12 @@ import {Repository, Identity, PullRequest, Reviewer, AppConfig, TfsService} from
 @Injectable()
 /** Interacts with TFS APis for an on-prem installation **/
 export class OnPremTfsService extends TfsService {
-    constructor(private http: Http) {
+    constructor(private http: Http, config: AppConfig) {
         super();
-    }
 
-    public setConfig(config: AppConfig) {
         this.baseUri = config.apiEndpoint;
     }
+
 
     private USER_HEADER_NAME: string  = "x-vss-userdata";
 

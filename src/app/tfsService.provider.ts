@@ -2,6 +2,7 @@ import { Injectable, FactoryProvider }       from "@angular/core";
 import { Http }     from "@angular/http";
 
 import { OnPremTfsService } from "./onPremTfs.service";
+import { OnlineTfsService } from "./onlineTfs.service";
 import { AppConfig, TfsService } from './tfsmodel';
 
 /** factory provider for the tfsservice, which switches the backend provider based on if it's using tfs online,
@@ -16,13 +17,10 @@ export class TfsServiceProvider implements FactoryProvider{
   public useFactory(http: Http, config: AppConfig): TfsService {
     let service: TfsService;
     if(config.onPrem === true) {
-      service = new OnPremTfsService(http);
+      return new OnPremTfsService(http, config);
     } else {
-      let m = require("./onlineTfs.service");
-      return new m.OnlineTfsService();
+      return new OnlineTfsService(config);
     }
-    service.setConfig(config);
-    return service
   }
 
   public deps = [Http, AppConfig]
