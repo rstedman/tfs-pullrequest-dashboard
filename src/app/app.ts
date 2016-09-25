@@ -2,8 +2,8 @@ import { platformBrowserDynamic  } from "@angular/platform-browser-dynamic";
 import { AppModule, AppConfigSettings } from "./app.module";
 import { enableProdMode } from "@angular/core";
 
-// AppConfigSettings.devMode = true;
-// AppConfigSettings.apiEndpoint = ""; // change this to the endpoint of the tfs service that you wish to develop against
+//AppConfigSettings.devMode = true;
+//AppConfigSettings.apiEndpoint = "http://<host>:8080/tfs/DefaultCollection"; // change this to the endpoint of the tfs service that you wish to develop against
 
 if (AppConfigSettings.devMode === false) {
 
@@ -17,7 +17,7 @@ if (AppConfigSettings.devMode === false) {
 
     // init app in the require callback so that it's only run when the VSS initialization has completed,
     // and we're able to get the webcontext
-    VSS.require([], () => {
+    VSS.require(['TFS/VersionControl/GitRestClient'], (TFS_Git_WebApi) => {
         let context = VSS.getWebContext();
         AppConfigSettings.onPrem = (context.host.authority.indexOf("visualstudio.com") < 0);
         AppConfigSettings.apiEndpoint = context.collection.uri;
@@ -34,7 +34,7 @@ if (AppConfigSettings.devMode === false) {
                 Members: [],
                 MembersOf: [],
                 Properties: new Map<string,string>()
-            }
+            };
         }
 
         platformBrowserDynamic().bootstrapModule(AppModule);
