@@ -35,14 +35,11 @@ export class Identity {
     /** The url to the image representing the identity **/
     public ImageUrl: string;
 
-    /** bag of additional properties about the identity**/
-    public Properties: Map<string, string>;
-
     /** other identities that are a member of this identity **/
-    public Members: Array<Identity>;
+    public Members: Array<Descriptor>;
 
     /** other identities this identity is a member of **/
-    public MembersOf: Array<Identity>;
+    public MembersOf: Array<Descriptor>;
 }
 
 /** Represents a pull request in tfs **/
