@@ -10,8 +10,8 @@ export class PullRequestFilterPipe  implements PipeTransform {
     transform(items: PullRequestViewModel[], arg: string): any {
         return items.filter(x => {
             return (arg === "requestedByMe" && x.requestedByMe) ||
-                   (arg === "assignedToMe" && x.assignedToMe) ||
-                   (arg === "assignedToMyTeam" && x.assignedToMyTeam) ||
+                   (arg === "assignedToMe" && x.assignedToMe && !x.requestedByMe) ||
+                   (arg === "assignedToMyTeam" && x.assignedToMyTeam && !x.requestedByMe) ||
                    (arg === "other" && !x.requestedByMe && !x.assignedToMe && !x.assignedToMyTeam);
         });
     }
