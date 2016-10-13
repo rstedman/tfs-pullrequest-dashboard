@@ -45,12 +45,12 @@ export class AppComponent implements OnInit {
     public repoOptions: IMultiSelectOption[] = [];
 
     ngOnInit() {
-        this.refresh();
-
         let filter = localStorage.getItem("filter");
         if(filter && filter !== "") {
             this.filteredRepoIds = JSON.parse(filter);
         }
+
+        this.refresh();
     }
 
     refresh() {
@@ -73,7 +73,7 @@ export class AppComponent implements OnInit {
                         name: repo.name
                     });
 
-                    if (this.filteredRepoIds.indexOf(repo.id) <= 0) {
+                    if (this.filteredRepoIds.indexOf(repo.id) < 0) {
                         this.unfilteredRepoSelections.push(i);
                     }
 
