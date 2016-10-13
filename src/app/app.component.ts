@@ -90,7 +90,7 @@ export class AppComponent implements OnInit {
     public onFilteredSelectionsChanged(unfiltered: number[]) {
         this.filteredRepoIds = [];
         for(let repoOption of this.repoOptions) {
-            if (unfiltered.indexOf(repoOption.id) <= 0) {
+            if (unfiltered.indexOf(repoOption.id) < 0) {
                 let repo = this.getRepoByName(repoOption.name);
                 this.filteredRepoIds.push(repo.id);
             }
