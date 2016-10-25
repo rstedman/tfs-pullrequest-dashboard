@@ -1,7 +1,7 @@
 {
     "manifestVersion": 1,
     "id": "tfs-pullrequest-dashboard",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "name": "TFS PullRequest Dashboard",
     "description": "A pull request dashboard for tfs.",
     "publisher": "ryanstedman",
@@ -35,12 +35,6 @@
         },
         {
             "path": "app/app.bundle.min.js.map", "addressable": true, "contentType": "application/json"
-        },
-        {
-            "path": "app/app.component.html", "addressable": true
-        },
-        {
-            "path": "app/pullRequest.component.html", "addressable": true
         },
         {
             "path": "vendor/vendor.bundle.min.js", "addressable": true

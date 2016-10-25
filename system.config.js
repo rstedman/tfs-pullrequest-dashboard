@@ -1,7 +1,7 @@
 (function(global) {
   // map tells the System loader where to look for things
   var map = {
-    'app':                        './src/app',
+    'app':                        './build/compile',
     '@angular':                   './node_modules/@angular',
     'rxjs':                       './node_modules/rxjs',
     'typescript':                 './node_modules/typescript/lib/',
@@ -45,7 +45,7 @@
   // Add package entries for angular packages
   ngPackageNames.forEach(setPackageConfig);
   var config = {
-    baseURL: './src',
+    baseURL: './build/compile',
     transpiler: 'ts',
     typescriptOptions: {
       target: 'es5',

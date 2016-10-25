@@ -9,7 +9,7 @@ import { TfsServiceProvider } from "./tfsService.provider";
 
 @Component({
     selector: "my-app",
-    templateUrl: "app/app.component.html",
+    templateUrl: "app.component.html",
     providers: [new TfsServiceProvider()]
 })
 export class AppComponent implements OnInit {

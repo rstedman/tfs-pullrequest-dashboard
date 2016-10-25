@@ -9,6 +9,7 @@ var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
 var run = require('gulp-run');
+var embedTemplates = require('gulp-angular2-embed-templates');
 
 var tsProject = ts.createProject('tsconfig.json');
 
@@ -47,12 +48,12 @@ gulp.task('copy:multiselect-src', function() {
     // the multiselect-src module isn't packaged with compiled sources, so instead copy it into the app so it can be
     // compiled with it.
     return gulp.src(['./node_modules/angular-2-dropdown-multiselect/src/multiselect-dropdown.ts'])
-        .pipe(gulp.dest('./src/app/'));
+        .pipe(gulp.dest('./build/compile/app/'));
 });
 
 gulp.task('bundle:app', ['copy:multiselect-src'], function() {
     var builder = new systemjsBuilder('.', './system.config.js');
-    return builder.buildStatic('src/app/app.ts', paths.buildOut + '/app/app.bundle.min.js',
+    return builder.buildStatic('./build/compile/app/app.ts', paths.buildOut + '/app/app.bundle.min.js',
         {
             sourceMaps: true,
             runtime: false,
@@ -71,9 +72,26 @@ gulp.task('bundle:vendor', function() {
         .pipe(gulp.dest(paths.buildOut + '/vendor'));
 });
 
-gulp.task('build', function(callback) {
-    runSequence('clean', ['copy:static', 'copy:vendor_assets', 'bundle:vendor', 'bundle:app'], callback);
+gulp.task('compile:copy', function() {
+    return gulp.src('./src/**/*')
+        .pipe(gulp.dest('./build/compile'));
 });
+
+gulp.task('compile:embed', function () {
+    return gulp.src('./build/compile/**/*.ts') 
+               .pipe(embedTemplates({sourceType:'ts'}))
+               .pipe(gulp.dest('./build/compile'));
+});
+
+gulp.task('compile', function(callback) {
+    runSequence('compile:copy', 'compile:embed', callback);
+});
+
+
+gulp.task('build', function(callback) {
+    runSequence('clean', 'compile', ['copy:static', 'copy:vendor_assets', 'bundle:vendor', 'bundle:app'], callback);
+});
+
 
 gulp.task('package', ['build'], function() {
     return run('tfx extension create --root build\\target --manifest-globs manifest.json  --output-path build\\dist').exec()
