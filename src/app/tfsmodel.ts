@@ -36,10 +36,10 @@ export class Identity {
     public ImageUrl: string;
 
     /** other identities that are a member of this identity **/
-    public Members: Array<Descriptor>;
+    public Members: Array<Identity>;
 
     /** other identities this identity is a member of **/
-    public MembersOf: Array<Descriptor>;
+    public MembersOf: Array<Identity>;
 }
 
 /** Represents a pull request in tfs **/

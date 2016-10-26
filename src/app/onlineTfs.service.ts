@@ -50,44 +50,68 @@ export class OnlineTfsService extends TfsService {
                 Members: [],
                 MembersOf: []
             };
+        let identityClient: any = null;
         return this.getClientsPromise
-            .then(clients => clients.identityClient.readMembersOf(user.Id))
-                .then((groups: any[]) => {
-                    for(let group of groups) {
-                        user.MembersOf.push({
-                            Identifier: group.identifier,
-                            IdentityType: group.identityType
-                        });
-                    }
-                    return user;
-                })
+            .then(clients => {
+                identityClient = clients.identityClient;
+                return this.getMembersOf(identityClient, user.Id)
+                    .then((membersOf: Identity[]) => {
+                        let promises: IPromise<Identity[]>[] = [];
+                        for (let m of membersOf) {
+                            user.MembersOf.push(m);
+                            // now recurse once into the subgroups of each group the member is a member of, to include
+                            // virtual groups made up of several groups
+                            promises.push(this.getMembersOf(identityClient, m.Id));
+                        }
+                        return Promise.all<Identity[]>(promises);
+                    })
+                    .then((membersOf: Identity[][]) => {
+                        for (let members of membersOf) {
+                            for (let i of members) {
+                                user.MembersOf.push(i);
+                            }
+                        }
+                        return user;
+                    })
+                });
+            
     }
 
-    /*private getMembersOf(userId: string): IPromise<Identity[]> {
+    private getMembersOf(identityClient: any, userId: string): IPromise<Identity[]> {
         // get the identities that the current user is a member of
-        return this.http.get(`${this.baseUri}/_apis/Identities/${userId}/membersOf`, {withCredentials: true})
-            .toPromise()
-            .then(response => {
-                let promises: Promise<Response>[] = [];
-                let result: Identity[] = [];
-                for (let userId of response.json()) {
-                    // ignore any non-tfs identities
-                    if (!userId.startsWith("Microsoft.TeamFoundation.Identity"))
-                        continue;
+        return identityClient.readMembersOf(userId)
+                .then((members: any[]) => {
+                    let promises: IPromise<Identity[]>[] = [];
+                    for(let memberId of members) {
 
-                    promises.push(this.http.get(`${this.baseUri}/_apis/Identities/${userId}`, {withCredentials: true})
-                                           .toPromise());
-                }
-                return Promise.all<Response>(promises);
-            })
-            .then( (responses: Response[]) => {
-                let result: Identity[] = [];
-                for (let response of responses) {
-                    result.push(response.json());
-                }
-                return result;
-            });
-    }*/
+                        // ignore any non-tfs identities
+                        if (!memberId.startsWith("Microsoft.TeamFoundation.Identity"))
+                            continue;
+                        
+                        promises.push(identityClient.readIdentity(memberId));
+                    }
+                    return Promise.all<any[]>(promises);
+                })
+                .then((identities: any[]) => {
+                    let result :Identity[] = [];
+                    for(let identity of identities) {
+                        let model: Identity = {
+                            Id: identity.id,
+                            DisplayName: identity.customDisplayName,
+                            UniqueName: identity.providerDisplayName,
+                            Descriptor: {
+                                IdentityType: "user",
+                                Identifier: identity.id
+                            },
+                            ImageUrl: null,
+                            Members: [],
+                            MembersOf: []
+                        };
+                        result.push(model)
+                    }
+                    return result;
+                });
+    }
 
     public getPullRequests(repo: Repository): IPromise<PullRequest[]> {
         return this.getClientsPromise
