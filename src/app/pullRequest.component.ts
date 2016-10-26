@@ -1,12 +1,11 @@
 import { Component, Input } from "@angular/core";
 
-import { TfsService } from "./tfsservice";
 import { PullRequest, Repository, Identity, Reviewer, Vote } from "./tfsmodel";
 import { PullRequestViewModel } from "./pullRequestViewModel";
 
 @Component({
     selector: "pull-request",
-    templateUrl: "app/pullRequest.component.html",
+    templateUrl: "pullRequest.component.html",
 })
 export class PullRequestComponent {
 

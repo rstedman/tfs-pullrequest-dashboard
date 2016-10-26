@@ -9,7 +9,7 @@ import { TfsServiceProvider } from "./tfsService.provider";
 
 @Component({
     selector: "my-app",
-    templateUrl: "app/app.component.html",
+    templateUrl: "app.component.html",
     providers: [new TfsServiceProvider()]
 })
 export class AppComponent implements OnInit {
@@ -45,12 +45,12 @@ export class AppComponent implements OnInit {
     public repoOptions: IMultiSelectOption[] = [];
 
     ngOnInit() {
-        this.refresh();
-
         let filter = localStorage.getItem("filter");
         if(filter && filter !== "") {
             this.filteredRepoIds = JSON.parse(filter);
         }
+
+        this.refresh();
     }
 
     refresh() {
@@ -73,7 +73,7 @@ export class AppComponent implements OnInit {
                         name: repo.name
                     });
 
-                    if (this.filteredRepoIds.indexOf(repo.id) <= 0) {
+                    if (this.filteredRepoIds.indexOf(repo.id) < 0) {
                         this.unfilteredRepoSelections.push(i);
                     }
 
@@ -90,7 +90,7 @@ export class AppComponent implements OnInit {
     public onFilteredSelectionsChanged(unfiltered: number[]) {
         this.filteredRepoIds = [];
         for(let repoOption of this.repoOptions) {
-            if (unfiltered.indexOf(repoOption.id) <= 0) {
+            if (unfiltered.indexOf(repoOption.id) < 0) {
                 let repo = this.getRepoByName(repoOption.name);
                 this.filteredRepoIds.push(repo.id);
             }
