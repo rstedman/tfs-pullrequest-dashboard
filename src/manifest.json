@@ -1,7 +1,7 @@
 {
     "manifestVersion": 1,
     "id": "tfs-pullrequest-dashboard",
-    "version": "0.2.1",
+    "version": "0.2.6",
     "name": "TFS PullRequest Dashboard",
     "description": "A pull request dashboard for tfs.",
     "publisher": "ryanstedman",
@@ -41,45 +41,6 @@
         },
         {
             "path": "vendor/vendor.bundle.min.js.map", "addressable": true, "contentType": "application/json"
-        },
-        {
-            "path": "vendor/bootstrap/css", "addressable": true
-        },
-        {
-            "path": "vendor/bootstrap/fonts/glyphicons-halflings-regular.eot", "addressable": true, "contentType": "application/vnd.ms-fontobject"
-        },
-        {
-            "path": "vendor/bootstrap/fonts/glyphicons-halflings-regular.svg", "addressable": true
-        },
-        {
-            "path": "vendor/bootstrap/fonts/glyphicons-halflings-regular.ttf", "addressable": true, "contentType": "application/font-sfnt"
-        },
-        {
-            "path": "vendor/bootstrap/fonts/glyphicons-halflings-regular.woff", "addressable": true, "contentType": "application/font-woff"
-        },
-        {
-            "path": "vendor/bootstrap/fonts/glyphicons-halflings-regular.woff2", "addressable": true, "contentType": "application/font-woff2"
-        },
-        {
-            "path": "vendor/font-awesome/css", "addressable": true
-        },
-        {
-            "path": "vendor/font-awesome/fonts/FontAwesome.otf", "addressable": true, "contentType": "application/x-font-opentype"
-        },
-        {
-            "path": "vendor/font-awesome/fonts/fontawesome-webfont.eot", "addressable": true, "contentType": "application/vnd.ms-fontobject"
-        },
-        {
-            "path": "vendor/font-awesome/fonts/fontawesome-webfont.svg", "addressable": true
-        },
-        {
-            "path": "vendor/font-awesome/fonts/fontawesome-webfont.ttf", "addressable": true, "contentType": "application/font-sfnt"
-        },
-        {
-            "path": "vendor/font-awesome/fonts/fontawesome-webfont.woff", "addressable": true, "contentType": "application/font-woff"
-        },
-        {
-            "path": "vendor/font-awesome/fonts/fontawesome-webfont.woff2", "addressable": true, "contentType": "application/font-woff2"
         },
         {
             "path": "assets", "addressable": true

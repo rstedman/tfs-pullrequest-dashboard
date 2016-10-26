@@ -18,7 +18,6 @@ var paths = {
     static: ['src/**/*', '!**/*.ts', '!**/*.js'],
     compiledFiles: ['src/**/*.ts', 'typings/index.d.ts', 'src/**/*.js'],
     vendor_js: ['node_modules/zone.js/dist/zone.js','node_modules/reflect-metadata/Reflect.js', 'node_modules/systemjs/dist/system.src.js', 'node_modules/es6-shim/es6-shim.js', 'node_modules/vss-web-extension-sdk/lib/VSS.SDK.js'],
-    vendor_css: ['node_modules/bootstrap/dist/**/*', 'node_modules/font-awesome/**/*'],
     buildOut: 'build/target'
 }
 
@@ -31,18 +30,6 @@ gulp.task('copy:static', function() {
         .src(paths.static)
         .pipe(gulp.dest(paths.buildOut));
 });
-
-gulp.task('copy:bootstrap', function() {
-    return gulp.src(['node_modules/bootstrap/dist/css/*.css', 'node_modules/bootstrap/dist/fonts/*'], {base: './node_modules/bootstrap/dist'})
-        .pipe(gulp.dest(paths.buildOut + '/vendor/bootstrap'));
-});
-
-gulp.task('copy:fa', function() {
-    return gulp.src(['node_modules/font-awesome/css/*.css', 'node_modules/font-awesome/fonts/*'], {base: './node_modules'})
-        .pipe(gulp.dest(paths.buildOut + '/vendor'));
-});
-
-gulp.task('copy:vendor_assets', ['copy:bootstrap', 'copy:fa']);
 
 gulp.task('copy:multiselect-src', function() {
     // the multiselect-src module isn't packaged with compiled sources, so instead copy it into the app so it can be
@@ -89,7 +76,7 @@ gulp.task('compile', function(callback) {
 
 
 gulp.task('build', function(callback) {
-    runSequence('clean', 'compile', ['copy:static', 'copy:vendor_assets', 'bundle:vendor', 'bundle:app'], callback);
+    runSequence('clean', 'compile', ['copy:static', 'bundle:vendor', 'bundle:app'], callback);
 });
 
 
