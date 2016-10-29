@@ -1,6 +1,7 @@
 import { Component, OnInit, Provider } from "@angular/core";
 
-import { PullRequest, Repository, Identity, Reviewer, TfsService } from "./tfsmodel";
+import { PullRequest, Repository, Identity, Reviewer, TfsService, StorageService } from "./model";
+import { TfsStorageService } from "./tfsStorage.service";
 import { PullRequestViewModel } from "./pullRequestViewModel";
 
 import { IMultiSelectOption, IMultiSelectSettings, IMultiSelectTexts } from "./multiselect-dropdown";
@@ -10,10 +11,13 @@ import { TfsServiceProvider } from "./tfsService.provider";
 @Component({
     selector: "my-app",
     templateUrl: "app.component.html",
-    providers: [new TfsServiceProvider()]
+    providers: [new TfsServiceProvider(), TfsStorageService]
 })
 export class AppComponent implements OnInit {
-    constructor(private tfsService: TfsService) { }
+
+    private static repoFilterKey = "repoFilter";
+
+    constructor(private tfsService: TfsService, private storage: StorageService) { }
 
     public pullRequests: PullRequestViewModel[] = [];
 
@@ -45,12 +49,13 @@ export class AppComponent implements OnInit {
     public repoOptions: IMultiSelectOption[] = [];
 
     ngOnInit() {
-        let filter = localStorage.getItem("filter");
-        if(filter && filter !== "") {
-            this.filteredRepoIds = JSON.parse(filter);
-        }
-
-        this.refresh();
+        this.storage.getValue(AppComponent.repoFilterKey)
+            .then(x => {
+                if(x && x !== "") {
+                    this.filteredRepoIds = JSON.parse(x);
+                }
+            })
+            .then(() => this.refresh());
     }
 
     refresh() {
@@ -96,7 +101,7 @@ export class AppComponent implements OnInit {
             }
         }
 
-        localStorage.setItem("filter", JSON.stringify(this.filteredRepoIds))
+        this.storage.setValue(AppComponent.repoFilterKey, JSON.stringify(this.filteredRepoIds));
     }
 
     private getRepoByName(name: string): Repository {

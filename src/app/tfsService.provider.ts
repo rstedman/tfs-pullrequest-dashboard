@@ -3,7 +3,7 @@ import { Http }     from "@angular/http";
 
 import { OnPremTfsService } from "./onPremTfs.service";
 import { OnlineTfsService } from "./onlineTfs.service";
-import { AppConfig, TfsService } from './tfsmodel';
+import { AppConfig, TfsService } from './model';
 
 /** factory provider for the tfsservice, which switches the backend provider based on if it's using tfs online,
     an on-prem service **/

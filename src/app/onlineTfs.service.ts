@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import {Http, Response} from "@angular/http";
 import "rxjs/Rx";
 
-import {Repository, Identity, PullRequest, Reviewer, AppConfig, TfsService, Descriptor} from "./tfsmodel";
+import {Repository, Identity, PullRequest, Reviewer, AppConfig, TfsService, Descriptor} from "./model";
 
 // can't reference these types without them attempting to import as modules, which will fail since the VSS.SDK does module resolution in a non-standard way
 //import { GitHttpClient } from "TFS/VersionControl/GitRestClient";

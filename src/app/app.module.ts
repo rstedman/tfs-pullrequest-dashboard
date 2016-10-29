@@ -7,7 +7,7 @@ import { MultiselectDropdownModule } from "./multiselect-dropdown";
 
 import { AppComponent } from "./app.component";
 import { PullRequestComponent } from "./pullRequest.component";
-import { AppConfig } from './tfsmodel';
+import { AppConfig } from './model';
 import { PullRequestFilterPipe } from "./pullRequestFilter.pipe";
 import { RepoFilterPipe } from "./repoFilter.pipe"
 

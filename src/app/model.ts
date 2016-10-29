@@ -127,3 +127,8 @@ export abstract class TfsService {
     abstract getPullRequests(repo: Repository): IPromise<PullRequest[]>;
     abstract getRepositories(): IPromise<Repository[]>;
 }
+
+export abstract class StorageService {
+    abstract getValue(key: string): IPromise<string>;
+    abstract setValue(key: string, value: string): IPromise<string>;
+}

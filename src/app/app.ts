@@ -19,7 +19,7 @@ if (AppConfigSettings.devMode === false) {
     // and we're able to get the webcontext
     VSS.require([], () => {
         let context = VSS.getWebContext();
-        AppConfigSettings.onPrem = (context.host.authority.indexOf("visualstudio.com") < 0);
+        AppConfigSettings.onPrem = false;//(context.host.authority.indexOf("visualstudio.com") < 0);
         AppConfigSettings.apiEndpoint = context.collection.uri;
         if(!AppConfigSettings.onPrem) {
             AppConfigSettings.user = {
@@ -33,7 +33,6 @@ if (AppConfigSettings.devMode === false) {
                 ImageUrl: null,
                 Members: [],
                 MembersOf: [],
-                Properties: new Map<string,string>()
             };
         }
 

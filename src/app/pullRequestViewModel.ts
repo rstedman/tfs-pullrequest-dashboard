@@ -1,4 +1,4 @@
-import { PullRequest, Repository, Identity, Reviewer } from "./tfsModel";
+import { PullRequest, Repository, Identity, Reviewer } from "./model";
 
 export class PullRequestViewModel {
     constructor(public pullRequest: PullRequest, public repository: Repository, currentUser: Identity) {
