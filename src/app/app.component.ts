@@ -1,23 +1,22 @@
 import { Component, OnInit, Provider } from "@angular/core";
 
 import { PullRequest, Repository, Identity, Reviewer, TfsService, StorageService } from "./model";
-import { TfsStorageService } from "./tfsStorage.service";
 import { PullRequestViewModel } from "./pullRequestViewModel";
+import { TfsServiceProvider } from "./tfsService.provider";
+import { StorageServiceProvider } from "./storageService.provider";
 
 import { IMultiSelectOption, IMultiSelectSettings, IMultiSelectTexts } from "./multiselect-dropdown";
-
-import { TfsServiceProvider } from "./tfsService.provider";
 
 @Component({
     selector: "my-app",
     templateUrl: "app.component.html",
-    providers: [new TfsServiceProvider(), TfsStorageService]
+    providers: [new TfsServiceProvider(), new StorageServiceProvider()]
 })
 export class AppComponent implements OnInit {
 
     private static repoFilterKey = "repoFilter";
 
-    constructor(private tfsService: TfsService, private storage: TfsStorageService) { }
+    constructor(private tfsService: TfsService, private storage: StorageService) { }
 
     public pullRequests: PullRequestViewModel[] = [];
 

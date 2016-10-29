@@ -15,7 +15,6 @@ export class TfsServiceProvider implements FactoryProvider{
   public provide = TfsService;
 
   public useFactory(http: Http, config: AppConfig): TfsService {
-    let service: TfsService;
     // If we aren't running as a VSS extension, use the restfultfsservice
     if(!VSS.getWebContext()) {
       return new RestfulTfsService(http, config);
