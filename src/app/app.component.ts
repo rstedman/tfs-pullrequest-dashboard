@@ -66,6 +66,15 @@ export class AppComponent implements OnInit {
                 return this.tfsService.getRepositories();
             })
             .then((repos: Repository[]) => {
+                
+                repos = repos.sort((a,b) => {
+                    if(a.name.toLowerCase() > b.name.toLowerCase())
+                        return 1;
+                    if(a.name.toLowerCase() < b.name.toLowerCase())
+                        return -1;
+                    return 0;
+
+                });
 
                 this.repositories = repos;
 
