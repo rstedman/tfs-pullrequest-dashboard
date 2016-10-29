@@ -7,11 +7,7 @@ import { TfsStorageService } from "./tfsStorage.service"
 
 /** factory provider for the tfsservice, which switches the backend provider based on if it's using tfs online,
     an on-prem service **/
-@Injectable()
-export class StorageServiceProvider implements FactoryProvider{
-
-  constructor() {}
-
+export class StorageServiceProvider implements FactoryProvider {
   public provide = StorageService;
 
   public useFactory(): StorageService {

@@ -15,7 +15,7 @@ var tsProject = ts.createProject('tsconfig.json');
 
 var paths = {
     buildFiles: ['./gulpfile.js', './package.json', './typings.json', './tsconfig.json', './system.config.js'],
-    static: ['src/**/*', '!**/*.ts', '!**/*.js'],
+    static: ['src/**/*', '!**/*.ts', '!**/*.js', '!src/app/**/*.html'],
     compiledFiles: ['src/**/*.ts', 'typings/index.d.ts', 'src/**/*.js'],
     vendor_js: ['node_modules/zone.js/dist/zone.js','node_modules/reflect-metadata/Reflect.js', 'node_modules/systemjs/dist/system.src.js', 'node_modules/es6-shim/es6-shim.js', 'node_modules/vss-web-extension-sdk/lib/VSS.SDK.js'],
     buildOut: 'build/target'

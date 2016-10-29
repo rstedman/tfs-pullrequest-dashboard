@@ -8,10 +8,7 @@ import { AppConfig, TfsService } from './model';
 /** factory provider for the tfsservice, which switches the backend provider based on if it's using tfs online,
     an on-prem service **/
 @Injectable()
-export class TfsServiceProvider implements FactoryProvider{
-
-  constructor() {}
-
+export class TfsServiceProvider implements FactoryProvider {
   public provide = TfsService;
 
   public useFactory(http: Http, config: AppConfig): TfsService {

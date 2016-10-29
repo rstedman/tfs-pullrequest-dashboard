@@ -13,7 +13,6 @@ export class RestfulTfsService extends TfsService {
         this.baseUri = config.apiEndpoint;
     }
 
-
     private USER_HEADER_NAME: string  = "x-vss-userdata";
 
     private baseUri: string;

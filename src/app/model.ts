@@ -117,9 +117,7 @@ export enum Vote {
 
 export class AppConfig {
     public devMode: boolean = false;
-    public onPrem: boolean = true;
     public apiEndpoint: string = "";
-    public user: Identity = null;
 }
 
 export abstract class TfsService {
