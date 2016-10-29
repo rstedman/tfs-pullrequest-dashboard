@@ -20,8 +20,8 @@ export class PullRequestViewModel {
         this.createdByImageUrl = pullRequest.createdBy.imageUrl;
         this.createdBy = pullRequest.createdBy.displayName;
         this.repositoryName = repository.name;
-        this.sourceRefName = pullRequest.sourceRefName;
-        this.targetRefName = pullRequest.targetRefName;
+        this.sourceRefName = pullRequest.sourceRefName.replace("refs/heads/", "");
+        this.targetRefName = pullRequest.targetRefName.replace("refs/heads/", "");
         this.mergeStatus = pullRequest.mergeStatus;
         this.reviewers = pullRequest.reviewers;
     }
@@ -49,5 +49,4 @@ export class PullRequestViewModel {
     public mergeStatus: string;
 
     public reviewers: Reviewer[];
-
 }

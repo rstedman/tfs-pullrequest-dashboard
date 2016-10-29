@@ -5,8 +5,8 @@ import "rxjs/Rx";
 import {Repository, Identity, PullRequest, Reviewer, AppConfig, TfsService} from "./model";
 
 @Injectable()
-/** Interacts with TFS APis for an on-prem installation **/
-export class OnPremTfsService extends TfsService {
+/** Interacts with TFS REST APis.  Meant for use when not running in the context of a TFS extension (ie. development) **/
+export class RestfulTfsService extends TfsService {
     constructor(private http: Http, config: AppConfig) {
         super();
 

@@ -15,15 +15,15 @@ interface TfsClients {
 }
 
 /**
- ** Uses the TFS GitHttpClient if running in tfs online.
- ** Need to use the TFS client as it's not possible to interact with the apis directly due to CORS restrictions.
+ ** TfsService implementation which uses the VSS extension apis for fetching data
  **/
 @Injectable()
-export class OnlineTfsService extends TfsService {
+export class ExtensionsApiTfsService extends TfsService {
 
     private getClientsPromise: Promise<TfsClients>;
+    private isOnline: boolean;
 
-    constructor(private config: AppConfig) {
+    constructor() {
         super();
 
         this.getClientsPromise = new Promise<TfsClients>((resolve,reject) => {
@@ -34,22 +34,30 @@ export class OnlineTfsService extends TfsService {
                 });
             })
         });
+
+        this.isOnline = (VSS.getWebContext().host.authority.indexOf("visualstudio.com") > 0);
     }
 
     public getCurrentUser(): IPromise<Identity> {
         let context = VSS.getWebContext();
         let user: Identity = {
-                Id: context.user.id,
-                DisplayName: context.user.name,
-                UniqueName: context.user.uniqueName,
-                Descriptor: {
-                    IdentityType: "user",
-                    Identifier: context.user.id
-                },
-                ImageUrl: null,
-                Members: [],
-                MembersOf: []
-            };
+            Id: context.user.id,
+            DisplayName: context.user.name,
+            UniqueName: context.user.uniqueName,
+            Descriptor: {
+                IdentityType: "user",
+                Identifier: context.user.id
+            },
+            ImageUrl: null,
+            Members: [],
+            MembersOf: []
+        };
+        // The identity apis aren't available in TFS online, only for on-prem versions.  If this is running as an extension in
+        // visual studio online, we aren't able to return any group membership information for the current user.
+        if(this.isOnline) {
+            return new Promise<Identity>((resolve, reject) => resolve(user));
+        }
+
         let identityClient: any = null;
         return this.getClientsPromise
             .then(clients => {
