@@ -7,7 +7,10 @@
       <a href="{{pullRequest.remoteUrl}}">{{pullRequest.title}}</a>
     </div>
     <div>
-      by {{pullRequest.createdBy}}, on <span class="repo">{{pullRequest.repositoryName}}</span> from <i class="fa fa-code-fork"></i> {{pullRequest.sourceRefName}} to <i class="fa fa-code-fork"></i> {{pullRequest.targetRefName}}
+      <span class="repo">{{pullRequest.repositoryName}}</span>, from <i class="fa fa-code-fork"></i> {{pullRequest.sourceRefName}} to <i class="fa fa-code-fork"></i> {{pullRequest.targetRefName}}
+    </div>
+    <div>
+      by {{pullRequest.createdBy}}, at {{pullRequest.createdDate | date: 'dd/MM/yyyy hh:mm'}}
     </div>
     <div *ngIf="pullRequest.mergeStatus==='conflicts'">
       <i class="fa fa-exclamation-circle vote rejected"></i> Merge Conflicts

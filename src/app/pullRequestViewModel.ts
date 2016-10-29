@@ -19,6 +19,7 @@ export class PullRequestViewModel {
         this.title = pullRequest.title;
         this.createdByImageUrl = pullRequest.createdBy.imageUrl;
         this.createdBy = pullRequest.createdBy.displayName;
+        this.createdDate = pullRequest.creationDate;
         this.repositoryName = repository.name;
         this.sourceRefName = pullRequest.sourceRefName.replace("refs/heads/", "");
         this.targetRefName = pullRequest.targetRefName.replace("refs/heads/", "");
@@ -39,6 +40,8 @@ export class PullRequestViewModel {
     public createdByImageUrl: string;
 
     public createdBy: string;
+
+    public createdDate: Date;
 
     public repositoryName: string;
 
