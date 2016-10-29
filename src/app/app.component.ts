@@ -17,7 +17,7 @@ export class AppComponent implements OnInit {
 
     private static repoFilterKey = "repoFilter";
 
-    constructor(private tfsService: TfsService, private storage: StorageService) { }
+    constructor(private tfsService: TfsService, private storage: TfsStorageService) { }
 
     public pullRequests: PullRequestViewModel[] = [];
 

@@ -15,11 +15,11 @@ export class TfsStorageService extends StorageService {
     
     getValue(key: string): IPromise<string> {
         return this.storageServicePromise
-                   .then(service => service.getValue<string>(key));
+                   .then(service => service.getValue<string>(key, {scopeType: "User", defaultValue: null}));
     }
 
     setValue(key: string, value: string): IPromise<string> {
         return this.storageServicePromise
-                   .then(service => service.setValue(key, value));
+                   .then(service => service.setValue(key, value, {scopeType: "User"}));
     }
 }

@@ -6,7 +6,8 @@ export class PullRequestViewModel {
 
         this.requestedByMe = pullRequest.createdBy.id === currentUser.Id;
 
-        for (let reviewer of pullRequest.reviewers) {
+        let reviewers = pullRequest.reviewers || [];
+        for (let reviewer of reviewers) {
             if (!this.assignedToMe)
                 this.assignedToMe = reviewer.id === currentUser.Id;
             for (let team of currentUser.MembersOf) {
