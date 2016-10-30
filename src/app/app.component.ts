@@ -57,47 +57,38 @@ export class AppComponent implements OnInit {
             .then(() => this.refresh());
     }
 
-    refresh() {
+    async refresh() {
+        let serializedFilter = await this.storage.getValue(AppComponent.repoFilterKey);
+        this.currentUser = await this.tfsService.getCurrentUser();
+        let repos = await this.tfsService.getRepositories();
+        this.repositories = repos.sort((a,b) => {
+            if(a.name.toLowerCase() > b.name.toLowerCase())
+                return 1;
+            if(a.name.toLowerCase() < b.name.toLowerCase())
+                return -1;
+            return 0;
+        });
+
         this.pullRequests = [];
+        for(let i=0; i < this.repositories.length; i++) {
+            let repo = this.repositories[i];
 
-        this.tfsService.getCurrentUser()
-            .then((x) => {
-                this.currentUser = x;
-                return this.tfsService.getRepositories();
-            })
-            .then((repos: Repository[]) => {
-                
-                repos = repos.sort((a,b) => {
-                    if(a.name.toLowerCase() > b.name.toLowerCase())
-                        return 1;
-                    if(a.name.toLowerCase() < b.name.toLowerCase())
-                        return -1;
-                    return 0;
-
-                });
-
-                this.repositories = repos;
-
-                for (let i=0; i < repos.length; i++) {
-                    let repo = repos[i];
-
-                    this.repoOptions.push({
-                        id: i,
-                        name: repo.name
-                    });
-
-                    if (this.filteredRepoIds.indexOf(repo.id) < 0) {
-                        this.unfilteredRepoSelections.push(i);
-                    }
-
-                    this.tfsService.getPullRequests(repo)
-                        .then(prs => {
-                            for (let pr of prs) {
-                                this.pullRequests.push(new PullRequestViewModel(pr, repo, this.currentUser));
-                            }
-                        });
-                }
+            this.repoOptions.push({
+                id: i,
+                name: repo.name
             });
+
+            if (this.filteredRepoIds.indexOf(repo.id) < 0) {
+                this.unfilteredRepoSelections.push(i);
+            }
+            // use continuation instead of await here, as we don't want to block fetching of prs from other repos
+            this.tfsService.getPullRequests(repo)
+                .then(prs => {
+                    for (let pr of prs) {
+                        this.pullRequests.push(new PullRequestViewModel(pr, repo, this.currentUser));
+                    }
+                });
+        }
     }
 
     public onFilteredSelectionsChanged(unfiltered: number[]) {
