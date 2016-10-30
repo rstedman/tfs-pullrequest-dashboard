@@ -4,7 +4,7 @@
     'app':                        './build/compile',
     '@angular':                   './node_modules/@angular',
     'rxjs':                       './node_modules/rxjs',
-    'typescript':                 './node_modules/typescript/lib/',
+    'typescript':                 './node_modules/typescript/',
     'ts':                         './node_modules/plugin-typescript/lib/'
   };
   // packages tells the System loader how to load when no filename and/or no extension
@@ -13,9 +13,9 @@
     'rxjs':                       { defaultExtension: 'js' },
     'ts': { 'main': 'plugin.js'},
     "typescript": {
-      "main": "typescript.js",
+      "main": "lib/typescript.js",
       "meta": {
-        "typescript.js": {
+        "lib/typescript.js": {
           "exports": "ts"
         }
       }
@@ -48,14 +48,18 @@
     baseURL: './build/compile',
     transpiler: 'ts',
     typescriptOptions: {
-      target: 'es5',
-      soureMap: true,
-      inlineSourceMap: true,
-      resolveTypings: true,
-      emitDecoratorMetadata: true,
-      experimentalDecorators: true,
-      noImplicitAny: false,
-      module: 'system'
+      typeCheck: 'strict',
+      tsconfig: true,
+      typings: {
+        "@angular/common": "index.d.ts",
+        "@angular/compiler": "index.d.ts",
+        "@angular/core": "index.d.ts",
+        "@angular/http": "index.d.ts",
+        "@angular/forms": "index.d.ts",
+        "@angular/platform-browser": "index.d.ts",
+        "@angular/platform-browser-dynamic": "index.d.ts",
+        "rxjs": "Rx.d.ts"
+      },
     },
     map: map,
     packages: packages,

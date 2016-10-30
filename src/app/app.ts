@@ -1,3 +1,9 @@
+/* note - this isn't the proper relative path for this file in source, it's actually the relative */
+/*         path when the file is in a temp build dir.  This is a hacky workaround to get ts type checking to */
+/*         work during builds */
+
+/// <reference path="../../../node_modules/vss-web-extension-sdk/typings/vss.d.ts" />
+
 import { platformBrowserDynamic  } from "@angular/platform-browser-dynamic";
 import { AppModule, AppConfigSettings } from "./app.module";
 import { enableProdMode } from "@angular/core";
@@ -14,7 +20,6 @@ if (AppConfigSettings.devMode === false) {
         usePlatformStyles: false,
         explicitNotifyLoaded: false
     });
-
     // init app in the require callback so that it's only run when the VSS initialization has completed,
     VSS.require([], () => {
         platformBrowserDynamic().bootstrapModule(AppModule);

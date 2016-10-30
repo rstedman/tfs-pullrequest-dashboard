@@ -1,11 +1,13 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "ES5",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "sourceMap": true,
     "noImplicitAny": false,
-    "module": "commonjs"
+    "module": "system",
+    "moduleResolution": "node",
+    "pretty": true
   },
   "filesGlob": [
     "src/**/*.ts",
