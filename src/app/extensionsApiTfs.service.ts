@@ -38,7 +38,7 @@ export class ExtensionsApiTfsService extends TfsService {
         this.isOnline = (VSS.getWebContext().host.authority.indexOf("visualstudio.com") > 0);
     }
 
-    public getCurrentUser(): IPromise<Identity> {
+    public getCurrentUser(): Promise<Identity> {
         let context = VSS.getWebContext();
         let user: Identity = {
             Id: context.user.id,
@@ -64,7 +64,7 @@ export class ExtensionsApiTfsService extends TfsService {
                 identityClient = clients.identityClient;
                 return this.getMembersOf(identityClient, user.Id)
                     .then((membersOf: Identity[]) => {
-                        let promises: IPromise<Identity[]>[] = [];
+                        let promises: Promise<Identity[]>[] = [];
                         for (let m of membersOf) {
                             user.MembersOf.push(m);
                             // now recurse once into the subgroups of each group the member is a member of, to include
@@ -82,20 +82,20 @@ export class ExtensionsApiTfsService extends TfsService {
                         return user;
                     })
                 });
-            
+
     }
 
-    private getMembersOf(identityClient: any, userId: string): IPromise<Identity[]> {
+    private getMembersOf(identityClient: any, userId: string): Promise<Identity[]> {
         // get the identities that the current user is a member of
         return identityClient.readMembersOf(userId)
                 .then((members: any[]) => {
-                    let promises: IPromise<Identity[]>[] = [];
+                    let promises: Promise<Identity[]>[] = [];
                     for(let memberId of members) {
 
                         // ignore any non-tfs identities
                         if (!memberId.startsWith("Microsoft.TeamFoundation.Identity"))
                             continue;
-                        
+
                         promises.push(identityClient.readIdentity(memberId));
                     }
                     return Promise.all<any[]>(promises);
@@ -121,7 +121,7 @@ export class ExtensionsApiTfsService extends TfsService {
                 });
     }
 
-    public getPullRequests(repo: Repository): IPromise<PullRequest[]> {
+    public getPullRequests(repo: Repository): Promise<PullRequest[]> {
         return this.getClientsPromise
             .then(clients => clients.gitClient.getPullRequests(repo.id, {includeLinks: true, creatorId: null, repositoryId: repo.id, reviewerId: null, sourceRefName: null, status: 1, targetRefName: null})
                 .then(prs => {
@@ -164,7 +164,7 @@ export class ExtensionsApiTfsService extends TfsService {
         return "ok";
     }
 
-    public getRepositories(): IPromise<Repository[]> {
+    public getRepositories(): Promise<Repository[]> {
         return this.getClientsPromise
             .then(clients => clients.gitClient.getRepositories(VSS.getWebContext().project.name, true)
                 .then(repos => {

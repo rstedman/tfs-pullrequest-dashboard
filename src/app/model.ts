@@ -121,12 +121,12 @@ export class AppConfig {
 }
 
 export abstract class TfsService {
-    abstract getCurrentUser(): IPromise<Identity>;
-    abstract getPullRequests(repo: Repository): IPromise<PullRequest[]>;
-    abstract getRepositories(): IPromise<Repository[]>;
+    abstract getCurrentUser(): Promise<Identity>;
+    abstract getPullRequests(repo: Repository): Promise<PullRequest[]>;
+    abstract getRepositories(): Promise<Repository[]>;
 }
 
 export abstract class StorageService {
-    abstract getValue(key: string): IPromise<string>;
-    abstract setValue(key: string, value: string): IPromise<string>;
+    abstract getValue(key: string): Promise<string>;
+    abstract setValue(key: string, value: string): Promise<string>;
 }

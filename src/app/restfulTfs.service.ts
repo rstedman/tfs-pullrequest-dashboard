@@ -17,7 +17,7 @@ export class RestfulTfsService extends TfsService {
 
     private baseUri: string;
 
-    public getCurrentUser(): IPromise<Identity> {
+    public getCurrentUser(): Promise<Identity> {
         // just do a basic query to tfs to be able to look at response headers
         let user: Identity;
         let userId: string;
@@ -39,7 +39,7 @@ export class RestfulTfsService extends TfsService {
                 return this.getMembersOf(userId);
             })
             .then(membersOf => {
-                let promises: IPromise<Identity[]>[] = [];
+                let promises: Promise<Identity[]>[] = [];
                 for (let m of membersOf) {
                     user.MembersOf.push(m);
                     // now recurse once into the subgroups of each group the member is a member of, to include
@@ -59,7 +59,7 @@ export class RestfulTfsService extends TfsService {
             .catch(this.handleError);
     }
 
-    private getMembersOf(userId: string): IPromise<Identity[]> {
+    private getMembersOf(userId: string): Promise<Identity[]> {
         // get the identities that the current user is a member of
         return this.http.get(`${this.baseUri}/_apis/Identities/${userId}/membersOf`, {withCredentials: true})
             .toPromise()
@@ -86,7 +86,7 @@ export class RestfulTfsService extends TfsService {
             });
     }
 
-    public getPullRequests(repo: Repository): IPromise<PullRequest[]> {
+    public getPullRequests(repo: Repository): Promise<PullRequest[]> {
         let url = `${repo.url}/pullRequests?status=active`;
         return this.http.get(url, {withCredentials: true})
             .toPromise()
@@ -94,7 +94,7 @@ export class RestfulTfsService extends TfsService {
             .catch(this.handleError);
     }
 
-    public getRepositories(): IPromise<Repository[]> {
+    public getRepositories(): Promise<Repository[]> {
         return this.http.get(`${this.baseUri}/_apis/git/repositories`, {withCredentials: true})
             .toPromise()
             .then(this.extractData)
