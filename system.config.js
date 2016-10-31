@@ -48,7 +48,7 @@
     baseURL: './build/compile',
     transpiler: 'ts',
     typescriptOptions: {
-      typeCheck: 'strict',
+      //typeCheck: 'strict',
       tsconfig: true,
       typings: {
         "@angular/common": "index.d.ts",

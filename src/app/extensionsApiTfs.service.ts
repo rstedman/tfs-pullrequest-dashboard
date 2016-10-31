@@ -38,7 +38,7 @@ export class ExtensionsApiTfsService extends TfsService {
         this.isOnline = (VSS.getWebContext().host.authority.indexOf("visualstudio.com") > 0);
     }
 
-    public getCurrentUser(): Promise<Identity> {
+    public async getCurrentUser(): Promise<Identity> {
         let context = VSS.getWebContext();
         let user: Identity = {
             Id: context.user.id,
@@ -55,10 +55,10 @@ export class ExtensionsApiTfsService extends TfsService {
         // The identity apis aren't available in TFS online, only for on-prem versions.  If this is running as an extension in
         // visual studio online, we aren't able to return any group membership information for the current user.
         if(this.isOnline) {
-            return new Promise<Identity>((resolve, reject) => resolve(user));
+            return user;
         }
 
-        let identityClient: any = null;
+        let identityClient = (await this.getClientsPromise).identityClient;
         return this.getClientsPromise
             .then(clients => {
                 identityClient = clients.identityClient;
@@ -85,8 +85,9 @@ export class ExtensionsApiTfsService extends TfsService {
 
     }
 
-    private getMembersOf(identityClient: any, userId: string): Promise<Identity[]> {
+    private async getMembersOf(identityClient: any, userId: string): Promise<Identity[]> {
         // get the identities that the current user is a member of
+        let members: any[] = await identityClient.readMembersOf(userId);
         return identityClient.readMembersOf(userId)
                 .then((members: any[]) => {
                     let promises: Promise<Identity[]>[] = [];
