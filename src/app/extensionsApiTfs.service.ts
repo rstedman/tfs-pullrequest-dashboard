@@ -59,102 +59,84 @@ export class ExtensionsApiTfsService extends TfsService {
         }
 
         let identityClient = (await this.getClientsPromise).identityClient;
-        return this.getClientsPromise
-            .then(clients => {
-                identityClient = clients.identityClient;
-                return this.getMembersOf(identityClient, user.Id)
-                    .then((membersOf: Identity[]) => {
-                        let promises: Promise<Identity[]>[] = [];
-                        for (let m of membersOf) {
-                            user.MembersOf.push(m);
-                            // now recurse once into the subgroups of each group the member is a member of, to include
-                            // virtual groups made up of several groups
-                            promises.push(this.getMembersOf(identityClient, m.Id));
-                        }
-                        return Promise.all<Identity[]>(promises);
-                    })
-                    .then((membersOf: Identity[][]) => {
-                        for (let members of membersOf) {
-                            for (let i of members) {
-                                user.MembersOf.push(i);
-                            }
-                        }
-                        return user;
-                    })
-                });
-
+        let membersOf = await this.getMembersOf(identityClient, user.Id);
+        let promises: Promise<Identity[]>[] = [];
+        for (let m of membersOf) {
+            user.MembersOf.push(m);
+            // now recurse once into the subgroups of each group the member is a member of, to include
+            // virtual groups made up of several groups
+            promises.push(this.getMembersOf(identityClient, m.Id));
+        }
+        let subMembersOf = await Promise.all<Identity[]>(promises);
+        for (let members of subMembersOf) {
+            for (let i of members) {
+                user.MembersOf.push(i);
+            }
+        }
     }
 
     private async getMembersOf(identityClient: any, userId: string): Promise<Identity[]> {
         // get the identities that the current user is a member of
         let members: any[] = await identityClient.readMembersOf(userId);
-        return identityClient.readMembersOf(userId)
-                .then((members: any[]) => {
-                    let promises: Promise<Identity[]>[] = [];
-                    for(let memberId of members) {
+        let promises: Promise<Identity[]>[] = [];
+        for(let memberId of members) {
+            // ignore any non-tfs identities
+            if (!memberId.startsWith("Microsoft.TeamFoundation.Identity"))
+                continue;
 
-                        // ignore any non-tfs identities
-                        if (!memberId.startsWith("Microsoft.TeamFoundation.Identity"))
-                            continue;
-
-                        promises.push(identityClient.readIdentity(memberId));
-                    }
-                    return Promise.all<any[]>(promises);
-                })
-                .then((identities: any[]) => {
-                    let result :Identity[] = [];
-                    for(let identity of identities) {
-                        let model: Identity = {
-                            Id: identity.id,
-                            DisplayName: identity.customDisplayName,
-                            UniqueName: identity.providerDisplayName,
-                            Descriptor: {
-                                IdentityType: "user",
-                                Identifier: identity.id
-                            },
-                            ImageUrl: null,
-                            Members: [],
-                            MembersOf: []
-                        };
-                        result.push(model)
-                    }
-                    return result;
-                });
+            promises.push(identityClient.readIdentity(memberId));
+        }
+        let identities: any[] = await Promise.all(promises);
+        let result: Identity[] = [];
+        for(let identity of identities) {
+            let model: Identity = {
+                Id: identity.id,
+                DisplayName: identity.customDisplayName,
+                UniqueName: identity.providerDisplayName,
+                Descriptor: {
+                    IdentityType: "user",
+                    Identifier: identity.id
+                },
+                ImageUrl: null,
+                Members: [],
+                MembersOf: []
+            };
+            result.push(model)
+        }
+        return result;
     }
 
-    public getPullRequests(repo: Repository): Promise<PullRequest[]> {
-        return this.getClientsPromise
-            .then(clients => clients.gitClient.getPullRequests(repo.id, {includeLinks: true, creatorId: null, repositoryId: repo.id, reviewerId: null, sourceRefName: null, status: 1, targetRefName: null})
-                .then(prs => {
-                    let res = new Array<PullRequest>();
-                    for(let pr of prs) {
-                        res.push({
-                            pullRequestId: pr.pullRequestId,
-                            createdBy: {
-                                displayName: pr.createdBy.displayName,
-                                id: pr.createdBy.id,
-                                imageUrl: pr.createdBy.imageUrl,
-                                uniqueName: pr.createdBy.uniqueName
-                            },
-                            creationDate: pr.creationDate,
-                            repository: {
-                                id: pr.repository.id,
-                                name: pr.repository.name,
-                                remoteUrl: pr.repository.remoteUrl,
-                                url: pr.repository.url
-                            },
-                            description: pr.description,
-                            mergeId: pr.mergeId,
-                            mergeStatus: this.mergeStatusToString(pr.mergeStatus),
-                            reviewers: pr.reviewers,
-                            sourceRefName: pr.sourceRefName,
-                            status: pr.status,
-                            targetRefName: pr.targetRefName,
-                            title: pr.title
-                        })
-                    }
-                    return res;
-                }));
+    public async getPullRequests(repo: Repository): Promise<PullRequest[]> {
+        let client = (await this.getClientsPromise).gitClient;
+        let prs = await client.getPullRequests(repo.id, {includeLinks: true, creatorId: null, repositoryId: repo.id, reviewerId: null, sourceRefName: null, status: 1, targetRefName: null});
+        let result: PullRequest[] = [];
+        for(let pr of prs) {
+            result.push({
+                pullRequestId: pr.pullRequestId,
+                createdBy: {
+                    displayName: pr.createdBy.displayName,
+                    id: pr.createdBy.id,
+                    imageUrl: pr.createdBy.imageUrl,
+                    uniqueName: pr.createdBy.uniqueName
+                },
+                creationDate: pr.creationDate,
+                repository: {
+                    id: pr.repository.id,
+                    name: pr.repository.name,
+                    remoteUrl: pr.repository.remoteUrl,
+                    url: pr.repository.url
+                },
+                description: pr.description,
+                mergeId: pr.mergeId,
+                mergeStatus: this.mergeStatusToString(pr.mergeStatus),
+                reviewers: pr.reviewers,
+                sourceRefName: pr.sourceRefName,
+                status: pr.status,
+                targetRefName: pr.targetRefName,
+                title: pr.title
+            });
+        }
+        return result;
     }
 
     private mergeStatusToString(status: number): string {
@@ -165,15 +147,8 @@ export class ExtensionsApiTfsService extends TfsService {
         return "ok";
     }
 
-    public getRepositories(): Promise<Repository[]> {
-        return this.getClientsPromise
-            .then(clients => clients.gitClient.getRepositories(VSS.getWebContext().project.name, true)
-                .then(repos => {
-                    let res = new Array<Repository>();
-                    for(let repo of repos) {
-                        res.push(repo);
-                    }
-                    return res;
-                }));
+    public async getRepositories(): Promise<Repository[]> {
+        let client = (await this.getClientsPromise).gitClient;
+        return await client.getRepositories(VSS.getWebContext().project.name, true);
     }
 }
