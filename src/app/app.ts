@@ -2,7 +2,7 @@
 /*         path when the file is in a temp build dir.  This is a hacky workaround to get ts type checking to */
 /*         work during builds */
 
-/// <reference path="../../../node_modules/vss-web-extension-sdk/typings/vss.d.ts" />
+/// <reference path="../../../typings/vss-interfaces.d.ts" />
 
 import { platformBrowserDynamic  } from "@angular/platform-browser-dynamic";
 import { AppModule, AppConfigSettings } from "./app.module";
