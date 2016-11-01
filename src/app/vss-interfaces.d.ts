@@ -8,11 +8,6 @@
 // Project: https://www.visualstudio.com/integrate/extensions/overview
 // Definitions by: Microsoft <vsointegration@microsoft.com>
 
-   /// <reference path='./knockout/knockout.d.ts' />
-   /// <reference path='./jquery/jquery.d.ts' />
-   /// <reference path='./q/q.d.ts' />
-   /// <reference path='./requirejs/require.d.ts' />
-
 //----------------------------------------------------------
 // Common interfaces specific to WebPlatform area
 //----------------------------------------------------------
@@ -46,44 +41,6 @@ interface IVssAjaxOptions {
      * Current command for activity logging.
      */
     command?: string;
-}
-
-/**
-* Event listener for VSS ajax events. Gets notified before and after each request
-*/
-interface IVssAjaxEventListener {
-
-    /**
-    * Method invoked before a request is sent
-    *
-    * @param requestId A unique id that can be used to track this particular request (id is unique among all clients)
-    * @param requestUrl Url of the request that is about to be issued
-    * @param ajaxOptions Ajax settings/options for the request
-    * @param vssRequestOptions Additional VSS-specific options supplied in the request
-    */
-    beforeRequest?: (requestId: number, requestUrl: string, ajaxOptions: JQueryAjaxSettings, vssRequestOptions: IVssAjaxOptions) => void;
-
-    /**
-    * Method invoked when a response has been received
-    *
-    * @param requestId A unique id that can be used to track this particular request (id is unique among all clients)
-    * @param data The response data
-    * @param textStatus A string indicating status of the request
-    * @param jqXHR: The jQuery XHR object for the request
-    * @param vssRequestOptions Additional VSS-specific options supplied in the request
-    */
-    responseReceived?: (requestId: number, data: any, textStatus: string, jqXHR: JQueryXHR, vssRequestOptions: IVssAjaxOptions) => void;
-
-    /**
-    * Method invoked after a response has been received and its callback/promise has been invoked
-    *
-    * @param requestId A unique id that can be used to track this particular request (id is unique among all clients)
-    * @param data The response data
-    * @param textStatus A string indicating status of the request
-    * @param jqXHR: The jQuery XHR object for the request
-    * @param vssRequestOptions Additional VSS-specific options supplied in the request
-    */
-    postResponseCallback?: (requestId: number, data: any, textStatus: string, jqXHR: JQueryXHR, vssRequestOptions: IVssAjaxOptions) => void;
 }
 
 /**
@@ -231,8 +188,6 @@ interface IKeyValuePair<TKey, TValue> {
     value: TValue;
 }
 
-declare var require: Require;
-declare var define: RequireDefine;
 //----------------------------------------------------------
 // Common interfaces specific to WebPlatform area
 //----------------------------------------------------------
@@ -2570,133 +2525,6 @@ interface WebPageDataProviderPageSource {
     url: string;
 }
 
-declare module XDM {
-    interface IDeferred<T> {
-        resolve: (result: T) => void;
-        reject: (reason: any) => void;
-        promise: IPromise<T>;
-    }
-    /**
-    * Create a new deferred object
-    */
-    function createDeferred<T>(): IDeferred<T>;
-    /**
-    * Settings related to the serialization of data across iframe boundaries.
-    */
-    interface ISerializationSettings {
-        /**
-        * By default, properties that begin with an underscore are not serialized across
-        * the iframe boundary. Set this option to true to serialize such properties.
-        */
-        includeUnderscoreProperties: boolean;
-    }
-    /**
-     * Catalog of objects exposed for XDM
-     */
-    class XDMObjectRegistry implements IXDMObjectRegistry {
-        private _registeredObjects;
-        /**
-        * Register an object (instance or factory method) exposed by this frame to callers in a remote frame
-        *
-        * @param instanceId unique id of the registered object
-        * @param instance Either: (1) an object instance, or (2) a function that takes optional context data and returns an object instance.
-        */
-        register(instanceId: string, instance: Object | {
-            (contextData?: any): Object;
-        }): void;
-        /**
-        * Get an instance of an object registered with the given id
-        *
-        * @param instanceId unique id of the registered object
-        * @param contextData Optional context data to pass to a registered object's factory method
-        */
-        getInstance<T>(instanceId: string, contextData?: Object): T;
-    }
-    /**
-    * The registry of global XDM handlers
-    */
-    var globalObjectRegistry: XDMObjectRegistry;
-    /**
-     * Represents a channel of communication between frames\document
-     * Stays "alive" across multiple funtion\method calls
-     */
-    class XDMChannel implements IXDMChannel {
-        private static _nextChannelId;
-        private static MAX_XDM_DEPTH;
-        private static WINDOW_TYPES_TO_SKIP_SERIALIZATION;
-        private static JQUERY_TYPES_TO_SKIP_SERIALIZATION;
-        private _nextMessageId;
-        private _deferreds;
-        private _postToWindow;
-        private _targetOrigin;
-        private _handshakeToken;
-        private _channelObjectRegistry;
-        private _channelId;
-        private _nextProxyFunctionId;
-        private _proxyFunctions;
-        constructor(postToWindow: Window, targetOrigin?: string);
-        /**
-        * Get the object registry to handle messages from this specific channel.
-        * Upon receiving a message, this channel registry will be used first, then
-        * the global registry will be used if no handler is found here.
-        */
-        getObjectRegistry(): IXDMObjectRegistry;
-        /**
-        * Invoke a method via RPC. Lookup the registered object on the remote end of the channel and invoke the specified method.
-        *
-        * @param method Name of the method to invoke
-        * @param instanceId unique id of the registered object
-        * @param params Arguments to the method to invoke
-        * @param instanceContextData Optional context data to pass to a registered object's factory method
-        * @param serializationSettings Optional serialization settings
-        */
-        invokeRemoteMethod<T>(methodName: string, instanceId: string, params?: any[], instanceContextData?: Object, serializationSettings?: ISerializationSettings): IPromise<T>;
-        /**
-        * Get a proxied object that represents the object registered with the given instance id on the remote side of this channel.
-        *
-        * @param instanceId unique id of the registered object
-        * @param contextData Optional context data to pass to a registered object's factory method
-        */
-        getRemoteObjectProxy<T>(instanceId: string, contextData?: Object): IPromise<T>;
-        private invokeMethod(registeredInstance, rpcMessage);
-        private getRegisteredObject(instanceId, instanceContext?);
-        /**
-        * Handle a received message on this channel. Dispatch to the appropriate object found via object registry
-        *
-        * @param data Message data
-        * @param origin Origin of the frame that sent the message
-        * @return True if the message was handled by this channel. Otherwise false.
-        */
-        onMessage(data: any, origin: string): boolean;
-        owns(source: Window, origin: string, data: any): boolean;
-        error(data: any, errorObj: any): void;
-        private _error(messageObj, errorObj, handshakeToken);
-        private _success(messageObj, result, handshakeToken);
-        private _sendRpcMessage(message);
-        private _shouldSkipSerialization(obj);
-        private _customSerializeObject(obj, settings, parentObjects?, nextCircularRefId?, depth?);
-        private _registerProxyFunction(func, context);
-        private _customDeserializeObject(obj, circularRefs?);
-    }
-    /**
-    * Registry of XDM channels kept per target frame/window
-    */
-    class XDMChannelManager implements IXDMChannelManager {
-        private static _default;
-        private _channels;
-        constructor();
-        static get(): XDMChannelManager;
-        /**
-        * Add an XDM channel for the given target window/iframe
-        *
-        * @param window Target iframe window to communicate with
-        * @param targetOrigin Url of the target iframe (if known)
-        */
-        addChannel(window: Window, targetOrigin?: string): IXDMChannel;
-        private _handleMessageReceived(event);
-        private _subscribe(windowObj);
-    }
-}
 declare module VSS {
     var VssSDKVersion: number;
     var VssSDKRestVersion: string;

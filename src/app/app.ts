@@ -1,8 +1,4 @@
-/* note - this isn't the proper relative path for this file in source, it's actually the relative */
-/*         path when the file is in a temp build dir.  This is a hacky workaround to get ts type checking to */
-/*         work during builds */
-
-/// <reference path="../../../typings/vss-interfaces.d.ts" />
+/// <reference path="./vss-interfaces.d.ts" />
 
 import { platformBrowserDynamic  } from "@angular/platform-browser-dynamic";
 import { AppModule, AppConfigSettings } from "./app.module";
