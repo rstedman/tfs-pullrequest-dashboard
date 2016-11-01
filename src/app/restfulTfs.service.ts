@@ -60,16 +60,13 @@ export class RestfulTfsService extends TfsService {
     }
 
     private async getMembersOf(userId: string): Promise<Identity[]> {
-        console.log(`getMembersOf, userId=${userId}`);
         let response = await (this.http.get(`${this.baseUri}/_apis/Identities/${userId}/membersOf`, {
             withCredentials: true,
             headers: new Headers({"Accept": this.IDENTITIES_API_ACCEPT_HEADER})
         }).toPromise());
-        console.log(`response=${response}`);
         let promises: Promise<Response>[] = [];
         let result: Identity[] = [];
         let memberOfIds: string[] = this.extractData(response);
-        console.log(`readMembersOf complete.  count=${memberOfIds.length}`);
         for (let memberId of memberOfIds) {
             // ignore any non-tfs identities
             if (!memberId.startsWith("Microsoft.TeamFoundation.Identity"))
