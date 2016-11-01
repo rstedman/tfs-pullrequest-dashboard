@@ -11,12 +11,20 @@ import { AppConfig, TfsService } from './model';
 export class TfsServiceProvider implements FactoryProvider {
   public provide = TfsService;
 
+  // expected to be set before the app is bootstrapped, if running as an extension
+  public static gitClientFactory: GitClientFactory;
+
+  // expected to be set before the app is bootstrapped, if running as an extension
+  public static identityClientFactory: IdentitiesClientFactory;
+
   public useFactory(http: Http, config: AppConfig): TfsService {
     // If we aren't running as a VSS extension, use the restfultfsservice
     if(!VSS.getWebContext()) {
       return new RestfulTfsService(http, config);
     } else {
-      return new ExtensionsApiTfsService();
+      let gitClient = TfsServiceProvider.gitClientFactory.getClient();
+      let identitiesClient = TfsServiceProvider.identityClientFactory.getClient();
+      return new ExtensionsApiTfsService(gitClient, identitiesClient);
     }
   }
 

@@ -3,11 +3,13 @@
 import { platformBrowserDynamic  } from "@angular/platform-browser-dynamic";
 import { AppModule, AppConfigSettings } from "./app.module";
 import { enableProdMode } from "@angular/core";
+import { TfsServiceProvider } from "./tfsService.provider";
+import { StorageServiceProvider } from "./storageService.provider";
 
 //AppConfigSettings.devMode = true;
 //AppConfigSettings.apiEndpoint = "http://<host>:8080/tfs/DefaultCollection"; // change this to the endpoint of the tfs service that you wish to develop against
 
-if (AppConfigSettings.devMode === false) {
+if (!AppConfigSettings.devMode) {
 
     enableProdMode();
 
@@ -16,9 +18,15 @@ if (AppConfigSettings.devMode === false) {
         usePlatformStyles: false,
         explicitNotifyLoaded: false
     });
-    // init app in the require callback so that it's only run when the VSS initialization has completed,
-    VSS.require([], () => {
-        platformBrowserDynamic().bootstrapModule(AppModule);
+
+    VSS.require(["TFS/VersionControl/GitRestClient", "VSS/Identities/RestClient"], (gitFactory: GitClientFactory, identityFactory: IdentitiesClientFactory) => {
+        TfsServiceProvider.gitClientFactory = gitFactory;
+        TfsServiceProvider.identityClientFactory = identityFactory;
+        VSS.getService<IExtensionDataService>(VSS.ServiceIds.ExtensionData)
+                .then(service => {
+                    StorageServiceProvider.dataService = service;
+                    platformBrowserDynamic().bootstrapModule(AppModule);
+                });
     });
 } else {
     platformBrowserDynamic().bootstrapModule(AppModule);

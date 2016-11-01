@@ -10,12 +10,15 @@ import { TfsStorageService } from "./tfsStorage.service"
 export class StorageServiceProvider implements FactoryProvider {
   public provide = StorageService;
 
+  // expected to be set before the app is bootstrapped, if running as an extension
+  public static dataService: IExtensionDataService;
+
   public useFactory(zone: NgZone): StorageService {
     // If we aren't running as a VSS extension, use the LocalStorageService
     if(!VSS.getWebContext()) {
       return new LocalStorageService();
     } else {
-      return new TfsStorageService(zone);
+      return new TfsStorageService(StorageServiceProvider.dataService, zone);
     }
   }
 

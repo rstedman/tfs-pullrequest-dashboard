@@ -4,36 +4,16 @@ import "rxjs/Rx";
 
 import {AppConfig, TfsService, User} from "./model";
 
-// can't reference these types without them attempting to import as modules, which will fail since the VSS.SDK does module resolution in a non-standard way
-//import { GitHttpClient } from "TFS/VersionControl/GitRestClient";
-//import { PullRequestStatus, GitPullRequest, PullRequestAsyncStatus } from "TFS/VersionControl/Contracts";
-
-interface TfsClients {
-    gitClient: GitClient;
-
-    identityClient: IdentitiesClient;
-}
-
 /**
  ** TfsService implementation which uses the VSS extension apis for fetching data
  **/
 @Injectable()
 export class ExtensionsApiTfsService extends TfsService {
 
-    private getClientsPromise: Promise<TfsClients>;
     private isOnline: boolean;
 
-    constructor() {
+    constructor(private gitClient: GitClient, private identitiesClient: IdentitiesClient) {
         super();
-
-        this.getClientsPromise = new Promise<TfsClients>((resolve,reject) => {
-            VSS.require(["TFS/VersionControl/GitRestClient", "VSS/Identities/RestClient"], (TFS_Git_WebApi: GitClientFactory, TFS_Identity_WebApi: IdentitiesClientFactory) => {
-                resolve({
-                    gitClient: TFS_Git_WebApi.getClient(),
-                    identityClient: TFS_Identity_WebApi.getClient()
-                });
-            })
-        });
 
         this.isOnline = (VSS.getWebContext().host.authority.indexOf("visualstudio.com") > 0);
     }
@@ -52,14 +32,13 @@ export class ExtensionsApiTfsService extends TfsService {
             return user;
         }
 
-        let identityClient = (await this.getClientsPromise).identityClient;
-        let membersOf = await this.getMembersOf(identityClient, user.id);
+        let membersOf = await this.getMembersOf(user.id);
         let promises: Promise<Identity[]>[] = [];
         for (let m of membersOf) {
             user.memberOf.push(m);
             // now recurse once into the subgroups of each group the member is a member of, to include
             // virtual groups made up of several groups
-            promises.push(this.getMembersOf(identityClient, m.id));
+            promises.push(this.getMembersOf(m.id));
         }
         let subMembersOf = await Promise.all<Identity[]>(promises);
         for (let members of subMembersOf) {
@@ -70,29 +49,26 @@ export class ExtensionsApiTfsService extends TfsService {
         return user;
     }
 
-    private async getMembersOf(identityClient: IdentitiesClient, userId: string): Promise<Identity[]> {
+    private async getMembersOf(userId: string): Promise<Identity[]> {
         // get the identities that the current user is a member of
-        let members = await identityClient.readMembersOf(userId);
+        let members = await this.identitiesClient.readMembersOf(userId);
         let promises: Promise<Identity>[] = [];
         for(let memberId of members) {
             // ignore any non-tfs identities
             if (!memberId.startsWith("Microsoft.TeamFoundation.Identity"))
                 continue;
 
-            promises.push(identityClient.readIdentity(memberId));
+            promises.push(this.identitiesClient.readIdentity(memberId));
         }
         let identities = await Promise.all(promises);
         return identities;
     }
 
-    public async getPullRequests(repo: GitRepository): Promise<GitPullRequest[]> {
-        let client = (await this.getClientsPromise).gitClient;
-        let prs = await client.getPullRequests(repo.id, {includeLinks: true, creatorId: null, repositoryId: repo.id, reviewerId: null, sourceRefName: null, status: 1, targetRefName: null});
-        return prs;
+    public getPullRequests(repo: GitRepository): Promise<GitPullRequest[]> {
+        return this.gitClient.getPullRequests(repo.id, {includeLinks: true, creatorId: null, repositoryId: repo.id, reviewerId: null, sourceRefName: null, status: 1, targetRefName: null});
     }
 
-    public async getRepositories(): Promise<GitRepository[]> {
-        let client = (await this.getClientsPromise).gitClient;
-        return await client.getRepositories(VSS.getWebContext().project.name, true);
+    public getRepositories(): Promise<GitRepository[]> {
+        return this.gitClient.getRepositories(VSS.getWebContext().project.name, true);
     }
 }
