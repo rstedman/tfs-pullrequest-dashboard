@@ -12,13 +12,12 @@ export class LocalStorageService extends StorageService {
     }
 
     getValue(key: string): Promise<string> {
-        return new Promise<string>((resolve, reject) => resolve(localStorage.getItem(key)));
+        let value = localStorage.getItem(key);
+        return Promise.resolve(value);
     }
 
     setValue(key: string, value: string): Promise<string> {
-        return new Promise<string>((resolve, reject) => {
-            localStorage.setItem(key, value);
-            resolve(value);
-        });
+        localStorage.setItem(key, value);
+        return Promise.resolve(value);
     }
 }
