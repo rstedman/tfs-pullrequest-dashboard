@@ -1,6 +1,5 @@
 var gulp = require('gulp');
 var del = require('del');
-var ts = require('gulp-typescript');
 var sourcemaps = require('gulp-sourcemaps');
 var runSequence = require('run-sequence');
 var connect = require('gulp-connect');
@@ -10,8 +9,6 @@ var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
 var run = require('gulp-run');
 var embedTemplates = require('gulp-angular2-embed-templates');
-
-var tsProject = ts.createProject('tsconfig.json');
 
 var paths = {
     buildFiles: ['./gulpfile.js', './package.json', './typings.json', './tsconfig.json', './system.config.js'],
@@ -65,7 +62,7 @@ gulp.task('compile:copy', function() {
 });
 
 gulp.task('compile:embed', function () {
-    return gulp.src('./build/compile/**/*.ts') 
+    return gulp.src('./build/compile/**/*.ts')
                .pipe(embedTemplates({sourceType:'ts'}))
                .pipe(gulp.dest('./build/compile'));
 });
