@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core";
 
-import { PullRequest, Repository, Identity, Reviewer, Vote } from "./model";
+import { PullRequest, Repository, Reviewer, Vote } from "./model";
 import { PullRequestViewModel } from "./pullRequestViewModel";
 
 @Component({

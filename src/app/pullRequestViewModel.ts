@@ -1,18 +1,18 @@
-import { PullRequest, Repository, Identity, Reviewer } from "./model";
+import { PullRequest, Repository, User, Reviewer } from "./model";
 
 export class PullRequestViewModel {
-    constructor(public pullRequest: PullRequest, public repository: Repository, currentUser: Identity) {
+    constructor(public pullRequest: PullRequest, public repository: Repository, currentUser: User) {
         this.remoteUrl = `${repository.remoteUrl}/pullrequest/${pullRequest.pullRequestId}`;
 
-        this.requestedByMe = pullRequest.createdBy.id === currentUser.Id;
+        this.requestedByMe = pullRequest.createdBy.id === currentUser.id;
 
         let reviewers = pullRequest.reviewers || [];
         for (let reviewer of reviewers) {
             if (!this.assignedToMe)
-                this.assignedToMe = reviewer.id === currentUser.Id;
-            for (let team of currentUser.MembersOf) {
+                this.assignedToMe = reviewer.id === currentUser.id;
+            for (let team of currentUser.memberOf) {
                 if (!this.assignedToMyTeam)
-                    this.assignedToMyTeam = team.Id === reviewer.id;
+                    this.assignedToMyTeam = team.id === reviewer.id;
             }
         }
 

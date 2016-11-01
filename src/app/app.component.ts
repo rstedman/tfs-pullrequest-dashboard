@@ -1,6 +1,6 @@
 import { Component, OnInit, Provider } from "@angular/core";
 
-import { PullRequest, Repository, Identity, Reviewer, TfsService, StorageService } from "./model";
+import { PullRequest, Repository, User, Reviewer, TfsService, StorageService } from "./model";
 import { PullRequestViewModel } from "./pullRequestViewModel";
 import { TfsServiceProvider } from "./tfsService.provider";
 import { StorageServiceProvider } from "./storageService.provider";
@@ -22,7 +22,7 @@ export class AppComponent implements OnInit {
 
     public repositories: Repository[] = [];
 
-    public currentUser: Identity;
+    public currentUser: User;
 
     public filterSettings: IMultiSelectSettings = {
         enableSearch: true,

@@ -2,16 +2,16 @@ import {Injectable} from "@angular/core";
 import {Http, Response} from "@angular/http";
 import "rxjs/Rx";
 
-import {Repository, Identity, PullRequest, Reviewer, AppConfig, TfsService, Descriptor} from "./model";
+import {Repository, PullRequest, Reviewer, AppConfig, TfsService, User} from "./model";
 
 // can't reference these types without them attempting to import as modules, which will fail since the VSS.SDK does module resolution in a non-standard way
 //import { GitHttpClient } from "TFS/VersionControl/GitRestClient";
 //import { PullRequestStatus, GitPullRequest, PullRequestAsyncStatus } from "TFS/VersionControl/Contracts";
 
 interface TfsClients {
-    gitClient: any;
+    gitClient: GitClient;
 
-    identityClient: any;
+    identityClient: IdentitiesClient;
 }
 
 /**
@@ -27,7 +27,7 @@ export class ExtensionsApiTfsService extends TfsService {
         super();
 
         this.getClientsPromise = new Promise<TfsClients>((resolve,reject) => {
-            VSS.require(["TFS/VersionControl/GitRestClient", "VSS/Identities/RestClient"], (TFS_Git_WebApi, TFS_Identity_WebApi) => {
+            VSS.require(["TFS/VersionControl/GitRestClient", "VSS/Identities/RestClient"], (TFS_Git_WebApi: GitClientFactory, TFS_Identity_WebApi: IdentitiesClientFactory) => {
                 resolve({
                     gitClient: TFS_Git_WebApi.getClient(),
                     identityClient: TFS_Identity_WebApi.getClient()
@@ -38,19 +38,13 @@ export class ExtensionsApiTfsService extends TfsService {
         this.isOnline = (VSS.getWebContext().host.authority.indexOf("visualstudio.com") > 0);
     }
 
-    public async getCurrentUser(): Promise<Identity> {
+    public async getCurrentUser(): Promise<User> {
         let context = VSS.getWebContext();
-        let user: Identity = {
-            Id: context.user.id,
-            DisplayName: context.user.name,
-            UniqueName: context.user.uniqueName,
-            Descriptor: {
-                IdentityType: "user",
-                Identifier: context.user.id
-            },
-            ImageUrl: null,
-            Members: [],
-            MembersOf: []
+        let user: User = {
+            id: context.user.id,
+            displayName: context.user.name,
+            uniqueName: context.user.uniqueName,
+            memberOf: []
         };
         // The identity apis aren't available in TFS online, only for on-prem versions.  If this is running as an extension in
         // visual studio online, we aren't able to return any group membership information for the current user.
@@ -59,25 +53,25 @@ export class ExtensionsApiTfsService extends TfsService {
         }
 
         let identityClient = (await this.getClientsPromise).identityClient;
-        let membersOf = await this.getMembersOf(identityClient, user.Id);
+        let membersOf = await this.getMembersOf(identityClient, user.id);
         let promises: Promise<Identity[]>[] = [];
         for (let m of membersOf) {
-            user.MembersOf.push(m);
+            user.memberOf.push(m);
             // now recurse once into the subgroups of each group the member is a member of, to include
             // virtual groups made up of several groups
-            promises.push(this.getMembersOf(identityClient, m.Id));
+            promises.push(this.getMembersOf(identityClient, m.id));
         }
         let subMembersOf = await Promise.all<Identity[]>(promises);
         for (let members of subMembersOf) {
             for (let i of members) {
-                user.MembersOf.push(i);
+                user.memberOf.push(i);
             }
         }
     }
 
     private async getMembersOf(identityClient: any, userId: string): Promise<Identity[]> {
         // get the identities that the current user is a member of
-        let members: any[] = await identityClient.readMembersOf(userId);
+        let members = await identityClient.readMembersOf(userId);
         let promises: Promise<Identity[]>[] = [];
         for(let memberId of members) {
             // ignore any non-tfs identities
@@ -89,19 +83,7 @@ export class ExtensionsApiTfsService extends TfsService {
         let identities: any[] = await Promise.all(promises);
         let result: Identity[] = [];
         for(let identity of identities) {
-            let model: Identity = {
-                Id: identity.id,
-                DisplayName: identity.customDisplayName,
-                UniqueName: identity.providerDisplayName,
-                Descriptor: {
-                    IdentityType: "user",
-                    Identifier: identity.id
-                },
-                ImageUrl: null,
-                Members: [],
-                MembersOf: []
-            };
-            result.push(model)
+            result.push(identity);
         }
         return result;
     }

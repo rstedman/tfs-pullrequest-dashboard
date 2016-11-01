@@ -12,133 +12,6 @@
 // Common interfaces specific to WebPlatform area
 //----------------------------------------------------------
 
-/**
-* VSS-specific options for VSS ajax requests
-*/
-interface IVssAjaxOptions {
-
-    /*
-    * Auth token manager that can be used to get and attach auth tokens to requests
-    */
-    authTokenManager?: IAuthTokenManager<any>;
-
-    /**
-     * If true, textStatus and jqXHR are added to the success callback. In this case, spread (instead of then) needs to be used (default false).
-     */
-    useAjaxResult?: boolean;
-
-    /**
-     * If true, the progress indicator will be shown while the request is executing. Defaults to true.
-     */
-    showProgressIndicator?: boolean;
-
-    /**
-     * Current session id. Defaults to pageContext.diagnostics.sessionId.
-     */
-    sessionId?: string;
-
-    /**
-     * Current command for activity logging.
-     */
-    command?: string;
-}
-
-/**
-* Interface for a class that can fetch auth tokens to be used in AJAX requests.
-*/
-interface IAuthTokenManager<TToken> {
-
-    /**
-    * Get the auth token to use for this request.
-    *
-    * @param refresh If true refresh the token (i.e. request a new one - don't use a cached token)
-    */
-    getAuthToken(refresh?: boolean): IPromise<TToken>;
-
-    /**
-     * Gets the authorization header to use in a request from the given token
-     *
-     * @param sessionToken Used for token key.
-     * @return the value to use for the Authorization header in a request.
-     */
-    getAuthorizationHeader(sessionToken: TToken): string;
-}
-
-/**
-* A promise represents the eventual result of an asynchronous operation. The primary way of interacting with a promise is through its then method,
-* which registers callbacks to receive either a promise’s eventual value or the reason why the promise cannot be fulfilled.
-*/
-interface IPromise<T> {
-    /**
-     * Then method which accepts a fulfill delegate which returns a promise or nothing and a reject delegate which returns a promise or nothing. Then returns a new promise.
-     */
-    then<U>(onFulfill: (value: T) => IPromise<U> | void, onReject?: (reason: any) => IPromise<U> | void): IPromise<U>;
-
-    /**
-     * Then method which accepts a fulfill delegate which returns a promise or nothing and a reject delegate which returns a reason value or nothing. Then returns a new promise.
-     */
-    then<U>(onFulfill: (value: T) => IPromise<U> | void, onReject?: (reason: any) => U | void): IPromise<U>;
-
-    /**
-     * Then method which accepts a fulfill delegate which returns a value or nothing and a reject delegate which returns a promise or nothing. Then returns a new promise.
-     */
-    then<U>(onFulfill: (value: T) => U | void, onReject?: (reason: any) => IPromise<U> | void): IPromise<U>;
-
-    /**
-     * Then method which accepts a fulfill delegate which returns a value or nothing and a reject delegate which returns a reason value or nothing. Then returns a new promise.
-     */
-    then<U>(onFulfill: (value: T) => U | void, onReject?: (reason: any) => U | void): IPromise<U>;
-}
-interface EventTarget {
-    checked: boolean;
-    nodeType: number;
-}
-
-interface Date {
-    toGMTString(): string;
-}
-
-interface IErrorCallback {
-    (error: any): void;
-}
-
-interface IResultCallback extends Function {
-}
-
-interface IArgsFunctionR<TResult> {
-    (...args: any[]): TResult;
-}
-
-interface IFunctionPR<TParam, TResult> {
-    (param: TParam): TResult;
-}
-
-interface IFunctionPPR<TParam1, TParam2, TResult> {
-    (param1: TParam1, param2: TParam2): TResult;
-}
-
-interface IFunctionPPPR<TParam1, TParam2, TParam3, TResult> {
-    (param1: TParam1, param2: TParam2, param3: TParam3): TResult;
-}
-
-interface IComparer<T> extends IFunctionPPR<T, T, number> {
-}
-
-interface IDictionaryStringTo<T> {
-    [key: string]: T;
-}
-
-interface IDictionaryNumberTo<T> {
-    [key: number]: T;
-}
-
-interface IEventHandler extends Function {
-}
-
-interface IWebApiArrayResult {
-    count: number;
-    value: any[];
-}
 
 interface Window {
     ActiveXObject: any;
@@ -147,117 +20,10 @@ interface Window {
     vsSdkOnLoad:() => void;
 }
 
-interface ServerError {
-    typeKey?: string;
-}
-
-interface TfsError extends Error {
-    status?: string;
-    stack?: string;
-    serverError?: ServerError;
-    [key: string]: any;
-}
-
-//These variables defined by server.
-declare var exports: any;
-
-declare var _disabledPlugins: string[];
-
-interface IWebAccessPlugin {
-    namespace: string;
-    loadAfter: string;
-}
-
-declare var _plugins: IWebAccessPlugin[];
-declare var _builtinPlugins: IWebAccessPlugin[];
-
-interface IWebAccessPluginBase {
-    namespace: string;
-    base: string;
-}
-
-declare var _builtInBases: IWebAccessPluginBase[];
-declare var _bases: IWebAccessPluginBase[];
-
-interface IDisposable {
-    dispose(): void;
-}
-
-interface IKeyValuePair<TKey, TValue> {
-    key: TKey;
-    value: TValue;
-}
-
 //----------------------------------------------------------
 // Common interfaces specific to WebPlatform area
 //----------------------------------------------------------
 
-/**
-* Interface for a single XDM channel
-*/
-interface IXDMChannel {
-
-    /**
-    * Invoke a method via RPC. Lookup the registered object on the remote end of the channel and invoke the specified method.
-    *
-    * @param method Name of the method to invoke
-    * @param instanceId unique id of the registered object
-    * @param params Arguments to the method to invoke
-    * @param instanceContextData Optional context data to pass to a registered object's factory method
-    */
-    invokeRemoteMethod<T>(methodName: string, instanceId: string, params?: any[], instanceContextData?: Object): IPromise<T>;
-
-    /**
-    * Get a proxied object that represents the object registered with the given instance id on the remote side of this channel.
-    *
-    * @param instanceId unique id of the registered object
-    * @param contextData Optional context data to pass to a registered object's factory method
-    */
-    getRemoteObjectProxy<T>(instanceId: string, contextData?: Object): IPromise<T>;
-
-    /**
-    * Get the object registry to handle messages from this specific channel.
-    * Upon receiving a message, this channel registry will be used first, then
-    * the global registry will be used if no handler is found here.
-    */
-    getObjectRegistry(): IXDMObjectRegistry;
-}
-
-/**
-* Registry of XDM channels kept per target frame/window
-*/
-interface IXDMChannelManager {
-
-    /**
-    * Add an XDM channel for the given target window/iframe
-    *
-    * @param window Target iframe window to communicate with
-    * @param targetOrigin Url of the target iframe (if known)
-    */
-    addChannel(window: Window, targetOrigin?: string): IXDMChannel;
-}
-
-/**
-* Registry of XDM objects that can be invoked by an XDM channel
-*/
-interface IXDMObjectRegistry {
-
-    /**
-    * Register an object (instance or factory method) exposed by this frame to callers in a remote frame
-    *
-    * @param instanceId unique id of the registered object
-    * @param instance Either: (1) an object instance, or (2) a function that takes optional context data and returns an object instance.
-    */
-    register(instanceId: string, instance: Object | { (contextData?: any): Object; }): void;
-
-    /**
-    * Get an instance of an object registered with the given id
-    *
-    * @param instanceId unique id of the registered object
-    * @param contextData Optional context data to pass to the contructor of an object factory method
-    */
-    getInstance<T>(instanceId: string, contextData?: Object): T;
-}
 
 /**
 * Options for the extension's initialization method
@@ -300,77 +66,6 @@ interface IExtensionInitializationOptions {
 }
 
 /**
-* Storage that can be leveraged by sandboxed extension content. The host frame will
-* store this data in localStorage for the extension's publisher id.
-*/
-interface ISandboxedStorage {
-    /**
-    * Used by the VSS.SDK to shim localStorage for sandboxed content - for a given publisher.
-    */
-    localStorage?: IDictionaryStringTo<string>;
-}
-
-/**
-* Data passed from the host to an extension frame via the initial handshake
-*/
-interface IHostHandshakeData {
-
-    /**
-    * Static context information about the current page
-    */
-    pageContext: PageContext;
-
-    /**
-    * Initial configuration for the extension frame
-    */
-    initialConfig?: any;
-
-    /**
-    * Context information about the extension
-    */
-    extensionContext: IExtensionContext;
-
-    /**
-    * The contribution that caused the extension frame to be loaded.
-    */
-    contribution: Contribution;
-
-    /**
-    * Initial sandboxed-storage data for the current extension's publisher.
-    */
-    sandboxedStorage?: ISandboxedStorage;
-}
-
-/**
-* Data passed to the host from an extension frame via the initial handshake
-*/
-interface IExtensionHandshakeData {
-
-    /**
-    * If true, consider the extension loaded upon completion of the initial handshake.
-    */
-    notifyLoadSucceeded: boolean;
-
-    /**
-    * Optional callback method that gets invoked when this extension frame is reused by another contribution
-    * which shares the same URI of the contribution that originally caused this extension frame to be loaded.
-    */
-    extensionReusedCallback?: (contribution: Contribution) => void;
-
-    /**
-    * The version of the VSS.SDK javascript file being used by the extension
-    */
-    vssSDKVersion: number;
-}
-
-/**
-* Information about a control interface that is exposed across iframe boundaries
-*/
-interface IExternalControlInterfaceInfo {
-    methodNames: string[];
-}
-
-/**
 * Context about the app that owns the content that is being hosted
 */
 interface IExtensionContext {
@@ -393,39 +88,6 @@ interface IExtensionContext {
     * The base uri to be used with relative urls in contribution properties
     */
     baseUri: string;
-}
-
-/**
-* Context passed to GetServiceInstance
-*/
-interface IDefaultGetServiceContext {
-
-    /**
-    * The web context to be used in the get service call
-    */
-    webContext: WebContext;
-
-    /**
-    * The extension context, i.e. publisher id, extension id, etc.
-    */
-    extensionContext: IExtensionContext;
-
-    /**
-    * Options that were passed to the host management service,
-    * contains the registered VSS auth application id
-    */
-    hostManagementServiceOptions: IHostManagementServiceOptions;
-}
-
-/**
-* Options passed to the host management service
-*/
-interface IHostManagementServiceOptions extends IExtensionContext {
-
-    /**
-    * The registered VSS auth application id
-    */
-    registrationId: string;
 }
 
 /**
@@ -471,7 +133,11 @@ interface IServiceContribution extends IExtensionContribution {
     * @param objectId Id of the registered object (defaults to the id property of the contribution)
     * @param context Optional context to use when getting the object.
     */
-    getInstance<T>(objectId?: string, context?: any): IPromise<T>;
+    getInstance<T>(objectId?: string, context?: any): Promise<T>;
+}
+
+interface IDictionaryStringTo<T> {
+    [key: string]: T;
 }
 
 interface IHostDialogOptions {
@@ -501,7 +167,7 @@ interface IExternalDialog {
     * @param contextData Optional data to pass to the extension for it to use when creating the instance
     * @return Promise that is resolved to the instance (a proxy object that talks to the instance)
     */
-    getContributionInstance<T>(instanceId: string, contextData?: any): IPromise<T>;
+    getContributionInstance<T>(instanceId: string, contextData?: any): Promise<T>;
 
     /**
     * Close the dialog
@@ -603,7 +269,7 @@ interface IHostDialogService {
     * @param contributionConfig Initial configuration to pass to the contribution control.
     * @param postContent Optional data to post to the contribution endpoint. If not specified, a GET request will be performed.
     */
-    openDialog(contributionId: string, dialogOptions: IHostDialogOptions, contributionConfig?: Object, postContent?: Object): IPromise<IExternalDialog>;
+    openDialog(contributionId: string, dialogOptions: IHostDialogOptions, contributionConfig?: Object, postContent?: Object): Promise<IExternalDialog>;
 
     /**
      * Open a modal dialog in the host frame which will display the supplied message.
@@ -611,7 +277,7 @@ interface IHostDialogService {
      * @param methodOptions options affecting the dialog
      * @returns a promise that is resolved when the user accepts the dialog (Ok, Yes, any button with Button.reject===false), or rejected if the user does not (Cancel, No, any button with Button.reject===true).
      */
-    openMessageDialog(message: string, options?: IOpenMessageDialogOptions): IPromise<IMessageDialogResult>;
+    openMessageDialog(message: string, options?: IOpenMessageDialogOptions): Promise<IMessageDialogResult>;
 
     buttons: {
         /**
@@ -655,7 +321,7 @@ interface IHostNavigationService {
     *
     * @return Hash part of the host page's url (url following #)
     */
-    getHash(): IPromise<string>;
+    getHash(): Promise<string>;
 
     /**
     * Sets the provided hash from the hosted content.
@@ -676,7 +342,7 @@ interface IExtensionDataService {
     * @param key The key to retrieve a value for
     * @param documentOptions The scope in which the value is stored - default value is account-wide
     */
-    getValue<T>(key: string, documentOptions?: IDocumentOptions): IPromise<T>;
+    getValue<T>(key: string, documentOptions?: IDocumentOptions): Promise<T>;
 
     /**
     * Returns a promise for saving a setting at the provided key and scope
@@ -685,7 +351,7 @@ interface IExtensionDataService {
     * @param value The value to save
     * @param documentOptions The scope in which the value is stored - default value is account-wide
     */
-    setValue<T>(key: string, value: T, documentOptions?: IDocumentOptions): IPromise<T>;
+    setValue<T>(key: string, value: T, documentOptions?: IDocumentOptions): Promise<T>;
 
     /**
     * Returns a promise for getting a document with the provided id in the provided collection
@@ -694,7 +360,7 @@ interface IExtensionDataService {
     * @param id The id of the document in the collection
     * @param documentOptions The scope in which the value is stored - default value is account-wide
     */
-    getDocument(collectionName: string, id: string, documentOptions?: IDocumentOptions): IPromise<any>;
+    getDocument(collectionName: string, id: string, documentOptions?: IDocumentOptions): Promise<any>;
 
     /**
     * Returns a promise for getting all of the documents in the provided collection
@@ -702,7 +368,7 @@ interface IExtensionDataService {
     * @param collectionName The name of the collection where the document lives
     * @param documentOptions The scope in which the value is stored - default value is account-wide
     */
-    getDocuments(collectionName: string, documentOptions?: IDocumentOptions): IPromise<any[]>;
+    getDocuments(collectionName: string, documentOptions?: IDocumentOptions): Promise<any[]>;
 
     /**
     * Returns a promise for creating a document in the provided collection
@@ -711,7 +377,7 @@ interface IExtensionDataService {
     * @param doc The document to store
     * @param documentOptions The scope in which the value is stored - default value is account-wide
     */
-    createDocument(collectionName: string, doc: any, documentOptions?: IDocumentOptions): IPromise<any>;
+    createDocument(collectionName: string, doc: any, documentOptions?: IDocumentOptions): Promise<any>;
 
     /**
     * Returns a promise for setting a document in the provided collection
@@ -721,7 +387,7 @@ interface IExtensionDataService {
     * @param doc The document to store
     * @param documentOptions The scope in which the value is stored - default value is account-wide
     */
-    setDocument(collectionName: string, doc: any, documentOptions?: IDocumentOptions): IPromise<any>;
+    setDocument(collectionName: string, doc: any, documentOptions?: IDocumentOptions): Promise<any>;
 
     /**
     * Returns a promise for updating a document in the provided collection
@@ -731,7 +397,7 @@ interface IExtensionDataService {
     * @param doc The document to store
     * @param documentOptions The scope in which the value is stored - default value is account-wide
     */
-    updateDocument(collectionName: string, doc: any, documentOptions?: IDocumentOptions): IPromise<any>;
+    updateDocument(collectionName: string, doc: any, documentOptions?: IDocumentOptions): Promise<any>;
 
     /**
     * Returns a promise for deleting the document at the provided scope, collection and id
@@ -740,7 +406,7 @@ interface IExtensionDataService {
     * @param id The id of the document in the collection
     * @param documentOptions The scope in which the value is stored - default value is account-wide
     */
-    deleteDocument(collectionName: string, id: string, documentOptions?: IDocumentOptions): IPromise<void>;
+    deleteDocument(collectionName: string, id: string, documentOptions?: IDocumentOptions): Promise<void>;
 }
 
 /**
@@ -775,7 +441,7 @@ interface IContributedMenuSource {
     * @param context Menu-specific context information
     * @return Array of menu items or a promise for the array
     */
-    getMenuItems(context: any): IContributedMenuItem[] | IPromise<IContributedMenuItem[]>;
+    getMenuItems(context: any): IContributedMenuItem[] | Promise<IContributedMenuItem[]>;
 
     /**
     * Handle a menu item from this menu source being clicked. This is only invoked when the
@@ -834,7 +500,7 @@ interface IContributedMenuItem {
     /**
     * If this menu item has a sub menu, these are the contributed child items
     */
-    childItems?: IContributedMenuItem[] | IPromise<IContributedMenuItem[]>;
+    childItems?: IContributedMenuItem[] | Promise<IContributedMenuItem[]>;
 
     /**
     * Id of the menu group that this item should be placed in.
@@ -859,28 +525,28 @@ interface IContributedTab {
      * @param context Context information
      * @return boolean Return true not to show this tab.
      */
-    isInvisible?: (context?: any) => boolean | IPromise<boolean>;
+    isInvisible?: (context?: any) => boolean | Promise<boolean>;
 
     /**
      * Page title, which will be displayed above the list of Tabs
      * @param context Context information
      * @return string The unescaped page title
      */
-    pageTitle: string | IPromise<string> | ((context?: any) => string | IPromise<string>);
+    pageTitle: string | Promise<string> | ((context?: any) => string | Promise<string>);
 
     /**
      * Name of the tab
      * @param context Context information
      * @return string The unescaped text that appears as the name of the tab
      */
-    name: string | IPromise<string> | ((context?: any) => string | IPromise<string>);
+    name: string | Promise<string> | ((context?: any) => string | Promise<string>);
 
     /**
      * Title text for the tab, i.e., the tooltip
      * @param context Context information
      * @return string The tooltip text
      */
-    title?: string | IPromise<string> | ((context?: any) => string | IPromise<string>);
+    title?: string | Promise<string> | ((context?: any) => string | Promise<string>);
 
     /**
      * URI to the page that this tab will display (i.e. in a frame)
@@ -890,14 +556,14 @@ interface IContributedTab {
     /**
      * Function that is invoked when there is a new context available for the extension.
      */
-    updateContext: (context: any) => void | IPromise<void>;
+    updateContext: (context: any) => void | Promise<void>;
 
     /**
      * Determines if this tab should be disabled
      * @param context Context information
      * @return boolean Return true to disable this tab.
      */
-    isDisabled?: (context?: any) => boolean | IPromise<boolean>;
+    isDisabled?: (context?: any) => boolean | Promise<boolean>;
 }
 
 /**
@@ -913,7 +579,7 @@ interface IContributedHub extends Hub {
     /**
      * Hubs resolved by this container hub.
      */
-    children: IContributedHub[] | (()=> IPromise<IContributedHub[]>);
+    children: IContributedHub[] | (()=> Promise<IContributedHub[]>);
 
     /**
      * Specifies whether a separator is displayed before this hub or not.
@@ -959,7 +625,7 @@ interface IHubsProvider {
     /**
      * Container hub specified by this provider. Container decides where to display child hubs in the header.
      */
-    getContainerHub(context: IHubsProviderContext): IContributedHub | IPromise<IContributedHub>;
+    getContainerHub(context: IHubsProviderContext): IContributedHub | Promise<IContributedHub>;
 }
 
 //----------------------------------------------------------
@@ -2604,19 +2270,19 @@ declare module VSS {
     * @param contributionId Full Id of the service contribution to get the instance of
     * @param context Optional context information to use when obtaining the service instance
     */
-    function getService<T>(contributionId: string, context?: Object): IPromise<T>;
+    function getService<T>(contributionId: string, context?: Object): Promise<T>;
     /**
     * Get the contribution with the given contribution id. The returned contribution has a method to get a registered object within that contribution.
     *
     * @param contributionId Id of the contribution to get
     */
-    function getServiceContribution(contributionId: string): IPromise<IServiceContribution>;
+    function getServiceContribution(contributionId: string): Promise<IServiceContribution>;
     /**
     * Get contributions that target a given contribution id. The returned contributions have a method to get a registered object within that contribution.
     *
     * @param targetContributionId Contributions that target the contribution with this id will be returned
     */
-    function getServiceContributions(targetContributionId: string): IPromise<IServiceContribution[]>;
+    function getServiceContributions(targetContributionId: string): Promise<IServiceContribution[]>;
     /**
     * Register an object (instance or factory method) that this extension exposes to the host frame.
     *
@@ -2636,11 +2302,11 @@ declare module VSS {
     /**
     * Fetch an access token which will allow calls to be made to other VSTS services
     */
-    function getAccessToken(): IPromise<ISessionToken>;
+    function getAccessToken(): Promise<ISessionToken>;
     /**
     * Fetch an token which can be used to identify the current user
     */
-    function getAppToken(): IPromise<ISessionToken>;
+    function getAppToken(): Promise<ISessionToken>;
     /**
     * Requests the parent window to resize the container for this extension based on the current extension size.
     *
@@ -2648,4 +2314,253 @@ declare module VSS {
     * @param height Optional height, defaults to scrollHeight
     */
     function resize(width?: number, height?: number): void;
+}
+
+/**********************************************************************************************
+* Extracted interfaces from the VSS typedefs that allow me to actually reference them properly*
+**********************************************************************************************/
+
+interface GitClientFactory {
+    getClient(): GitClient;
+}
+
+interface GitClient {
+     /**
+     * Retrieve git repositories.
+     *
+     * @param {string} project - Project ID or project name
+     * @param {boolean} includeLinks
+     * @return Promise<Contracts.GitRepository[]>
+     */
+    getRepositories(project?: string, includeLinks?: boolean): Promise<GitRepository[]>;
+    /**
+     * Query for pull requests
+     *
+     * @param {string} repositoryId
+     * @param {Contracts.GitPullRequestSearchCriteria} searchCriteria
+     * @param {string} project - Project ID or project name
+     * @param {number} maxCommentLength
+     * @param {number} skip
+     * @param {number} top
+     * @return Promise<Contracts.GitPullRequest[]>
+     */
+    getPullRequests(repositoryId: string, searchCriteria: GitPullRequestSearchCriteria, project?: string, maxCommentLength?: number, skip?: number, top?: number): Promise<GitPullRequest[]>;
+}
+
+interface GitRepository {
+    _links: any;
+    defaultBranch: string;
+    id: string;
+    name: string;
+    project: TeamProjectReference;
+    remoteUrl: string;
+    url: string;
+}
+
+/**
+ * Represents a shallow reference to a TeamProject.
+ */
+interface TeamProjectReference {
+    /**
+     * Project abbreviation.
+     */
+    abbreviation: string;
+    /**
+     * The project's description (if any).
+     */
+    description: string;
+    /**
+     * Project identifier.
+     */
+    id: string;
+    /**
+     * Project name.
+     */
+    name: string;
+    /**
+     * Project revision.
+     */
+    revision: number;
+    /**
+     * Project state.
+     */
+    state: any;
+    /**
+     * Url to the full version of the object.
+     */
+    url: string;
+}
+
+interface GitPullRequestSearchCriteria {
+    creatorId: string;
+    /**
+     * Whether to include the _links field on the shallow references
+     */
+    includeLinks: boolean;
+    repositoryId: string;
+    reviewerId: string;
+    sourceRefName: string;
+    status: PullRequestStatus;
+    targetRefName: string;
+}
+
+declare enum PullRequestStatus {
+    NotSet = 0,
+    Active = 1,
+    Abandoned = 2,
+    Completed = 3,
+    All = 4,
+}
+
+interface GitPullRequest {
+    _links: any;
+    autoCompleteSetBy: IdentityRef;
+    closedBy: IdentityRef;
+    closedDate: Date;
+    codeReviewId: number;
+    commits: GitCommitRef[];
+    completionOptions: GitPullRequestCompletionOptions;
+    completionQueueTime: Date;
+    createdBy: IdentityRef;
+    creationDate: Date;
+    description: string;
+    lastMergeCommit: GitCommitRef;
+    lastMergeSourceCommit: GitCommitRef;
+    lastMergeTargetCommit: GitCommitRef;
+    mergeId: string;
+    mergeStatus: PullRequestAsyncStatus;
+    pullRequestId: number;
+    remoteUrl: string;
+    repository: GitRepository;
+    reviewers: IdentityRefWithVote[];
+    sourceRefName: string;
+    status: PullRequestStatus;
+    supportsIterations: boolean;
+    targetRefName: string;
+    title: string;
+    url: string;
+    workItemRefs: ResourceRef[];
+}
+
+interface GitPullRequestCompletionOptions {
+    deleteSourceBranch: boolean;
+    mergeCommitMessage: string;
+    squashMerge: boolean;
+}
+
+interface IdentityRef {
+    displayName: string;
+    id: string;
+    imageUrl: string;
+    isAadIdentity: boolean;
+    isContainer: boolean;
+    profileUrl: string;
+    uniqueName: string;
+    url: string;
+}
+
+interface IdentityRefWithVote extends IdentityRef {
+    isRequired: boolean;
+    reviewerUrl: string;
+    vote: number;
+    votedFor: IdentityRefWithVote[];
+}
+
+interface GitCommitRef {
+    commitId: string;
+    url: string;
+}
+
+declare enum PullRequestAsyncStatus {
+    NotSet = 0,
+    Queued = 1,
+    Conflicts = 2,
+    Succeeded = 3,
+    RejectedByPolicy = 4,
+    Failure = 5,
+}
+
+interface ResourceRef {
+    id: string;
+    url: string;
+}
+
+interface IdentitiesClientFactory {
+    getClient(): IdentitiesClient;
+}
+
+interface IdentitiesClient {
+    /**
+     * @exemptedapi
+     * [Preview API]
+     *
+     * @param {string} memberId
+     * @param {Contracts.QueryMembership} queryMembership
+     * @return Promise<Contracts.IdentityDescriptor[]>
+     */
+    readMembersOf(memberId: string, queryMembership?: QueryMembership): Promise<IdentityDescriptor[]>;
+    /**
+     * @param {string} identityId
+     * @param {Contracts.QueryMembership} queryMembership
+     * @param {string} properties
+     * @return Promise<Contracts.Identity>
+     */
+    readIdentity(identityId: string, queryMembership?: QueryMembership, properties?: string): Promise<Identity>;
+}
+
+interface Identity {
+    /**
+     * The custom display name for the identity (if any). Setting this property to an empty string will clear the existing custom display name. Setting this property to null will not affect the existing persisted value (since null values do not get sent over the wire or to the database)
+     */
+    customDisplayName: string;
+    descriptor: IdentityDescriptor;
+    id: string;
+    isActive: boolean;
+    isContainer: boolean;
+    masterId: string;
+    memberIds: string[];
+    memberOf: IdentityDescriptor[];
+    members: IdentityDescriptor[];
+    metaTypeId: number;
+    properties: any;
+    /**
+     * The display name for the identity as specified by the source identity provider.
+     */
+    providerDisplayName: string;
+    resourceVersion: number;
+    uniqueUserId: number;
+}
+
+interface IdentityDescriptor {
+    /**
+     * The unique identifier for this identity, not exceeding 256 chars, which will be persisted.
+     */
+    identifier: string;
+    /**
+     * Type of descriptor (for example, Windows, Passport, etc.).
+     */
+    identityType: string;
+}
+
+declare enum QueryMembership {
+    /**
+     * Query will not return any membership data
+     */
+    None = 0,
+    /**
+     * Query will return only direct membership data
+     */
+    Direct = 1,
+    /**
+     * Query will return expanded membership data
+     */
+    Expanded = 2,
+    /**
+     * Query will return expanded up membership data (parents only)
+     */
+    ExpandedUp = 3,
+    /**
+     * Query will return expanded down membership data (children only)
+     */
+    ExpandedDown = 4,
 }

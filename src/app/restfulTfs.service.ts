@@ -1,8 +1,8 @@
 import {Injectable} from "@angular/core";
-import {Http, Response} from "@angular/http";
+import {Http, Response, Headers} from "@angular/http";
 import "rxjs/Rx";
 
-import {Repository, Identity, PullRequest, Reviewer, AppConfig, TfsService} from "./model";
+import {Repository, PullRequest, Reviewer, AppConfig, TfsService, User} from "./model";
 
 @Injectable()
 /** Interacts with TFS REST APis.  Meant for use when not running in the context of a TFS extension (ie. development) **/
@@ -14,37 +14,45 @@ export class RestfulTfsService extends TfsService {
     }
 
     private USER_HEADER_NAME: string  = "x-vss-userdata";
+    // need to specify the version to get the response objects to look the same as when requested using the VSS Extension APIs
+    private IDENTITIES_API_ACCEPT_HEADER: string = "application/json; api-version=2.3-preview.1";
 
     private baseUri: string;
 
-    public async getCurrentUser(): Promise<Identity> {
+    public async getCurrentUser(): Promise<User> {
         // just do a basic query to tfs to be able to look at response headers
-        let userId: string;
-
         let r = await this.http.get(`${this.baseUri}/_apis/projects`, {withCredentials: true}).toPromise();
         // aren't actually interested in the projects response body, just the response headers.
         // tfs adds a header in the response with the current authenticated users id in the format <userid>:<username>
         let userIdHeader = r.headers.get(this.USER_HEADER_NAME);
         let headerRegex = /([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})/i;
         let match = headerRegex.exec(userIdHeader);
-        userId = match[1];
+        let userId = match[1];
 
-        r = await this.http.get(`${this.baseUri}/_apis/Identities/${userId}`, {withCredentials: true}).toPromise();
-        let user: Identity = r.json();
-        user.MembersOf = [];
+        r = await this.http.get(`${this.baseUri}/_apis/Identities/${userId}`, {
+            withCredentials: true,
+            headers: new Headers({"Accept": this.IDENTITIES_API_ACCEPT_HEADER})
+        }).toPromise();
+        let userIdentity: Identity = r.json();
+        let user: User = {
+            id: userIdentity.id,
+            displayName: userIdentity.customDisplayName,
+            uniqueName: userIdentity.providerDisplayName,
+            memberOf: []
+        };
 
         let membersOf = await this.getMembersOf(userId);
         let promises: Promise<Identity[]>[] = [];
         for (let m of membersOf) {
-            user.MembersOf.push(m);
+            user.memberOf.push(m);
             // now recurse once into the subgroups of each group the member is a member of, to include
             // virtual groups made up of several groups
-            promises.push(this.getMembersOf(m.Id));
+            promises.push(this.getMembersOf(m.id));
         }
         let subMembersOf = await Promise.all(promises);
         for (let members of subMembersOf) {
             for (let i of members) {
-                user.MembersOf.push(i);
+                user.memberOf.push(i);
             }
         }
 
@@ -52,16 +60,25 @@ export class RestfulTfsService extends TfsService {
     }
 
     private async getMembersOf(userId: string): Promise<Identity[]> {
-        let response = await this.http.get(`${this.baseUri}/_apis/Identities/${userId}/membersOf`, {withCredentials: true}).toPromise();
+        console.log(`getMembersOf, userId=${userId}`);
+        let response = await (this.http.get(`${this.baseUri}/_apis/Identities/${userId}/membersOf`, {
+            withCredentials: true,
+            headers: new Headers({"Accept": this.IDENTITIES_API_ACCEPT_HEADER})
+        }).toPromise());
+        console.log(`response=${response}`);
         let promises: Promise<Response>[] = [];
         let result: Identity[] = [];
-        for (let userId of response.json()) {
+        let memberOfIds: string[] = this.extractData(response);
+        console.log(`readMembersOf complete.  count=${memberOfIds.length}`);
+        for (let memberId of memberOfIds) {
             // ignore any non-tfs identities
-            if (!userId.startsWith("Microsoft.TeamFoundation.Identity"))
+            if (!memberId.startsWith("Microsoft.TeamFoundation.Identity"))
                 continue;
 
-            promises.push(this.http.get(`${this.baseUri}/_apis/Identities/${userId}`, {withCredentials: true})
-                                   .toPromise());
+            promises.push(this.http.get(`${this.baseUri}/_apis/Identities/${memberId}`, {
+                withCredentials: true,
+                headers: new Headers({"Accept": this.IDENTITIES_API_ACCEPT_HEADER})
+            }).toPromise());
         }
 
         let responses = await Promise.all(promises);

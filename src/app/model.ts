@@ -13,33 +13,22 @@ export class Repository {
     public remoteUrl: string;
 }
 
-export class Descriptor {
-    public IdentityType: string;
-
-    public Identifier: string;
-}
-
-/** Represents an identity in tfs.  Can be a person or group **/
-export class Identity {
+/**
+    Represents an user in tfs. Extends the identity model to include the identity
+    info for membersOf
+**/
+export class User {
     /** The guid id of the identity **/
-    public Id: string;
-
-    public Descriptor: Descriptor;
+    public id: string;
 
     /** The displayname of the identity **/
-    public DisplayName: string;
+    public displayName: string;
 
     /** The unique name of the indenity **/
-    public UniqueName: string;
-
-    /** The url to the image representing the identity **/
-    public ImageUrl: string;
-
-    /** other identities that are a member of this identity **/
-    public Members: Array<Identity>;
+    public uniqueName: string;
 
     /** other identities this identity is a member of **/
-    public MembersOf: Array<Identity>;
+    public memberOf: Identity[];
 }
 
 /** Represents a pull request in tfs **/
@@ -121,7 +110,7 @@ export class AppConfig {
 }
 
 export abstract class TfsService {
-    abstract getCurrentUser(): Promise<Identity>;
+    abstract getCurrentUser(): Promise<User>;
     abstract getPullRequests(repo: Repository): Promise<PullRequest[]>;
     abstract getRepositories(): Promise<Repository[]>;
 }
