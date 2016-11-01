@@ -1,7 +1,7 @@
-import { PullRequest, Repository, User, Reviewer } from "./model";
+import { User, PullRequestAsyncStatus } from "./model";
 
 export class PullRequestViewModel {
-    constructor(public pullRequest: PullRequest, public repository: Repository, currentUser: User) {
+    constructor(public pullRequest: GitPullRequest, public repository: GitRepository, currentUser: User) {
         this.remoteUrl = `${repository.remoteUrl}/pullrequest/${pullRequest.pullRequestId}`;
 
         this.requestedByMe = pullRequest.createdBy.id === currentUser.id;
@@ -23,7 +23,7 @@ export class PullRequestViewModel {
         this.repositoryName = repository.name;
         this.sourceRefName = pullRequest.sourceRefName.replace("refs/heads/", "");
         this.targetRefName = pullRequest.targetRefName.replace("refs/heads/", "");
-        this.mergeStatus = pullRequest.mergeStatus;
+        this.hasMergeConflicts = pullRequest.mergeStatus == PullRequestAsyncStatus.Conflicts;
         this.reviewers = pullRequest.reviewers;
     }
 
@@ -49,7 +49,7 @@ export class PullRequestViewModel {
 
     public targetRefName: string;
 
-    public mergeStatus: string;
+    public hasMergeConflicts: boolean;
 
-    public reviewers: Reviewer[];
+    public reviewers: IdentityRefWithVote[];
 }

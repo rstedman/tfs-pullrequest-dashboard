@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core";
 
-import { PullRequest, Repository, Reviewer, Vote } from "./model";
+import { Vote } from "./model";
 import { PullRequestViewModel } from "./pullRequestViewModel";
 
 @Component({
@@ -10,9 +10,9 @@ import { PullRequestViewModel } from "./pullRequestViewModel";
 export class PullRequestComponent {
 
     @Input()
-    public pullRequest: PullRequest;
+    public pullRequest: GitPullRequest;
 
-    public getVoteClasses(reviewer: Reviewer): string {
+    public getVoteClasses(reviewer: IdentityRefWithVote): string {
         let result = "fa vote";
         if (reviewer.vote === Vote.NoResponse) {
             result += " fa-minus-circle";
@@ -28,7 +28,7 @@ export class PullRequestComponent {
         return result;
     }
 
-    public getVoteTooltip(reviewer: Reviewer): string {
+    public getVoteTooltip(reviewer: IdentityRefWithVote): string {
         if (reviewer.vote === Vote.NoResponse) {
             return "No Response";
         } else if (reviewer.vote === Vote.Rejected) {

@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import {Http, Response, Headers} from "@angular/http";
 import "rxjs/Rx";
 
-import {Repository, PullRequest, Reviewer, AppConfig, TfsService, User} from "./model";
+import {AppConfig, TfsService, User, PullRequestAsyncStatus} from "./model";
 
 @Injectable()
 /** Interacts with TFS REST APis.  Meant for use when not running in the context of a TFS extension (ie. development) **/
@@ -85,15 +85,29 @@ export class RestfulTfsService extends TfsService {
         return result;
     }
 
-    public getPullRequests(repo: Repository): Promise<PullRequest[]> {
+    public async getPullRequests(repo: GitRepository): Promise<GitPullRequest[]> {
         let url = `${repo.url}/pullRequests?status=active`;
-        return this.http.get(url, {withCredentials: true})
+        let prs: any[] = await this.http.get(url, {withCredentials: true})
             .toPromise()
             .then(this.extractData)
             .catch(this.handleError);
+        for(let pr of prs) {
+            if(pr.mergeStatus) {
+                // the rest apis return a string for the mergestatus, but the VSS APIs convert that into
+                // an int.  Do the same here, so we can treat PRs the same throughout the app.
+                // note - we only care about conflicts for now, since we only show something different on merge conflicts.
+                if(pr.mergeStatus === "conflicts")
+                    pr.mergeStatus = PullRequestAsyncStatus.Conflicts;
+                else
+                    pr.mergeStatus = PullRequestAsyncStatus.Succeeded;
+            }
+        }
+        // with the mergeStatus converted, we should be able to just treat the prs returned by the rest api
+        // as a GitPullRequest
+        return (prs as GitPullRequest[]);
     }
 
-    public getRepositories(): Promise<Repository[]> {
+    public getRepositories(): Promise<GitRepository[]> {
         return this.http.get(`${this.baseUri}/_apis/git/repositories`, {withCredentials: true})
             .toPromise()
             .then(this.extractData)

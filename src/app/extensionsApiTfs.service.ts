@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import {Http, Response} from "@angular/http";
 import "rxjs/Rx";
 
-import {Repository, PullRequest, Reviewer, AppConfig, TfsService, User} from "./model";
+import {AppConfig, TfsService, User} from "./model";
 
 // can't reference these types without them attempting to import as modules, which will fail since the VSS.SDK does module resolution in a non-standard way
 //import { GitHttpClient } from "TFS/VersionControl/GitRestClient";
@@ -67,12 +67,13 @@ export class ExtensionsApiTfsService extends TfsService {
                 user.memberOf.push(i);
             }
         }
+        return user;
     }
 
-    private async getMembersOf(identityClient: any, userId: string): Promise<Identity[]> {
+    private async getMembersOf(identityClient: IdentitiesClient, userId: string): Promise<Identity[]> {
         // get the identities that the current user is a member of
         let members = await identityClient.readMembersOf(userId);
-        let promises: Promise<Identity[]>[] = [];
+        let promises: Promise<Identity>[] = [];
         for(let memberId of members) {
             // ignore any non-tfs identities
             if (!memberId.startsWith("Microsoft.TeamFoundation.Identity"))
@@ -80,56 +81,17 @@ export class ExtensionsApiTfsService extends TfsService {
 
             promises.push(identityClient.readIdentity(memberId));
         }
-        let identities: any[] = await Promise.all(promises);
-        let result: Identity[] = [];
-        for(let identity of identities) {
-            result.push(identity);
-        }
-        return result;
+        let identities = await Promise.all(promises);
+        return identities;
     }
 
-    public async getPullRequests(repo: Repository): Promise<PullRequest[]> {
+    public async getPullRequests(repo: GitRepository): Promise<GitPullRequest[]> {
         let client = (await this.getClientsPromise).gitClient;
         let prs = await client.getPullRequests(repo.id, {includeLinks: true, creatorId: null, repositoryId: repo.id, reviewerId: null, sourceRefName: null, status: 1, targetRefName: null});
-        let result: PullRequest[] = [];
-        for(let pr of prs) {
-            result.push({
-                pullRequestId: pr.pullRequestId,
-                createdBy: {
-                    displayName: pr.createdBy.displayName,
-                    id: pr.createdBy.id,
-                    imageUrl: pr.createdBy.imageUrl,
-                    uniqueName: pr.createdBy.uniqueName
-                },
-                creationDate: pr.creationDate,
-                repository: {
-                    id: pr.repository.id,
-                    name: pr.repository.name,
-                    remoteUrl: pr.repository.remoteUrl,
-                    url: pr.repository.url
-                },
-                description: pr.description,
-                mergeId: pr.mergeId,
-                mergeStatus: this.mergeStatusToString(pr.mergeStatus),
-                reviewers: pr.reviewers,
-                sourceRefName: pr.sourceRefName,
-                status: pr.status,
-                targetRefName: pr.targetRefName,
-                title: pr.title
-            });
-        }
-        return result;
+        return prs;
     }
 
-    private mergeStatusToString(status: number): string {
-        if (status == 2) {
-            return "conflicts";
-        }
-        // don't really care about other statuses.  extension only does something if there's a conflict.
-        return "ok";
-    }
-
-    public async getRepositories(): Promise<Repository[]> {
+    public async getRepositories(): Promise<GitRepository[]> {
         let client = (await this.getClientsPromise).gitClient;
         return await client.getRepositories(VSS.getWebContext().project.name, true);
     }

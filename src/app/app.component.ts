@@ -1,6 +1,6 @@
 import { Component, OnInit, Provider } from "@angular/core";
 
-import { PullRequest, Repository, User, Reviewer, TfsService, StorageService } from "./model";
+import { User, TfsService, StorageService } from "./model";
 import { PullRequestViewModel } from "./pullRequestViewModel";
 import { TfsServiceProvider } from "./tfsService.provider";
 import { StorageServiceProvider } from "./storageService.provider";
@@ -20,7 +20,7 @@ export class AppComponent implements OnInit {
 
     public pullRequests: PullRequestViewModel[] = [];
 
-    public repositories: Repository[] = [];
+    public repositories: GitRepository[] = [];
 
     public currentUser: User;
 
@@ -103,7 +103,7 @@ export class AppComponent implements OnInit {
         this.storage.setValue(AppComponent.repoFilterKey, JSON.stringify(this.filteredRepoIds));
     }
 
-    private getRepoByName(name: string): Repository {
+    private getRepoByName(name: string): GitRepository {
         for (let repo of this.repositories) {
             if (repo.name === name) {
                 return repo;
@@ -111,7 +111,7 @@ export class AppComponent implements OnInit {
         }
     }
 
-    public getVoteClasses(reviewer: Reviewer): string {
+    public getVoteClasses(reviewer: IdentityRefWithVote): string {
         let result = "fa vote";
         if (reviewer.vote === 0) {
             result += " fa-minus-circle";

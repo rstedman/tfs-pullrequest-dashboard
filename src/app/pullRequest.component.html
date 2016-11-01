@@ -12,7 +12,7 @@
     <div>
       by {{pullRequest.createdBy}}, at {{pullRequest.createdDate | date: 'dd/MM/yyyy hh:mm'}}
     </div>
-    <div *ngIf="pullRequest.mergeStatus==='conflicts'">
+    <div *ngIf="pullRequest.hasMergeConflicts">
       <i class="fa fa-exclamation-circle vote rejected"></i> Merge Conflicts
     </div>
     <div>
