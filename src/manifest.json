@@ -1,7 +1,7 @@
 {
     "manifestVersion": 1,
     "id": "tfs-pullrequest-dashboard",
-    "version": "0.2.36",
+    "version": "0.3.0",
     "name": "TFS PullRequest Dashboard",
     "description": "A pull request dashboard for tfs.",
     "publisher": "ryanstedman",
