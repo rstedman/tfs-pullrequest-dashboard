@@ -9,8 +9,24 @@ import { PullRequestViewModel } from "./pullRequestViewModel";
 })
 export class PullRequestComponent {
 
+    private _pr: GitPullRequest;
+
     @Input()
-    public pullRequest: GitPullRequest;
+    set pullRequest(pr: GitPullRequest) {
+        this._pr = pr;
+        this.reviewers = pr.reviewers.sort((a:IdentityRefWithVote, b: IdentityRefWithVote) => {
+            if (a.isRequired && !b.isRequired)
+                return -1;
+            if (!a.isRequired && b.isRequired)
+                return 1;
+            return 0;
+        });
+    }
+    get pullRequest() {
+        return this._pr;
+    }
+
+    public reviewers: IdentityRefWithVote[];
 
     public getVoteClasses(reviewer: IdentityRefWithVote): string {
         let result = "fa vote";
