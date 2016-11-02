@@ -26,7 +26,7 @@ Each pull request displayed shows a number of useful pieces if information.
 * Repository name, from brach & to branch
 * Merge conflicts - merge conflicts icon displayed only if the PR has merge conflicts.
 * Reviewers
-    * Each reviewer on the VR has an icon next to their name indicating their vote
+    * Each reviewer on the PR has an icon next to their name indicating their vote
         * Solid Circle Checkmark = Approved
         * Hollow Circle Checkmark = Approved With Suggestions
         * Yellow Circle Dash = Waiting for Author
