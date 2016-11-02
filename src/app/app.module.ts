@@ -10,6 +10,7 @@ import { PullRequestComponent } from "./pullRequest.component";
 import { AppConfig } from './model';
 import { PullRequestFilterPipe } from "./pullRequestFilter.pipe";
 import { RepoFilterPipe } from "./repoFilter.pipe"
+import { PullRequestSortPipe } from "./prSort.pipe"
 
 export let AppConfigSettings = new AppConfig();
 
@@ -24,7 +25,8 @@ export let AppConfigSettings = new AppConfig();
     AppComponent,
     PullRequestComponent,
     PullRequestFilterPipe,
-    RepoFilterPipe
+    RepoFilterPipe,
+    PullRequestSortPipe
   ],
   providers: [
     { provide: AppConfig, useValue: AppConfigSettings }

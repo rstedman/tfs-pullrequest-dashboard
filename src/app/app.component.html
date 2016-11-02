@@ -1,24 +1,24 @@
 <div class="container">
   <div *ngIf="(pullRequests | prFilter:'requestedByMe').length > 0">
     <h4>Requested By Me</h4>
-    <div *ngFor="let pr of pullRequests | prFilter:'requestedByMe'" class="row">
+    <div *ngFor="let pr of pullRequests | prFilter:'requestedByMe' | prSort" class="row">
       <pull-request [pullRequest]="pr"></pull-request>
     </div>
   </div>
   <div *ngIf="(pullRequests | prFilter:'assignedToMe').length > 0">
     <h4>Assigned To Me</h4>
-    <div *ngFor="let pr of pullRequests | prFilter:'assignedToMe'" class="row">
+    <div *ngFor="let pr of pullRequests | prFilter:'assignedToMe' | prSort" class="row">
       <pull-request [pullRequest]="pr"></pull-request>
     </div>
   </div>
   <div *ngIf="(pullRequests | prFilter:'assignedToMyTeam').length > 0">
     <h4>Assigned To My Team</h4>
-    <div *ngFor="let pr of pullRequests | prFilter:'assignedToMyTeam'" class="row">
+    <div *ngFor="let pr of pullRequests | prFilter:'assignedToMyTeam' | prSort" class="row">
       <pull-request [pullRequest]="pr"></pull-request>
     </div>
   </div>
   <h4>Other Open Pull Requests <ss-multiselect-dropdown [options]="repoOptions" [settings]="filterSettings" [texts]="filterTexts" [(ngModel)]="unfilteredRepoSelections" (ngModelChange)="onFilteredSelectionsChanged($event)"></ss-multiselect-dropdown></h4>
-  <div *ngFor="let pr of pullRequests | prFilter:'other' | repoFilter:filteredRepoIds" class="row">
+  <div *ngFor="let pr of pullRequests | prFilter:'other' | repoFilter:filteredRepoIds | prSort" class="row">
     <pull-request [pullRequest]="pr"></pull-request>
   </div>
 </div>
