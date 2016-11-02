@@ -1,12 +1,6 @@
 # TFS PullRequest Dashboard
 ## What is it?
-An extension for visual studio team services that adds a hub to the code section of tfs for viewing pull requests across all repositories.  Pull requests are grouped into the following categories:
-* Requested by me
-* Assigned to me
-* Assigned to my team
-    * Currently only supported for on-premises tfs
-* Other Open pull requests
-    * Allows filtering down to only repositories that you're interested in.  Useful for organizations with dozens of different code repositories, many of which a single given user may not be involved with.
+An extension for visual studio team services that adds a hub to the code section of tfs for viewing pull requests across all repositories.  To see specific details about features, including screenshots, see [overview.md](src/assets/overview.md)
 
 ## Getting started
 
