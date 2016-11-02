@@ -1,4 +1,4 @@
-import {Injectable} from "@angular/core";
+import {Injectable, NgZone} from "@angular/core";
 import {Http, Response} from "@angular/http";
 import "rxjs/Rx";
 
@@ -12,7 +12,7 @@ export class ExtensionsApiTfsService extends TfsService {
 
     private isOnline: boolean;
 
-    constructor(private gitClient: GitClient, private identitiesClient: IdentitiesClient) {
+    constructor(private gitClient: GitClient, private identitiesClient: IdentitiesClient, private zone: NgZone) {
         super();
 
         this.isOnline = (VSS.getWebContext().host.authority.indexOf("visualstudio.com") > 0);
@@ -46,7 +46,10 @@ export class ExtensionsApiTfsService extends TfsService {
                 user.memberOf.push(i);
             }
         }
-        return user;
+        return new Promise<User>((resolve, reject) => {
+            // use ngzone to bring promise callback back into the angular zone
+            this.zone.run(() => resolve(user));
+        });
     }
 
     private async getMembersOf(userId: string): Promise<Identity[]> {
@@ -64,11 +67,26 @@ export class ExtensionsApiTfsService extends TfsService {
         return identities;
     }
 
-    public getPullRequests(repo: GitRepository): Promise<GitPullRequest[]> {
-        return this.gitClient.getPullRequests(repo.id, {includeLinks: true, creatorId: null, repositoryId: repo.id, reviewerId: null, sourceRefName: null, status: 1, targetRefName: null});
+    public async getPullRequests(repo: GitRepository): Promise<GitPullRequest[]> {
+        let prs = await this.gitClient.getPullRequests(repo.id, {
+            includeLinks: true,
+            creatorId: null,
+            repositoryId: repo.id,
+            reviewerId: null,
+            sourceRefName: null,
+            status: 1,
+            targetRefName: null});
+        return new Promise<GitPullRequest[]>((resolve, reject) => {
+            // use ngzone to bring promise callback back into the angular zone
+            this.zone.run(() => resolve(prs));
+        })
     }
 
-    public getRepositories(): Promise<GitRepository[]> {
-        return this.gitClient.getRepositories(VSS.getWebContext().project.name, true);
+    public async getRepositories(): Promise<GitRepository[]> {
+        let repos = await this.gitClient.getRepositories(VSS.getWebContext().project.name, true);
+        return new Promise<GitRepository[]>((resolve, reject) => {
+            // use ngzone to bring promise callback back into the angular zone
+            this.zone.run(() => resolve(repos));
+        })
     }
 }

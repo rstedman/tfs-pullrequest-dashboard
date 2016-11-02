@@ -1,4 +1,4 @@
-import { Injectable, FactoryProvider }       from "@angular/core";
+import { Injectable, FactoryProvider, NgZone }       from "@angular/core";
 import { Http }     from "@angular/http";
 
 import { RestfulTfsService } from "./restfulTfs.service";
@@ -17,16 +17,16 @@ export class TfsServiceProvider implements FactoryProvider {
   // expected to be set before the app is bootstrapped, if running as an extension
   public static identityClientFactory: IdentitiesClientFactory;
 
-  public useFactory(http: Http, config: AppConfig): TfsService {
+  public useFactory(http: Http, config: AppConfig, zone: NgZone): TfsService {
     // If we aren't running as a VSS extension, use the restfultfsservice
     if(!VSS.getWebContext()) {
       return new RestfulTfsService(http, config);
     } else {
       let gitClient = TfsServiceProvider.gitClientFactory.getClient();
       let identitiesClient = TfsServiceProvider.identityClientFactory.getClient();
-      return new ExtensionsApiTfsService(gitClient, identitiesClient);
+      return new ExtensionsApiTfsService(gitClient, identitiesClient, zone);
     }
   }
 
-  public deps = [Http, AppConfig]
+  public deps = [Http, AppConfig, NgZone]
 };
