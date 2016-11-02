@@ -1,7 +1,7 @@
 {
     "manifestVersion": 1,
     "id": "tfs-pullrequest-dashboard",
-    "version": "0.3.3",
+    "version": "1.0.0",
     "name": "Pull Request Dashboard",
     "description": "A pull request dashboard for Visual Studio Team Services/Team Foundation Services.",
     "publisher": "ryanstedman",
@@ -12,7 +12,7 @@
     "content": {
         "details":{ "path": "overview.md" }
     },
-    "tags": ["code", "pull request", "git", "code review"],
+    "tags": ["code", "pull request", "git", "code review","open source"],
     "screenshots": [
         {"path":"assets/screenshots/hub_tab.png"},
         {"path":"assets/screenshots/hub_view.png"},
@@ -21,6 +21,7 @@
     "targets": [{ "id": "Microsoft.VisualStudio.Services" }],
     "icons": {"default": "assets/images/logo.png"},
     "categories": ["Code"],
+    "galleryFlags": ["Public"],
     "contributions": [
         {
             "id": "tfs-pullrequest-dashboard",
