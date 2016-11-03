@@ -47,18 +47,15 @@ export class AppComponent implements OnInit {
 
     public repoOptions: IMultiSelectOption[] = [];
 
-    ngOnInit() {
-        this.storage.getValue(AppComponent.repoFilterKey)
-            .then(x => {
-                if(x && x !== "") {
-                    this.filteredRepoIds = JSON.parse(x);
-                }
-            })
-            .then(() => this.refresh());
+    public ngOnInit() {
+        this.refresh();
     }
 
     async refresh() {
         let serializedFilter = await this.storage.getValue(AppComponent.repoFilterKey);
+        if (serializedFilter && serializedFilter !== "") {
+            this.filteredRepoIds = JSON.parse(serializedFilter);
+        }
         this.currentUser = await this.tfsService.getCurrentUser();
         let repos = await this.tfsService.getRepositories();
         this.repositories = repos.sort((a,b) => {
