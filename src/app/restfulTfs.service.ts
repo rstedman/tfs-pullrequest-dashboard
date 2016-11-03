@@ -2,15 +2,16 @@ import {Injectable} from "@angular/core";
 import {Http, Response, Headers} from "@angular/http";
 import "rxjs/Rx";
 
-import {AppConfig, TfsService, User, PullRequestAsyncStatus} from "./model";
+import {TfsService, User, PullRequestAsyncStatus} from "./model";
+import {AppConfigService} from "./appConfig.service";
 
 @Injectable()
 /** Interacts with TFS REST APis.  Meant for use when not running in the context of a TFS extension (ie. development) **/
 export class RestfulTfsService extends TfsService {
-    constructor(private http: Http, config: AppConfig) {
+    constructor(private http: Http, config: AppConfigService) {
         super();
 
-        this.baseUri = config.apiEndpoint;
+        this.baseUri = config.devApiEndpoint;
     }
 
     private USER_HEADER_NAME: string  = "x-vss-userdata";

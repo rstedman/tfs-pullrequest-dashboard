@@ -2,7 +2,7 @@ import {Injectable, NgZone} from "@angular/core";
 import {Http, Response} from "@angular/http";
 import "rxjs/Rx";
 
-import {AppConfig, TfsService, User} from "./model";
+import {TfsService, User} from "./model";
 
 /**
  ** TfsService implementation which uses the VSS extension apis for fetching data
@@ -10,25 +10,26 @@ import {AppConfig, TfsService, User} from "./model";
 @Injectable()
 export class ExtensionsApiTfsService extends TfsService {
 
-    private isOnline: boolean;
+    constructor(private gitClient: GitClient,
+        private identitiesClient: IdentitiesClient,
+        private isHosted: boolean,
+        private projectName: string,
+        private userContext: UserContext,
+        private zone: NgZone) {
 
-    constructor(private gitClient: GitClient, private identitiesClient: IdentitiesClient, private zone: NgZone) {
         super();
-
-        this.isOnline = (VSS.getWebContext().host.authority.indexOf("visualstudio.com") > 0);
     }
 
     public async getCurrentUser(): Promise<User> {
-        let context = VSS.getWebContext();
         let user: User = {
-            id: context.user.id,
-            displayName: context.user.name,
-            uniqueName: context.user.uniqueName,
+            id: this.userContext.id,
+            displayName: this.userContext.name,
+            uniqueName: this.userContext.uniqueName,
             memberOf: []
         };
-        // The identity apis aren't available in TFS online, only for on-prem versions.  If this is running as an extension in
-        // visual studio online, we aren't able to return any group membership information for the current user.
-        if(this.isOnline) {
+        // The identity apis aren't available in Visual Studio Team Services, only for Team Foundation Services.
+        // If this is running as an extension in VSTS, we aren't able to return any group membership information for the current user.
+        if(this.isHosted) {
             return user;
         }
 
@@ -83,7 +84,7 @@ export class ExtensionsApiTfsService extends TfsService {
     }
 
     public async getRepositories(): Promise<GitRepository[]> {
-        let repos = await this.gitClient.getRepositories(VSS.getWebContext().project.name, true);
+        let repos = await this.gitClient.getRepositories(this.projectName, true);
         return new Promise<GitRepository[]>((resolve, reject) => {
             // use ngzone to bring promise callback back into the angular zone
             this.zone.run(() => resolve(repos));

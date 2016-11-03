@@ -42,7 +42,8 @@ gulp.task('bundle:app', ['copy:multiselect-src'], function() {
             sourceMaps: true,
             runtime: false,
             sourceMapContents: true,
-            minify: true
+            // don't minify (for now).  Seems to mess up the sourcemaps.
+            //minify: true
         });
 });
 

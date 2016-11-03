@@ -1,3 +1,5 @@
+import { OpaqueToken } from "@angular/core"
+
 /**
     Represents an user in tfs. Extends the identity model to include the identity
     info for membersOf
@@ -31,11 +33,6 @@ export enum PullRequestAsyncStatus {
     Succeeded = 3,
     RejectedByPolicy = 4,
     Failure = 5,
-}
-
-export class AppConfig {
-    public devMode: boolean = false;
-    public apiEndpoint: string = "";
 }
 
 export abstract class TfsService {

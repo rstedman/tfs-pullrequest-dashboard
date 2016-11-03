@@ -1922,3 +1922,195 @@ declare enum QueryMembership {
      */
     ExpandedDown = 4,
 }
+
+interface Context {
+    getPageContext(): PageContext;
+}
+
+/**
+* Global context placed on each VSSF web page (through json island data) which gives enough information for core TypeScript modules/controls on the page to operate
+*/
+interface PageContext {
+    /**
+    * Configuration for reporting telemetry/usage data to App Insights
+    */
+    appInsightsConfiguration: AppInsightsConfiguration;
+    /**
+    * Core javascript and css references
+    */
+    coreReferences: CoreReferencesContext;
+    /**
+    * Specifies the prefixes for CSS modules that should map to the current service. e.g. "VSS/LoaderPlugins/Css!EMS:ExtensionManagement" would map to ExtensionManagement.css under the themed content path of this service if "EMS" is in the CSSModulePrefixes list.
+    */
+    cssModulePrefixes: string[];
+    /**
+    * Diagnostic related information for the current page
+    */
+    diagnostics: DiagnosticsContext;
+    /**
+    * Feature flag states to include by default in page data (avoids AJAX lookup)
+    */
+    featureAvailability: FeatureAvailabilityContext;
+    /**
+    * Globalization data for the current page based on the current user's settings
+    */
+    globalization: GlobalizationContext;
+    /**
+    * Cached set of hubs and hub groups for the given request/navigation-context
+    */
+    hubsContext: HubsContext;
+    /**
+    * Configuration needed for Microsoft.Ajax library
+    */
+    microsoftAjaxConfig: MicrosoftAjaxConfig;
+    /**
+    * The (AMD) module configuration
+    */
+    moduleLoaderConfig: ModuleLoaderConfiguration;
+    /**
+    * Current navigation context.
+    */
+    navigation: NavigationContext;
+    /**
+    * The service instance type id for the VSTS service serving this page
+    */
+    serviceInstanceId: string;
+    serviceLocations: ServiceLocations;
+    /**
+    * Contains global time zone configuration information (e.g. which dates DST changes)
+    */
+    timeZonesConfiguration: TimeZonesConfiguration;
+    /**
+    * Web Access configuration
+    */
+    webAccessConfiguration: ConfigurationContext;
+    /**
+    * The web context information for the given page request
+    */
+    webContext: WebContext;
+}
+
+interface TimeZonesConfiguration {
+    daylightSavingsAdjustments: DaylightSavingsAdjustmentEntry[];
+}
+
+interface MicrosoftAjaxConfig {
+    cultureInfo: any;
+}
+
+/**
+* Info for the hubs and hub groups applicable for a given context
+*/
+interface HubsContext {
+    HubGroupsCollectionContributionId: string;
+    selectedHubGroupId: string;
+    hubGroups: HubGroup[];
+    hubs: Hub[];
+    /**
+     * List of ids of hubgroups that have been pinned.
+     */
+    pinnedHubGroupIds: string[];
+}
+
+/**
+* Represents a hub group - the first level of navigation
+*/
+interface HubGroup {
+    id: string;
+    name: string;
+    uri: string;
+    order: number;
+    hasHubs: boolean;
+}
+
+/**
+* Contains lists of script and css references that need to be included on the page in order for the controls used by the page to work.
+*/
+interface CoreReferencesContext {
+    /**
+    * Core 3rd party javascript bundle reference
+    */
+    coreScriptsBundle: JavascriptFileReference;
+    /**
+    * Core VSS javascript bundle reference for extension frames
+    */
+    extensionCoreReferences: JavascriptFileReference;
+    /**
+    * Core javascript files referenced on a page
+    */
+    scripts: JavascriptFileReference[];
+    /**
+    * Core CSS files referenced on a page
+    */
+    stylesheets: StylesheetReference[];
+}
+
+/**
+* Reference to a javascript file to include on a page
+*/
+interface JavascriptFileReference {
+    /**
+    * Condition to check in the case that Url lives on a CDN. The fallback script will be included if this check fails.
+    */
+    fallbackCondition: string;
+    /**
+    * Fallback url to use in case Url lives on a CDN
+    */
+    fallbackUrl: string;
+    /**
+    * Id of the reference (JQuery, JQueryUI, MicrosoftAjax, etc.)
+    */
+    identifier: string;
+    /**
+    * Is this a core javascript file that needs to be included in all child extension frames
+    */
+    isCoreModule: boolean;
+    /**
+    * Url of the javascript reference
+    */
+    url: string;
+}
+
+/**
+* Model used to configure how TFS reports usage data to Application Insights
+*/
+interface AppInsightsConfiguration {
+    /**
+    * If true, automatically call "trackPage" when the page is loaded
+    */
+    autoTrackPage: boolean;
+    /**
+    * Optional data used to override the default values sent to trackPage
+    */
+    customTrackPageData: AppInsightsCustomTrackPageData;
+    /**
+    * Set to false if app insights reporting is not enabled/configured
+    */
+    enabled: boolean;
+    /**
+    * The url from which to retrieve app insights scripts
+    */
+    insightsScriptUrl: string;
+    /**
+    * The instrumentation key used to track this deployment's usage
+    */
+    instrumentationKey: string;
+    /**
+    * If true, include collection, project, and team info in the track-page urls
+    */
+    trackProjectInfo: boolean;
+}
+
+/**
+* Model that can be used to customize the values sent to AppInsights via "trackPage"
+*/
+interface AppInsightsCustomTrackPageData {
+    alias: string;
+    metrics: {
+        [key: string]: number;
+    };
+    pageName: string;
+    properties: {
+        [key: string]: string;
+    };
+}
