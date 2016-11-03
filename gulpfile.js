@@ -82,6 +82,10 @@ gulp.task('package', ['build'], function() {
     return run('tfx extension create --root build\\target --manifest-globs manifest.json  --output-path build\\dist').exec()
 });
 
+gulp.task('package:dev', ['build'], function() {
+    return run('tfx extension create --root build\\target --manifest-globs manifest-dev.json  --output-path build\\dist').exec()
+});
+
 gulp.task('watch', function() {
     gulp.watch(paths.buildFiles, ['build']);
     gulp.watch(paths.static, ['copy:static']);

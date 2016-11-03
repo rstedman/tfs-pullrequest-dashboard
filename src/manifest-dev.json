@@ -1,0 +1,58 @@
+{
+    "manifestVersion": 1,
+    "id": "tfs-pullrequest-dashboard-dev",
+    "version": "0.1.2",
+    "name": "Pull Request Dashboard (dev)",
+    "description": "A pull request dashboard for Visual Studio Team Services/Team Foundation Services.",
+    "publisher": "ryanstedman",
+    "links": {
+        "repository":{"uri": "https://github.com/rstedman/tfs-pullrequest-dashboard"},
+        "issues":{"uri": "https://github.com/rstedman/tfs-pullrequest-dashboard/issues"}
+    },
+    "content": {
+        "details":{ "path": "overview.md" }
+    },
+    "tags": ["code", "pull request", "git", "code review","open source"],
+    "screenshots": [
+        {"path":"assets/screenshots/hub_tab.png"},
+        {"path":"assets/screenshots/hub_view.png"},
+        {"path":"assets/screenshots/repo_filter.png"}
+    ],
+    "targets": [{ "id": "Microsoft.VisualStudio.Services" }],
+    "icons": {"default": "assets/images/logo.png"},
+    "categories": ["Code"],
+    "contributions": [
+        {
+            "id": "tfs-pullrequest-dashboard-dev",
+            "type": "ms.vss-web.hub",
+            "description": "Adds a dashboard showing pull requests across all repositories.",
+            "targets": ["ms.vss-code-web.code-hub-group"],
+            "properties": {
+                "name": "Pull Request Dashboard (dev)",
+                "order": 99,
+                "uri": "index.html"
+            }
+        }
+    ],
+    "scopes": ["vso.code", "vso.identity"],
+    "files": [
+        {
+            "path": "index.html", "addressable": true
+        },
+        {
+            "path": "app/app.bundle.min.js", "addressable": true
+        },
+        {
+            "path": "app/app.bundle.min.js.map", "addressable": true, "contentType": "application/json"
+        },
+        {
+            "path": "vendor/vendor.bundle.min.js", "addressable": true
+        },
+        {
+            "path": "vendor/vendor.bundle.min.js.map", "addressable": true, "contentType": "application/json"
+        },
+        {
+            "path": "assets", "addressable": true
+        }
+    ]
+}
