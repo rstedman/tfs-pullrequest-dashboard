@@ -30,8 +30,9 @@ import { PullRequestSortPipe } from "./prSort.pipe"
     AppConfigService,
     {
       provide: APP_INITIALIZER,
-      useFactory: (configService: AppConfigService) => configService.initialize(),
-      deps: [AppConfigService]
+      useFactory: (configService: AppConfigService) => (() => configService.initialize()),
+      deps: [AppConfigService],
+      multi: true
     }
   ],
   bootstrap: [ AppComponent ]
