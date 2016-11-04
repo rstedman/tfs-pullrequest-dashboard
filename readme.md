@@ -10,7 +10,7 @@ To develop and run this project locally, you need to make changes src/app/app.ts
 
 With the local changes made, run:
 
-`npm install && npm run build && npm run serve`
+`npm install && npm run serve`
 
 This will serve the dashboard page at localhost:8080/.  One caveat is that requests to tfs apis have cross-origin resource sharing (CORS) headers in their repsonses, which means that browsers such as chrome and firefox will not automatically handle authentication with the endpoints, and requests will fail.  To work around this issue, either use IE (which does not have this CORS restriction), or run chrome without web security.  See <http://stackoverflow.com/a/19317888> for instructions.
 
