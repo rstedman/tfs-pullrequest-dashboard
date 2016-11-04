@@ -12,10 +12,17 @@
     <link href="assets/css/styles.css" rel="stylesheet">
 
     <script src="vendor/vendor.bundle.min.js"></script>
+    <!-- build:remove -->
+    <script src="system.config.js"></script>
+    <!-- endbuild -->
   </head>
-
   <body>
     <my-app>Loading...</my-app>
   </body>
-  <script src="app/app.bundle.min.js"></script>
+
+  <!-- build:load_bundle -->
+  <script type="text/javascript">
+    System.import('app');
+  </script>
+  <!-- endbuild -->
 </html>

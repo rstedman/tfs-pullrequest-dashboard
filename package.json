@@ -39,6 +39,7 @@
     "gulp-angular2-embed-templates": "^2.2.1",
     "gulp-concat": "^2.6.0",
     "gulp-connect": "^5.0.0",
+    "gulp-html-replace": "^1.6.1",
     "gulp-live-server": "0.0.30",
     "gulp-rename": "^1.2.2",
     "gulp-run": "^1.7.1",

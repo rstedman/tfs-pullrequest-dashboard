@@ -1,7 +1,7 @@
 {
     "manifestVersion": 1,
     "id": "tfs-pullrequest-dashboard-dev",
-    "version": "0.1.2",
+    "version": "0.1.4",
     "name": "Pull Request Dashboard (dev)",
     "description": "A pull request dashboard for Visual Studio Team Services/Team Foundation Services.",
     "publisher": "ryanstedman",
