@@ -1,6 +1,6 @@
 # TFS PullRequest Dashboard
 ## What is it?
-An extension for visual studio team services that adds a hub to the code section of tfs for viewing pull requests across all repositories.  To see specific details about features, including screenshots, see [overview.md](src/assets/overview.md)
+An extension for visual studio team services that adds a hub to the code section of tfs for viewing pull requests across all repositories.  To see specific details about features, including screenshots, see [overview.md](src/overview.md)
 
 ## Getting started
 
