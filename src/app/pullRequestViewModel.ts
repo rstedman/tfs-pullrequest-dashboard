@@ -24,7 +24,13 @@ export class PullRequestViewModel {
         this.sourceRefName = pullRequest.sourceRefName.replace("refs/heads/", "");
         this.targetRefName = pullRequest.targetRefName.replace("refs/heads/", "");
         this.hasMergeConflicts = pullRequest.mergeStatus == PullRequestAsyncStatus.Conflicts;
-        this.reviewers = pullRequest.reviewers;
+        this.reviewers = reviewers.sort((a:IdentityRefWithVote, b: IdentityRefWithVote) => {
+                if (a.isRequired && !b.isRequired)
+                    return -1;
+                if (!a.isRequired && b.isRequired)
+                    return 1;
+                return 0;
+            });
     }
 
     public remoteUrl: string;
