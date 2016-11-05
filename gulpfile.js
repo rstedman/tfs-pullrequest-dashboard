@@ -94,7 +94,7 @@ gulp.task('compile:embed', function () {
 
 // compiles just local sources
 gulp.task('compile:sources', function(callback) {
-    runSequence( 'compile:copy', 'compile:embed', callback);
+    runSequence( 'tslint', 'compile:copy', 'compile:embed', callback);
 });
 
 gulp.task('compile', ['copy:vendor', 'compile:sources']);

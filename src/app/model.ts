@@ -1,3 +1,8 @@
+// not sure why, but get compilation errors if there are no imports.
+/* tslint:disable */
+import {OpaqueToken} from "@angular/core";
+/* tslint:enable */
+
 // Represents an user in tfs. Extends the identity model to include the identity
 // info for membersOf
 export interface User {
@@ -32,12 +37,12 @@ export enum PullRequestAsyncStatus {
 }
 
 export abstract class TfsService {
-    abstract getCurrentUser(): Promise<User>;
-    abstract getPullRequests(repo: GitRepository): Promise<GitPullRequest[]>;
-    abstract getRepositories(): Promise<GitRepository[]>;
+    public abstract getCurrentUser(): Promise<User>;
+    public abstract getPullRequests(repo: GitRepository): Promise<GitPullRequest[]>;
+    public abstract getRepositories(): Promise<GitRepository[]>;
 }
 
 export abstract class StorageService {
-    abstract getValue(key: string): Promise<string>;
-    abstract setValue(key: string, value: string): Promise<string>;
+    public abstract getValue(key: string): Promise<string>;
+    public abstract setValue(key: string, value: string): Promise<string>;
 }
