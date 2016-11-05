@@ -1,17 +1,21 @@
 {
   "compilerOptions": {
-    "target": "ES5",
+    "target": "es5",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "sourceMap": true,
     "noImplicitAny": false,
     "module": "system",
     "moduleResolution": "node",
+    "noEmitOnError": true,
     "pretty": true
   },
+  "exclude": [
+    "node_modules/",
+    "build/"
+  ],
   "filesGlob": [
     "src/**/*.ts",
-    "typings/index.d.ts",
-    "typings/tsd.d.ts"
+    "typings/index.d.ts"
   ]
 }

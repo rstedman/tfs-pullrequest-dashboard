@@ -12,6 +12,7 @@ var embedTemplates = require('gulp-angular2-embed-templates');
 var path = require('path');
 var htmlreplace = require('gulp-html-replace');
 var tslint = require('gulp-tslint');
+var ts = require('gulp-typescript');
 
 var paths = {
     buildFiles: ['./gulpfile.js', './package.json', './typings.json', './tsconfig.json', './system.config.js'],
@@ -32,7 +33,7 @@ gulp.task('copy:multiselect-src', function() {
     // the multiselect-src module isn't packaged with compiled sources, so instead copy it into the app so it can be
     // compiled with it.
     return gulp.src(['./node_modules/angular-2-dropdown-multiselect/src/multiselect-dropdown.ts'])
-        .pipe(gulp.dest('./build/app/'));
+        .pipe(gulp.dest('./src/app/'));
 });
 
 gulp.task('bundle:app', function() {
@@ -69,9 +70,8 @@ gulp.task('bundle:vendor', function() {
 });
 
 gulp.task('tslint', function() {
-    return gulp.src(['./src/app/*.ts'])
+    return gulp.src(['./src/app/*.ts','!./src/app/multiselect-dropdown.ts'])
         .pipe(tslint({
-            //program: program,
             configuration: 'tslint.json',
             formatter: 'prose'
         }))
@@ -80,6 +80,14 @@ gulp.task('tslint', function() {
             reportLimit: 20
         }));
 });
+
+// actual transpilation is done in systemjs. This just runs the source through the compiler for type checking,
+// so we can get any compiler errors without having to go through the more expensive bundling step
+gulp.task('compile:typecheck', ['copy:multiselect-src'], function() {
+    var tsProject = ts.createProject('tsconfig.json');
+    return tsProject.src()
+        .pipe(tsProject())
+})
 
 gulp.task('compile:copy', ['copy:multiselect-src'], function() {
     return gulp.src(['./src/**/*', 'tsconfig.json'])
@@ -94,7 +102,7 @@ gulp.task('compile:embed', function () {
 
 // compiles just local sources
 gulp.task('compile:sources', function(callback) {
-    runSequence( 'tslint', 'compile:copy', 'compile:embed', callback);
+    runSequence( ['tslint', 'compile:typecheck'], 'compile:copy', 'compile:embed', callback);
 });
 
 gulp.task('compile', ['copy:vendor', 'compile:sources']);

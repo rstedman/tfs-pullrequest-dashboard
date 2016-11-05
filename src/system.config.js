@@ -39,18 +39,7 @@
   var config = {
     transpiler: 'ts',
     typescriptOptions: {
-      //typeCheck: 'strict',
       tsconfig: true,
-      typings: {
-        "@angular/common": "index.d.ts",
-        "@angular/compiler": "index.d.ts",
-        "@angular/core": "index.d.ts",
-        "@angular/http": "index.d.ts",
-        "@angular/forms": "index.d.ts",
-        "@angular/platform-browser": "index.d.ts",
-        "@angular/platform-browser-dynamic": "index.d.ts",
-        "rxjs": "Rx.d.ts"
-      },
     },
     paths: paths,
     map: map,
