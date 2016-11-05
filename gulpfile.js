@@ -115,6 +115,7 @@ gulp.task('package', ['build'], function() {
     return run('tfx extension create --root build --manifest-globs manifest.json  --output-path dist').exec()
 });
 
+// for building dev versions of the extension that can be uploaded without chaning the released version
 gulp.task('package:dev', ['build'], function() {
     return run('tfx extension create --root build --manifest-globs manifest-dev.json  --output-path dist').exec()
 });
