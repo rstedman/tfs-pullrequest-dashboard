@@ -1,5 +1,11 @@
 {
   "globalDependencies": {
-    "es6-shim": "registry:dt/es6-shim#0.31.2+20160602141504"
+    "es6-shim": "registry:dt/es6-shim#0.31.2+20160602141504",
+    "express": "registry:dt/express#4.0.0+20160708185218",
+    "express-serve-static-core": "registry:dt/express-serve-static-core#4.0.0+20161012061536",
+    "jasmine": "registry:dt/jasmine#2.5.0+20161003201800",
+    "karma": "registry:dt/karma#0.13.9+20160811111312",
+    "log4js": "registry:dt/log4js#0.0.0+20160608042355",
+    "node": "registry:dt/node#6.0.0+20161019125345"
   }
 }

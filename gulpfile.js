@@ -13,6 +13,7 @@ var path = require('path');
 var htmlreplace = require('gulp-html-replace');
 var tslint = require('gulp-tslint');
 var ts = require('gulp-typescript');
+var karma = require('karma');
 
 var paths = {
     buildFiles: ['./gulpfile.js', './package.json', './typings.json', './tsconfig.json', './system.config.js'],
@@ -26,7 +27,7 @@ gulp.task('clean', function() {
 
 gulp.task('copy:vendor', function() {
     return gulp.src(['node_modules/@angular/**/*', 'node_modules/rxjs/**/*', 'node_modules/typescript/**/*', 'node_modules/plugin-typescript/**/*'], {base: './node_modules'})
-        .pipe(gulp.dest('./build/vendor'));
+        .pipe(gulp.dest('./build/node_modules'));
 })
 
 gulp.task('copy:multiselect-src', function() {
@@ -102,10 +103,17 @@ gulp.task('compile:embed', function () {
 
 // compiles just local sources
 gulp.task('compile:sources', function(callback) {
-    runSequence( ['tslint', 'compile:typecheck'], 'compile:copy', 'compile:embed', callback);
+    runSequence( ['tslint', 'compile:typecheck', 'test'], 'compile:copy', 'compile:embed', callback);
 });
 
 gulp.task('compile', ['copy:vendor', 'compile:sources']);
+
+gulp.task('test', ['copy:multiselect-src'], function(callback) {
+    new karma.Server({
+        configFile: __dirname + '/karma.conf.js',
+        singleRun: true
+    }, callback).start();
+});
 
 gulp.task('build', function(callback) {
     runSequence('clean', 'compile', ['bundle:vendor', 'bundle:app', 'html:replace'], callback);
@@ -122,7 +130,7 @@ gulp.task('package:dev', ['build'], function() {
 
 gulp.task('serve', ['compile'], function() {
 
-    gulp.watch(['./src/**/*.*', './tsconfig.json'], ['compile:sources']);
+    gulp.watch(['./src/**/*.*', './tsconfig.json', './tslint.json'], ['compile:sources']);
 
     connect.server({
         root: './build'

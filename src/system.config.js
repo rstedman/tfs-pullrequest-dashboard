@@ -1,7 +1,7 @@
 (function(global) {
 
   var paths = {
-    'npm:': 'vendor/'
+    'npm:': 'node_modules/'
   };
 
   // map tells the System loader where to look for things
