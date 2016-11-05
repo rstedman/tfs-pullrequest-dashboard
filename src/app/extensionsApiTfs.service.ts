@@ -1,21 +1,18 @@
 import {Injectable, NgZone} from "@angular/core";
-import {Http, Response} from "@angular/http";
 import "rxjs/Rx";
 
 import {TfsService, User} from "./model";
 
-/**
- ** TfsService implementation which uses the VSS extension apis for fetching data
- **/
+// TfsService implementation which uses the VSS extension apis for fetching data
 @Injectable()
 export class ExtensionsApiTfsService extends TfsService {
 
     constructor(private gitClient: GitClient,
-        private identitiesClient: IdentitiesClient,
-        private isHosted: boolean,
-        private projectName: string,
-        private userContext: UserContext,
-        private zone: NgZone) {
+                private identitiesClient: IdentitiesClient,
+                private isHosted: boolean,
+                private projectName: string,
+                private userContext: UserContext,
+                private zone: NgZone) {
 
         super();
     }
@@ -29,7 +26,7 @@ export class ExtensionsApiTfsService extends TfsService {
         };
         // The identity apis aren't available in Visual Studio Team Services, only for Team Foundation Services.
         // If this is running as an extension in VSTS, we aren't able to return any group membership information for the current user.
-        if(this.isHosted) {
+        if (this.isHosted) {
             return user;
         }
 
@@ -53,21 +50,6 @@ export class ExtensionsApiTfsService extends TfsService {
         });
     }
 
-    private async getMembersOf(userId: string): Promise<Identity[]> {
-        // get the identities that the current user is a member of
-        let members = await this.identitiesClient.readMembersOf(userId);
-        let promises: Promise<Identity>[] = [];
-        for(let memberId of members) {
-            // ignore any non-tfs identities
-            if (!memberId.startsWith("Microsoft.TeamFoundation.Identity"))
-                continue;
-
-            promises.push(this.identitiesClient.readIdentity(memberId));
-        }
-        let identities = await Promise.all(promises);
-        return identities;
-    }
-
     public async getPullRequests(repo: GitRepository): Promise<GitPullRequest[]> {
         let prs = await this.gitClient.getPullRequests(repo.id, {
             includeLinks: true,
@@ -80,7 +62,7 @@ export class ExtensionsApiTfsService extends TfsService {
         return new Promise<GitPullRequest[]>((resolve, reject) => {
             // use ngzone to bring promise callback back into the angular zone
             this.zone.run(() => resolve(prs));
-        })
+        });
     }
 
     public async getRepositories(): Promise<GitRepository[]> {
@@ -88,6 +70,22 @@ export class ExtensionsApiTfsService extends TfsService {
         return new Promise<GitRepository[]>((resolve, reject) => {
             // use ngzone to bring promise callback back into the angular zone
             this.zone.run(() => resolve(repos));
-        })
+        });
+    }
+
+    private async getMembersOf(userId: string): Promise<Identity[]> {
+        // get the identities that the current user is a member of
+        let members = await this.identitiesClient.readMembersOf(userId);
+        let promises: Promise<Identity>[] = [];
+        for (let memberId of members) {
+            // ignore any non-tfs identities
+            if (!memberId.startsWith("Microsoft.TeamFoundation.Identity")) {
+                continue;
+            }
+
+            promises.push(this.identitiesClient.readIdentity(memberId));
+        }
+        let identities = await Promise.all(promises);
+        return identities;
     }
 }

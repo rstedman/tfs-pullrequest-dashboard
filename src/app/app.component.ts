@@ -1,4 +1,4 @@
-import { Component, OnInit, Provider } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 
 import { User, TfsService, StorageService } from "./model";
 import { PullRequestViewModel } from "./pullRequestViewModel";
@@ -16,8 +16,6 @@ export class AppComponent implements OnInit {
 
     private static repoFilterKey = "repoFilter";
 
-    constructor(private tfsService: TfsService, private storage: StorageService) { }
-
     public pullRequests: PullRequestViewModel[] = [];
 
     public repositories: GitRepository[] = [];
@@ -26,20 +24,20 @@ export class AppComponent implements OnInit {
 
     public filterSettings: IMultiSelectSettings = {
         enableSearch: true,
-        buttonClasses: 'btn btn-default fa fa-filter',
+        buttonClasses: "btn btn-default fa fa-filter",
         closeOnSelect: false,
         showCheckAll: true,
         showUncheckAll: true
     };
 
     public filterTexts: IMultiSelectTexts = {
-        checkAll: 'Select all',
-        uncheckAll: 'Unselect all',
-        checked: 'repos selected',
-        checkedPlural: 'repos selected',
-        searchPlaceholder: 'Search...',
-        defaultTitle: 'Select',
-    }
+        checkAll: "Select all",
+        uncheckAll: "Unselect all",
+        checked: "repos selected",
+        checkedPlural: "repos selected",
+        searchPlaceholder: "Search...",
+        defaultTitle: "Select"
+    };
 
     public filteredRepoIds: string[] = [];
 
@@ -47,27 +45,31 @@ export class AppComponent implements OnInit {
 
     public repoOptions: IMultiSelectOption[] = [];
 
+    constructor(private tfsService: TfsService, private storage: StorageService) { }
+
     public ngOnInit() {
         this.refresh();
     }
 
-    async refresh() {
+    public async refresh() {
         let serializedFilter = await this.storage.getValue(AppComponent.repoFilterKey);
         if (serializedFilter && serializedFilter !== "") {
             this.filteredRepoIds = JSON.parse(serializedFilter);
         }
         this.currentUser = await this.tfsService.getCurrentUser();
         let repos = await this.tfsService.getRepositories();
-        this.repositories = repos.sort((a,b) => {
-            if(a.name.toLowerCase() > b.name.toLowerCase())
+        this.repositories = repos.sort((a, b) => {
+            if (a.name.toLowerCase() > b.name.toLowerCase()) {
                 return 1;
-            if(a.name.toLowerCase() < b.name.toLowerCase())
+            }
+            if (a.name.toLowerCase() < b.name.toLowerCase()) {
                 return -1;
+            }
             return 0;
         });
 
         this.pullRequests = [];
-        for(let i=0; i < this.repositories.length; i++) {
+        for (let i = 0; i < this.repositories.length; i++) {
             let repo = this.repositories[i];
 
             this.repoOptions.push({
@@ -90,7 +92,7 @@ export class AppComponent implements OnInit {
 
     public onFilteredSelectionsChanged(unfiltered: number[]) {
         this.filteredRepoIds = [];
-        for(let repoOption of this.repoOptions) {
+        for (let repoOption of this.repoOptions) {
             if (unfiltered.indexOf(repoOption.id) < 0) {
                 let repo = this.getRepoByName(repoOption.name);
                 this.filteredRepoIds.push(repo.id);
@@ -98,14 +100,6 @@ export class AppComponent implements OnInit {
         }
 
         this.storage.setValue(AppComponent.repoFilterKey, JSON.stringify(this.filteredRepoIds));
-    }
-
-    private getRepoByName(name: string): GitRepository {
-        for (let repo of this.repositories) {
-            if (repo.name === name) {
-                return repo;
-            }
-        }
     }
 
     public getVoteClasses(reviewer: IdentityRefWithVote): string {
@@ -120,5 +114,13 @@ export class AppComponent implements OnInit {
             result += " fa-minus-circle waiting";
         }
         return result;
+    }
+
+    private getRepoByName(name: string): GitRepository {
+        for (let repo of this.repositories) {
+            if (repo.name === name) {
+                return repo;
+            }
+        }
     }
 }

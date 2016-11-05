@@ -1,20 +1,16 @@
-import { OpaqueToken } from "@angular/core"
-
-/**
-    Represents an user in tfs. Extends the identity model to include the identity
-    info for membersOf
-**/
+// Represents an user in tfs. Extends the identity model to include the identity
+// info for membersOf
 export interface User {
-    /** The guid id of the identity **/
+    // The guid id of the identity
     id: string;
 
-    /** The displayname of the identity **/
+    // The displayname of the identity
     displayName: string;
 
-    /** The unique name of the indenity **/
+    // The unique name of the indenity
     uniqueName: string;
 
-    /** other identities this identity is a member of **/
+    // other identities this identity is a member of
     memberOf: Identity[];
 }
 

@@ -1,15 +1,12 @@
 import { Injectable } from "@angular/core";
 
-/**
-  Used to initialize the application during bootstrap, including resolving VSS services so that they
-  can be injected in the constructors of other services.
-
-    This is the only class that should be interacting with the VSS module.
-**/
+// Used to initialize the application during bootstrap, including resolving VSS services so that they
+// can be injected in the constructors of other services.
+// This is the only class that should be interacting with the VSS module.
 @Injectable()
 export class AppConfigService {
 
-    //change to true if you want to run in devmode
+    // change to true if you want to run in devmode
     private _devMode: boolean = false;
     // change this to the endpoint of the tfs service that you wish to develop against
     private _devApiEndpoint: string = "http://<host>:8080/tfs/DefaultCollection";
@@ -30,8 +27,8 @@ export class AppConfigService {
       return new Promise<boolean>((resolve, reject) => {
 
         // don't do any of the VSS when in dev mode
-        if(this.devMode) {
-          resolve(true)
+        if (this.devMode) {
+          resolve(true);
           return;
         }
 
@@ -52,7 +49,6 @@ export class AppConfigService {
                           resolve(true);
                       });
           });
-      })
+      });
     }
 }
-

@@ -6,19 +6,20 @@ import {TfsService, User, PullRequestAsyncStatus} from "./model";
 import {AppConfigService} from "./appConfig.service";
 
 @Injectable()
-/** Interacts with TFS REST APis.  Meant for use when not running in the context of a TFS extension (ie. development) **/
+// Interacts with TFS REST APis.  Meant for use when not running in the context of a TFS extension (ie. development)
 export class RestfulTfsService extends TfsService {
-    constructor(private http: Http, config: AppConfigService) {
-        super();
-
-        this.baseUri = config.devApiEndpoint;
-    }
 
     private USER_HEADER_NAME: string  = "x-vss-userdata";
     // need to specify the version to get the response objects to look the same as when requested using the VSS Extension APIs
     private IDENTITIES_API_ACCEPT_HEADER: string = "application/json; api-version=2.3-preview.1";
 
     private baseUri: string;
+
+    constructor(private http: Http, config: AppConfigService) {
+        super();
+
+        this.baseUri = config.devApiEndpoint;
+    }
 
     public async getCurrentUser(): Promise<User> {
         // just do a basic query to tfs to be able to look at response headers
@@ -60,47 +61,22 @@ export class RestfulTfsService extends TfsService {
         return user;
     }
 
-    private async getMembersOf(userId: string): Promise<Identity[]> {
-        let response = await (this.http.get(`${this.baseUri}/_apis/Identities/${userId}/membersOf`, {
-            withCredentials: true,
-            headers: new Headers({"Accept": this.IDENTITIES_API_ACCEPT_HEADER})
-        }).toPromise());
-        let promises: Promise<Response>[] = [];
-        let result: Identity[] = [];
-        let memberOfIds: string[] = this.extractData(response);
-        for (let memberId of memberOfIds) {
-            // ignore any non-tfs identities
-            if (!memberId.startsWith("Microsoft.TeamFoundation.Identity"))
-                continue;
-
-            promises.push(this.http.get(`${this.baseUri}/_apis/Identities/${memberId}`, {
-                withCredentials: true,
-                headers: new Headers({"Accept": this.IDENTITIES_API_ACCEPT_HEADER})
-            }).toPromise());
-        }
-
-        let responses = await Promise.all(promises);
-        for (let response of responses) {
-            result.push(response.json());
-        }
-        return result;
-    }
-
     public async getPullRequests(repo: GitRepository): Promise<GitPullRequest[]> {
         let url = `${repo.url}/pullRequests?status=active`;
         let prs: any[] = await this.http.get(url, {withCredentials: true})
             .toPromise()
             .then(this.extractData)
             .catch(this.handleError);
-        for(let pr of prs) {
-            if(pr.mergeStatus) {
+        for (let pr of prs) {
+            if (pr.mergeStatus) {
                 // the rest apis return a string for the mergestatus, but the VSS APIs convert that into
                 // an int.  Do the same here, so we can treat PRs the same throughout the app.
                 // note - we only care about conflicts for now, since we only show something different on merge conflicts.
-                if(pr.mergeStatus === "conflicts")
+                if (pr.mergeStatus === "conflicts") {
                     pr.mergeStatus = PullRequestAsyncStatus.Conflicts;
-                else
+                } else {
                     pr.mergeStatus = PullRequestAsyncStatus.Succeeded;
+                }
             }
         }
         // with the mergeStatus converted, we should be able to just treat the prs returned by the rest api
@@ -113,6 +89,33 @@ export class RestfulTfsService extends TfsService {
             .toPromise()
             .then(this.extractData)
             .catch(this.handleError);
+    }
+
+    private async getMembersOf(userId: string): Promise<Identity[]> {
+        let response = await (this.http.get(`${this.baseUri}/_apis/Identities/${userId}/membersOf`, {
+            withCredentials: true,
+            headers: new Headers({"Accept": this.IDENTITIES_API_ACCEPT_HEADER})
+        }).toPromise());
+        let promises: Promise<Response>[] = [];
+        let result: Identity[] = [];
+        let memberOfIds: string[] = this.extractData(response);
+        for (let memberId of memberOfIds) {
+            // ignore any non-tfs identities
+            if (!memberId.startsWith("Microsoft.TeamFoundation.Identity")) {
+                continue;
+            }
+
+            promises.push(this.http.get(`${this.baseUri}/_apis/Identities/${memberId}`, {
+                withCredentials: true,
+                headers: new Headers({"Accept": this.IDENTITIES_API_ACCEPT_HEADER})
+            }).toPromise());
+        }
+
+        let responses = await Promise.all(promises);
+        for (let r of responses) {
+            result.push(r.json());
+        }
+        return result;
     }
 
     private extractData(res: Response): any {

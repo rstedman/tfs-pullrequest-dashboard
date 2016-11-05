@@ -11,18 +11,17 @@ var run = require('gulp-run');
 var embedTemplates = require('gulp-angular2-embed-templates');
 var path = require('path');
 var htmlreplace = require('gulp-html-replace');
+var tslint = require('gulp-tslint');
 
 var paths = {
     buildFiles: ['./gulpfile.js', './package.json', './typings.json', './tsconfig.json', './system.config.js'],
     compiledFiles: ['src/**/*.ts', 'typings/index.d.ts', 'src/**/*.js'],
     vendor_js: ['node_modules/zone.js/dist/zone.js','node_modules/reflect-metadata/Reflect.js', 'node_modules/systemjs/dist/system.src.js', 'node_modules/es6-shim/es6-shim.js', 'node_modules/vss-web-extension-sdk/lib/VSS.SDK.js'],
-    buildOut: 'build/'
 }
 
 gulp.task('clean', function() {
     return del(['build']);
 });
-
 
 gulp.task('copy:vendor', function() {
     return gulp.src(['node_modules/@angular/**/*', 'node_modules/rxjs/**/*', 'node_modules/typescript/**/*', 'node_modules/plugin-typescript/**/*'], {base: './node_modules'})
@@ -66,7 +65,20 @@ gulp.task('bundle:vendor', function() {
         .pipe(uglify())
         .pipe(rename('vendor.bundle.min.js'))
         .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest(paths.buildOut + '/vendor'));
+        .pipe(gulp.dest('./build/vendor'));
+});
+
+gulp.task('tslint', function() {
+    return gulp.src(['./src/app/*.ts', '!./src/app/vss-interfaces.d.ts'])
+        .pipe(tslint({
+            //program: program,
+            configuration: 'tslint.json',
+            formatter: 'prose'
+        }))
+        .pipe(tslint.report({
+            summarizeFailureOutput: false,
+            reportLimit: 20
+        }));
 });
 
 gulp.task('compile:copy', ['copy:multiselect-src'], function() {
@@ -82,7 +94,7 @@ gulp.task('compile:embed', function () {
 
 // compiles just local sources
 gulp.task('compile:sources', function(callback) {
-    runSequence('compile:copy', 'compile:embed', callback);
+    runSequence( 'compile:copy', 'compile:embed', callback);
 });
 
 gulp.task('compile', ['copy:vendor', 'compile:sources']);
