@@ -69,7 +69,7 @@ gulp.task('bundle:vendor', function() {
 });
 
 gulp.task('tslint', function() {
-    return gulp.src(['./src/app/*.ts', '!./src/app/vss-interfaces.d.ts'])
+    return gulp.src(['./src/app/*.ts'])
         .pipe(tslint({
             //program: program,
             configuration: 'tslint.json',

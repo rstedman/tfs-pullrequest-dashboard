@@ -1,3 +1,4 @@
+/* tslint:disable */
 /**
     These interfaces are copied from the vss-web-extension-sdk node module.
     This is an ugly hack to work around issues that Typescript 2 seems to currently have
