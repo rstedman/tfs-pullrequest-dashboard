@@ -32,11 +32,8 @@ module.exports = function(config) {
       'node_modules/zone.js/dist/async-test.js',
       'node_modules/zone.js/dist/fake-async-test.js',
 
-
       // typescript
       'node_modules/typescript/lib/typescript.js',
-      // plugin-typescript
-      'node_modules/plugin-typescript/lib/plugin.js',
 
       // RxJs
       { pattern: 'node_modules/rxjs/**/*.js', included: false, watched: false },
