@@ -49,20 +49,18 @@ module.exports = function(config) {
 
       // application & spec code paths loaded via module imports
       { pattern: appSrcBase + '**/*.ts', included: false, watched: true },
+      { pattern: testSrcBase + '**/*.ts', included: false, watched: true },
 
       // Asset (HTML & CSS) paths loaded via Angular's component compiler
       // (these paths need to be rewritten, see proxies section)
       { pattern: appSrcBase + '**/*.html', included: false, watched: true },
-      { pattern: appSrcBase + '**/*.css', included: false, watched: true },
-
-      // Paths for debugging with source maps in dev tools
-      { pattern: testSrcBase + '**/*.ts', included: false, watched: true }
+      { pattern: appSrcBase + '**/*.css', included: false, watched: true }
     ],
 
     // Proxied base paths for loading assets
     proxies: {
       // required for component assets fetched by Angular's compiler
-      "/src/": '/base/src/'
+      '/src/': '/base/src/'
     },
 
     exclude: [],

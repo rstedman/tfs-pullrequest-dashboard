@@ -1,5 +1,6 @@
 import {PullRequestViewModel} from "../src/app/pullRequestViewModel";
 import {User, PullRequestAsyncStatus} from "../src/app/model";
+import {TestUtils} from "./testHelpers";
 
 interface Voter {
     id: string;
@@ -25,8 +26,8 @@ describe("PullRequestViewModel", () => {
         displayName: "test user",
         uniqueName: "testuser1",
         memberOf: [
-            createIdentity("group1"),
-            createIdentity("group2")
+            TestUtils.createIdentity("group1"),
+            TestUtils.createIdentity("group2")
         ]
     };
 
@@ -40,87 +41,8 @@ describe("PullRequestViewModel", () => {
         remoteUrl: "http://git/repo1"
     };
 
-    function createIdentity(id: string): Identity {
-        return {
-            customDisplayName: id,
-            descriptor: null,
-            id: id,
-            isActive: true,
-            isContainer: true,
-            masterId: id,
-            memberIds: [],
-            memberOf: [],
-            members: [],
-            metaTypeId: 0,
-            properties: null,
-            providerDisplayName: id,
-            resourceVersion: null,
-            uniqueUserId: 0
-        };
-    }
-
-    function voterToIdentityRef(voter: Voter): IdentityRefWithVote {
-        let result: IdentityRefWithVote = {
-            displayName: voter.id,
-            id: voter.id,
-            imageUrl: null,
-            isAadIdentity: false,
-            isContainer: false,
-            profileUrl: null,
-            uniqueName: null,
-            url: null,
-            isRequired: voter.required,
-            reviewerUrl: null,
-            vote: voter.vote,
-            votedFor: []
-        };
-        return result;
-    }
-
-    function createPullRequest(details: SimplePullRequest): GitPullRequest {
-        let result: GitPullRequest = {
-            _links: null,
-            pullRequestId: details.id,
-            autoCompleteSetBy: null,
-            closedBy: null,
-            closedDate: null,
-            codeReviewId: 0,
-            commits: [],
-            completionOptions: null,
-            completionQueueTime: null,
-            createdBy: {
-                displayName: details.createdById,
-                id: details.createdById,
-                url: `http://images/${details.createdById}`,
-                imageUrl: null,
-                isAadIdentity: false,
-                isContainer: false,
-                profileUrl: null,
-                uniqueName: details.createdById
-            },
-            creationDate: details.created,
-            description: details.title,
-            lastMergeCommit: null,
-            lastMergeSourceCommit: null,
-            lastMergeTargetCommit: null,
-            mergeId: null,
-            status: 1,
-            supportsIterations: true,
-            targetRefName: details.targetBranch,
-            sourceRefName: details.sourceBranch,
-            title: details.title,
-            url: null,
-            workItemRefs: [],
-            remoteUrl: null,
-            repository: null,
-            mergeStatus: details.mergeStatus,
-            reviewers: details.reviewers.map(voterToIdentityRef)
-        };
-        return result;
-    }
-
     function getSimplePR(): GitPullRequest {
-        return createPullRequest({
+        return TestUtils.createPullRequest({
             created: new Date(),
             createdById: "user1",
             id: 1,
@@ -180,7 +102,7 @@ describe("PullRequestViewModel", () => {
     it("sets assignedToMe correctly", () => {
         let pr = getSimplePR();
         pr.reviewers.push(
-            voterToIdentityRef({
+            TestUtils.voterToIdentityRef({
                 id: defaultUser.id,
                 required: false,
                 vote: 0
@@ -194,7 +116,7 @@ describe("PullRequestViewModel", () => {
     it("sets assignedToMyTeam correctly", () => {
         let pr = getSimplePR();
         pr.reviewers.push(
-            voterToIdentityRef({
+            TestUtils.voterToIdentityRef({
                 id: "group2",
                 required: false,
                 vote: 0
@@ -215,22 +137,22 @@ describe("PullRequestViewModel", () => {
     it("sorts required reviewers first", () => {
         let pr = getSimplePR();
         pr.reviewers = [
-            voterToIdentityRef({
+            TestUtils.voterToIdentityRef({
                 id: "non_req1",
                 required: false,
                 vote: 0
             }),
-            voterToIdentityRef({
+            TestUtils.voterToIdentityRef({
                 id: "req1",
                 required: true,
                 vote: 0
             }),
-            voterToIdentityRef({
+            TestUtils.voterToIdentityRef({
                 id: "non_req2",
                 required: false,
                 vote: 0
             }),
-            voterToIdentityRef({
+            TestUtils.voterToIdentityRef({
                 id: "req2",
                 required: true,
                 vote: 0

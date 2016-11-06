@@ -18,9 +18,10 @@ var allSpecFiles = Object.keys(window.__karma__.files)
 
 System.config({
   baseURL: 'base',
-  // Extend usual application package list with test folder
-  packages: { 'test': { defaultExtension: 'ts' } },
-  packages: { 'src/app': { defaultExtension: 'ts' } },
+  packages: {
+    'src/app': { defaultExtension: 'ts' } ,
+    'test': { defaultExtension: 'ts' }
+  },
 
   // Assume npm: is set in `paths` in systemjs.config
   // Map the angular testing umd bundles
@@ -35,6 +36,7 @@ System.config({
     '@angular/forms/testing': 'npm:@angular/forms/bundles/forms-testing.umd.js',
   },
 });
+
 
 System.import('src/system.config.js')
   .then(initTestBed)
