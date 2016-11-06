@@ -7,7 +7,7 @@ import { PullRequestViewModel } from "./pullRequestViewModel";
 })
 @Injectable()
 export class PullRequestSortPipe  implements PipeTransform {
-    public transform(items: PullRequestViewModel[]): any {
+    public transform(items: PullRequestViewModel[]): PullRequestViewModel[] {
         return items.sort((a: PullRequestViewModel, b: PullRequestViewModel) => {
             if (a.createdDate > b.createdDate) {
                 return 1;

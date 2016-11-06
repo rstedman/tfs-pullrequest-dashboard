@@ -1,5 +1,5 @@
 import {Injectable, Pipe, PipeTransform} from "@angular/core";
-import { PullRequestViewModel } from "./pullRequestViewModel";
+import {PullRequestViewModel} from "./pullRequestViewModel";
 
 @Pipe({
     name: "repoFilter",
