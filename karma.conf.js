@@ -2,7 +2,6 @@ module.exports = function(config) {
 
   var appSrcBase = 'src/';       // app source TS files
   var testSrcBase= 'test/';       // test source TS files
-  var appAssets  = 'src/app/'; // component assets fetched by Angular's compiler
 
 
   config.set({
@@ -33,6 +32,12 @@ module.exports = function(config) {
       'node_modules/zone.js/dist/async-test.js',
       'node_modules/zone.js/dist/fake-async-test.js',
 
+
+      // typescript
+      'node_modules/typescript/lib/typescript.js',
+      // plugin-typescript
+      'node_modules/plugin-typescript/lib/plugin.js',
+
       // RxJs
       { pattern: 'node_modules/rxjs/**/*.js', included: false, watched: false },
       { pattern: 'node_modules/rxjs/**/*.js.map', included: false, watched: false },
@@ -57,12 +62,12 @@ module.exports = function(config) {
       { pattern: testSrcBase + '**/*.ts', included: false, watched: true }
     ],
 
-/*    // Proxied base paths for loading assets
+    // Proxied base paths for loading assets
     proxies: {
       // required for component assets fetched by Angular's compiler
-      "/": appAssets
+      "/src/": '/base/src/'
     },
-*/
+
     exclude: [],
     // disabled HtmlReporter; suddenly crashing w/ strange socket error
     reporters: ['progress', 'kjhtml'],//'html'],

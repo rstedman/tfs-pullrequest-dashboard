@@ -7,34 +7,20 @@ Error.stackTraceLimit = 0; // "No stacktrace"" is usually best for app testing.
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
 
-var srcPath = '/src/';
-var testPath = "/test/"
-
 __karma__.loaded = function () { };
-
-function isTsFile(path) {
-  return path.slice(-3) == '.ts';
-}
 
 function isSpecFile(path) {
   return /\.spec\.(.*\.)?ts$/.test(path);
 }
 
-function isTestFile(path) {
-  return isTsFile(path) && (path.substr(0, testPath.length) == testPath);
-}
-
 var allSpecFiles = Object.keys(window.__karma__.files)
-  .filter(isSpecFile);;
-  //.filter(isTestFile);
+  .filter(isSpecFile);
 
 System.config({
   baseURL: 'base',
-  paths: {
-    'npm': 'node_modules'
-  },
   // Extend usual application package list with test folder
-  packages: { 'testing': { main: 'index.js', defaultExtension: 'js' } },
+  packages: { 'test': { defaultExtension: 'ts' } },
+  packages: { 'src/app': { defaultExtension: 'ts' } },
 
   // Assume npm: is set in `paths` in systemjs.config
   // Map the angular testing umd bundles
@@ -59,7 +45,6 @@ function initTestBed(){
     System.import('@angular/core/testing'),
     System.import('@angular/platform-browser-dynamic/testing')
   ])
-
   .then(function (providers) {
     var coreTesting    = providers[0];
     var browserTesting = providers[1];
