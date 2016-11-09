@@ -2,23 +2,6 @@ import {PullRequestViewModel} from "../src/app/pullRequestViewModel";
 import {User, PullRequestAsyncStatus} from "../src/app/model";
 import {TestUtils} from "./testHelpers";
 
-interface Voter {
-    id: string;
-    required: boolean;
-    vote: number;
-}
-
-interface SimplePullRequest {
-    id: number;
-    mergeStatus: PullRequestAsyncStatus;
-    createdById?: string;
-    reviewers?: Voter[];
-    created?: Date;
-    sourceBranch?: string;
-    targetBranch?: string;
-    title?: string;
-}
-
 describe("PullRequestViewModel", () => {
 
     let defaultUser: User = {

@@ -1,12 +1,12 @@
 import {PullRequestAsyncStatus} from "../src/app/model";
 
-interface Voter {
+export interface Voter {
     id: string;
     required: boolean;
     vote: number;
 }
 
-interface SimplePullRequest {
+export interface SimplePullRequest {
     id: number;
     mergeStatus: PullRequestAsyncStatus;
     createdById?: string;

@@ -7,7 +7,7 @@ import { PullRequestViewModel } from "./pullRequestViewModel";
 })
 @Injectable()
 export class PullRequestFilterPipe  implements PipeTransform {
-    public transform(items: PullRequestViewModel[], arg: string): any {
+    public transform(items: PullRequestViewModel[], arg: string): PullRequestViewModel[] {
         return items.filter(x => {
             return (arg === "requestedByMe" && x.requestedByMe) ||
                    (arg === "assignedToMe" && x.assignedToMe && !x.requestedByMe) ||
