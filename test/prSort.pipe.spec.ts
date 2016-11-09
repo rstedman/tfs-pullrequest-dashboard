@@ -22,7 +22,7 @@ describe("PullRequestSortPipe", () => {
             remoteUrl: "http://git/repo"
         };
         let pr = TestUtils.createPullRequest({
-            created: new Date(),
+            created: createdDate,
             createdById: "user1",
             id: 1,
             mergeStatus: PullRequestAsyncStatus.Succeeded,
@@ -47,12 +47,9 @@ describe("PullRequestSortPipe", () => {
     });
 
     it("sorts prs oldest first", () => {
-        let time = new Date();
-        let pr1 = createPRViewModel(time);
-        time.setMinutes(-10);
-        let pr2 = createPRViewModel(time);
-        time.setMinutes(-25);
-        let pr3 = createPRViewModel(time);
+        let pr1 = createPRViewModel(new Date(2016, 5, 12, 8, 30));
+        let pr2 = createPRViewModel(new Date(2016, 5, 12, 8, 15));
+        let pr3 = createPRViewModel(new Date(2016, 5, 4, 8, 15));
         let result = subject.transform([pr1, pr2, pr3]);
 
         expect(result).toBeDefined();
