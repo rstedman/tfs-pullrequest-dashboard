@@ -96,4 +96,16 @@ export class TestUtils {
         };
         return result;
     }
+
+    public static createRepository(name: string): GitRepository {
+        return {
+            _links: null,
+            defaultBranch: "master",
+            url: `http://git/${name}`,
+            id: name,
+            name: name,
+            project: null,
+            remoteUrl: `http://git/${name}`
+        };
+    }
 }

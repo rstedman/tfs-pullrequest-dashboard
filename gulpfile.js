@@ -115,6 +115,12 @@ gulp.task('test', ['copy:multiselect-src'], function(callback) {
     }, callback).start();
 });
 
+gulp.task('test:watch', ['copy:multiselect-src'], function(callback) {
+    new karma.Server({
+        configFile: __dirname + '/karma.conf.js'
+    }, callback).start();
+});
+
 gulp.task('build', function(callback) {
     runSequence('clean', 'compile', ['bundle:vendor', 'bundle:app', 'html:replace'], callback);
 });

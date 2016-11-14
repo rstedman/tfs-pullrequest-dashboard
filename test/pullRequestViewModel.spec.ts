@@ -14,15 +14,7 @@ describe("PullRequestViewModel", () => {
         ]
     };
 
-    let defaultRepository: GitRepository = {
-        _links: null,
-        defaultBranch: "master",
-        url: "http://git/repo1",
-        id: "repo1",
-        name: "repo1",
-        project: null,
-        remoteUrl: "http://git/repo1"
-    };
+    let defaultRepository = TestUtils.createRepository("repo1");
 
     function getSimplePR(): GitPullRequest {
         return TestUtils.createPullRequest({
