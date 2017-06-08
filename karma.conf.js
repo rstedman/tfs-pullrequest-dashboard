@@ -34,6 +34,7 @@ module.exports = function(config) {
 
       // typescript
       'node_modules/typescript/lib/typescript.js',
+      'node_modules/plugin-typescript/lib/plugin.js',
 
       // RxJs
       { pattern: 'node_modules/rxjs/**/*.js', included: false, watched: false },
@@ -48,6 +49,7 @@ module.exports = function(config) {
       'karma-test-shim.js',
 
       // application & spec code paths loaded via module imports
+      { pattern: 'tsconfig.json', included: false, watched: true },
       { pattern: appSrcBase + '**/*.ts', included: false, watched: true },
       { pattern: testSrcBase + '**/*.ts', included: false, watched: true },
 

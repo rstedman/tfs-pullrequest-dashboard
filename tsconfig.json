@@ -8,7 +8,8 @@
     "module": "system",
     "moduleResolution": "node",
     "noEmitOnError": true,
-    "pretty": true
+    "pretty": true,
+    "types": []
   },
   "exclude": [
     "node_modules/",
