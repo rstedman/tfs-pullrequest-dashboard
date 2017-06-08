@@ -19,7 +19,8 @@
     '@angular/upgrade': 'npm:@angular/upgrade/bundles/upgrade.umd.js',
     'rxjs': 'npm:rxjs',
     'typescript': 'npm:typescript',
-    'ts': 'npm:plugin-typescript/lib'
+    'ts': 'npm:plugin-typescript/lib',
+    'angular-2-dropdown-multiselect': 'npm:angular-2-dropdown-multiselect/bundles/dropdown.umd.js'
   };
   // packages tells the System loader how to load when no filename and/or no extension
   var packages = {

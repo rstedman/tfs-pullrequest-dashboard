@@ -26,16 +26,9 @@ gulp.task('clean', function() {
 });
 
 gulp.task('copy:vendor', function() {
-    return gulp.src(['node_modules/@angular/**/*', 'node_modules/rxjs/**/*', 'node_modules/typescript/**/*', 'node_modules/plugin-typescript/**/*'], {base: './node_modules'})
+    return gulp.src(['node_modules/@angular/**/*', 'node_modules/rxjs/**/*', 'node_modules/typescript/**/*', 'node_modules/plugin-typescript/**/*', 'node_modules/angular-2-dropdown-multiselect/**/*'], {base: './node_modules'})
         .pipe(gulp.dest('./build/node_modules'));
 })
-
-gulp.task('copy:multiselect-src', function() {
-    // the multiselect-src module isn't packaged with compiled sources, so instead copy it into the app so it can be
-    // compiled with it.
-    return gulp.src(['./node_modules/angular-2-dropdown-multiselect/src/multiselect-dropdown.ts'])
-        .pipe(gulp.dest('./src/app/'));
-});
 
 gulp.task('bundle:app', function() {
     var builder = new systemjsBuilder('build/', 'build/system.config.js');
@@ -71,7 +64,7 @@ gulp.task('bundle:vendor', function() {
 });
 
 gulp.task('tslint', function() {
-    return gulp.src(['./src/app/*.ts','!./src/app/multiselect-dropdown.ts'])
+    return gulp.src(['./src/app/*.ts'])
         .pipe(tslint({
             configuration: 'tslint.json',
             formatter: 'prose'
@@ -84,13 +77,13 @@ gulp.task('tslint', function() {
 
 // actual transpilation is done in systemjs. This just runs the source through the compiler for type checking,
 // so we can get any compiler errors without having to go through the more expensive bundling step
-gulp.task('compile:typecheck', ['copy:multiselect-src'], function() {
+gulp.task('compile:typecheck', function() {
     var tsProject = ts.createProject('tsconfig.json');
     return tsProject.src()
         .pipe(tsProject())
 })
 
-gulp.task('compile:copy', ['copy:multiselect-src'], function() {
+gulp.task('compile:copy', function() {
     return gulp.src(['./src/**/*', 'tsconfig.json'])
         .pipe(gulp.dest('./build'));
 });
@@ -108,14 +101,14 @@ gulp.task('compile:sources', function(callback) {
 
 gulp.task('compile', ['copy:vendor', 'compile:sources']);
 
-gulp.task('test', ['copy:multiselect-src'], function(callback) {
+gulp.task('test', function(callback) {
     new karma.Server({
         configFile: __dirname + '/karma.conf.js',
         singleRun: true
     }, callback).start();
 });
 
-gulp.task('test:watch', ['copy:multiselect-src'], function(callback) {
+gulp.task('test:watch', function(callback) {
     new karma.Server({
         configFile: __dirname + '/karma.conf.js'
     }, callback).start();

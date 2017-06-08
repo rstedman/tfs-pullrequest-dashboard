@@ -18,7 +18,7 @@ export class ExtensionsApiTfsService extends TfsService {
     }
 
     public async getCurrentUser(): Promise<User> {
-        let user: User = {
+        const user: User = {
             id: this.userContext.id,
             displayName: this.userContext.name,
             uniqueName: this.userContext.uniqueName,
@@ -30,17 +30,17 @@ export class ExtensionsApiTfsService extends TfsService {
             return user;
         }
 
-        let membersOf = await this.getMembersOf(user.id);
-        let promises: Promise<Identity[]>[] = [];
-        for (let m of membersOf) {
+        const membersOf = await this.getMembersOf(user.id);
+        const promises: Array<Promise<Identity[]>> = [];
+        for (const m of membersOf) {
             user.memberOf.push(m);
             // now recurse once into the subgroups of each group the member is a member of, to include
             // virtual groups made up of several groups
             promises.push(this.getMembersOf(m.id));
         }
-        let subMembersOf = await Promise.all<Identity[]>(promises);
-        for (let members of subMembersOf) {
-            for (let i of members) {
+        const subMembersOf = await Promise.all<Identity[]>(promises);
+        for (const members of subMembersOf) {
+            for (const i of members) {
                 user.memberOf.push(i);
             }
         }
@@ -51,7 +51,7 @@ export class ExtensionsApiTfsService extends TfsService {
     }
 
     public async getPullRequests(repo: GitRepository): Promise<GitPullRequest[]> {
-        let prs = await this.gitClient.getPullRequests(repo.id, {
+        const prs = await this.gitClient.getPullRequests(repo.id, {
             includeLinks: true,
             creatorId: null,
             repositoryId: repo.id,
@@ -66,7 +66,7 @@ export class ExtensionsApiTfsService extends TfsService {
     }
 
     public async getRepositories(): Promise<GitRepository[]> {
-        let repos = await this.gitClient.getRepositories(this.projectName, true);
+        const repos = await this.gitClient.getRepositories(this.projectName, true);
         return new Promise<GitRepository[]>((resolve, reject) => {
             // use ngzone to bring promise callback back into the angular zone
             this.zone.run(() => resolve(repos));
@@ -75,9 +75,9 @@ export class ExtensionsApiTfsService extends TfsService {
 
     private async getMembersOf(userId: string): Promise<Identity[]> {
         // get the identities that the current user is a member of
-        let members = await this.identitiesClient.readMembersOf(userId);
-        let promises: Promise<Identity>[] = [];
-        for (let memberId of members) {
+        const members = await this.identitiesClient.readMembersOf(userId);
+        const promises: Array<Promise<Identity>> = [];
+        for (const memberId of members) {
             // ignore any non-tfs identities
             if (!memberId.startsWith("Microsoft.TeamFoundation.Identity")) {
                 continue;
@@ -85,7 +85,7 @@ export class ExtensionsApiTfsService extends TfsService {
 
             promises.push(this.identitiesClient.readIdentity(memberId));
         }
-        let identities = await Promise.all(promises);
+        const identities = await Promise.all(promises);
         return identities;
     }
 }

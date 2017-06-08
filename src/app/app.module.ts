@@ -1,16 +1,16 @@
-import { NgModule, APP_INITIALIZER }       from "@angular/core";
-import { HttpModule }     from "@angular/http";
+import { APP_INITIALIZER, NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
+import { HttpModule } from "@angular/http";
 import { BrowserModule } from "@angular/platform-browser";
 
-import { MultiselectDropdownModule } from "./multiselect-dropdown";
+import { MultiselectDropdownModule } from "angular-2-dropdown-multiselect";
 
 import { AppComponent } from "./app.component";
-import { PullRequestComponent } from "./pullRequest.component";
 import { AppConfigService } from "./appConfig.service";
+import { PullRequestSortPipe } from "./prSort.pipe";
+import { PullRequestComponent } from "./pullRequest.component";
 import { PullRequestFilterPipe } from "./pullRequestFilter.pipe";
 import { RepoFilterPipe } from "./repoFilter.pipe";
-import { PullRequestSortPipe } from "./prSort.pipe";
 
 @NgModule({
   imports: [

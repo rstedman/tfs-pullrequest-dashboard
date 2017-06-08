@@ -6,6 +6,8 @@
         "trailing-comma": false,
         "no-reference": false,
         "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"],
-        "interface-name": false
+        "interface-name": false,
+        "max-classes-per-file": false,
+        "no-console": false
     }
 }

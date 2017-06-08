@@ -1,9 +1,9 @@
-import { FactoryProvider, NgZone, Injectable }       from "@angular/core";
+import { FactoryProvider, Injectable, NgZone } from "@angular/core";
 
-import { StorageService } from "./model";
-import { LocalStorageService } from "./localStorage.service";
-import { TfsStorageService } from "./tfsStorage.service";
 import { AppConfigService } from "./appConfig.service";
+import { LocalStorageService } from "./localStorage.service";
+import { StorageService } from "./model";
+import { TfsStorageService } from "./tfsStorage.service";
 
 // factory provider for the tfsservice, which switches the backend provider based on if it's using tfs online,
 // an on-prem service
@@ -22,4 +22,4 @@ export class StorageServiceProvider implements FactoryProvider {
     }
   }
 
-};
+}

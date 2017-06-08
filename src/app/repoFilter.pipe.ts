@@ -8,6 +8,6 @@ import {PullRequestViewModel} from "./pullRequestViewModel";
 @Injectable()
 export class RepoFilterPipe  implements PipeTransform {
     public transform(items: PullRequestViewModel[], filteredRepoIds: string[]): PullRequestViewModel[] {
-        return items.filter(x => filteredRepoIds.indexOf(x.repository.id) < 0);
+        return items.filter((x) => filteredRepoIds.indexOf(x.repository.id) < 0);
     }
 }

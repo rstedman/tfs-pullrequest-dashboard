@@ -1,11 +1,10 @@
 import { Component, OnInit } from "@angular/core";
+import { IMultiSelectOption, IMultiSelectSettings, IMultiSelectTexts } from "angular-2-dropdown-multiselect";
 
-import { User, TfsService, StorageService } from "./model";
+import { StorageService, TfsService, User } from "./model";
 import { PullRequestViewModel } from "./pullRequestViewModel";
-import { TfsServiceProvider } from "./tfsService.provider";
 import { StorageServiceProvider } from "./storageService.provider";
-
-import { IMultiSelectOption, IMultiSelectSettings, IMultiSelectTexts } from "./multiselect-dropdown";
+import { TfsServiceProvider } from "./tfsService.provider";
 
 @Component({
     selector: "my-app",
@@ -52,12 +51,12 @@ export class AppComponent implements OnInit {
     }
 
     public async refresh() {
-        let serializedFilter = await this.storage.getValue(AppComponent.repoFilterKey);
+        const serializedFilter = await this.storage.getValue(AppComponent.repoFilterKey);
         if (serializedFilter && serializedFilter !== "") {
             this.filteredRepoIds = JSON.parse(serializedFilter);
         }
         this.currentUser = await this.tfsService.getCurrentUser();
-        let repos = await this.tfsService.getRepositories();
+        const repos = await this.tfsService.getRepositories();
         this.repositories = repos.sort((a, b) => {
             if (a.name.toLowerCase() > b.name.toLowerCase()) {
                 return 1;
@@ -70,7 +69,7 @@ export class AppComponent implements OnInit {
 
         this.pullRequests = [];
         for (let i = 0; i < this.repositories.length; i++) {
-            let repo = this.repositories[i];
+            const repo = this.repositories[i];
 
             this.repoOptions.push({
                 id: i,
@@ -82,8 +81,8 @@ export class AppComponent implements OnInit {
             }
             // use continuation instead of await here, as we don't want to block fetching of prs from other repos
             this.tfsService.getPullRequests(repo)
-                .then(prs => {
-                    for (let pr of prs) {
+                .then((prs) => {
+                    for (const pr of prs) {
                         this.pullRequests.push(new PullRequestViewModel(pr, repo, this.currentUser));
                     }
                 });
@@ -92,9 +91,9 @@ export class AppComponent implements OnInit {
 
     public onFilteredSelectionsChanged(unfiltered: number[]) {
         this.filteredRepoIds = [];
-        for (let repoOption of this.repoOptions) {
+        for (const repoOption of this.repoOptions) {
             if (unfiltered.indexOf(repoOption.id) < 0) {
-                let repo = this.getRepoByName(repoOption.name);
+                const repo = this.getRepoByName(repoOption.name);
                 this.filteredRepoIds.push(repo.id);
             }
         }
@@ -117,7 +116,7 @@ export class AppComponent implements OnInit {
     }
 
     private getRepoByName(name: string): GitRepository {
-        for (let repo of this.repositories) {
+        for (const repo of this.repositories) {
             if (repo.name === name) {
                 return repo;
             }

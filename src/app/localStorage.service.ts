@@ -10,7 +10,7 @@ export class LocalStorageService extends StorageService {
     }
 
     public getValue(key: string): Promise<string> {
-        let value = localStorage.getItem(key);
+        const value = localStorage.getItem(key);
         return Promise.resolve(value);
     }
 

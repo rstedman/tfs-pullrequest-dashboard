@@ -1,4 +1,4 @@
-import { User, PullRequestAsyncStatus } from "./model";
+import { PullRequestAsyncStatus, User } from "./model";
 
 export class PullRequestViewModel {
 
@@ -33,12 +33,12 @@ export class PullRequestViewModel {
 
         this.requestedByMe = pullRequest.createdBy.id === currentUser.id;
 
-        let reviewers = pullRequest.reviewers || [];
-        for (let reviewer of reviewers) {
+        const reviewers = pullRequest.reviewers || [];
+        for (const reviewer of reviewers) {
             if (!this.assignedToMe) {
                 this.assignedToMe = reviewer.id === currentUser.id;
             }
-            for (let team of currentUser.memberOf) {
+            for (const team of currentUser.memberOf) {
                 if (!this.assignedToMyTeam) {
                     this.assignedToMyTeam = team.id === reviewer.id;
                 }

@@ -44,7 +44,7 @@ export class AppConfigService {
               this._identitiesClientFactory = identityFactory;
               this._context = context;
               VSS.getService<IExtensionDataService>(VSS.ServiceIds.ExtensionData)
-                      .then(service => {
+                      .then((service) => {
                           this._extensionDataService = service;
                           resolve(true);
                       });

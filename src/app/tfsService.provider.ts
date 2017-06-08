@@ -1,10 +1,10 @@
-import { Injectable, FactoryProvider, NgZone }       from "@angular/core";
-import { Http }     from "@angular/http";
+import { FactoryProvider, Injectable, NgZone } from "@angular/core";
+import { Http } from "@angular/http";
 
-import { RestfulTfsService } from "./restfulTfs.service";
-import { ExtensionsApiTfsService } from "./extensionsApiTfs.service";
 import { AppConfigService } from "./appConfig.service";
+import { ExtensionsApiTfsService } from "./extensionsApiTfs.service";
 import { TfsService } from "./model";
+import { RestfulTfsService } from "./restfulTfs.service";
 
 // factory provider for the tfsservice, which switches the backend provider based on if it's using tfs online,
 // an on-prem service.
@@ -19,13 +19,13 @@ export class TfsServiceProvider implements FactoryProvider {
     if (config.devMode) {
       return new RestfulTfsService(http, config);
     } else {
-      let gitClient = config.gitClientFactory.getClient();
-      let identitiesClient = config.identitiesClientFactory.getClient();
-      let context = config.context;
-      let isHosted = context.getPageContext().webAccessConfiguration.isHosted;
-      let user = context.getPageContext().webContext.user;
-      let projectName = context.getPageContext().webContext.project.name;
+      const gitClient = config.gitClientFactory.getClient();
+      const identitiesClient = config.identitiesClientFactory.getClient();
+      const context = config.context;
+      const isHosted = context.getPageContext().webAccessConfiguration.isHosted;
+      const user = context.getPageContext().webContext.user;
+      const projectName = context.getPageContext().webContext.project.name;
       return new ExtensionsApiTfsService(gitClient, identitiesClient, isHosted, projectName, user, zone);
     }
   }
-};
+}
