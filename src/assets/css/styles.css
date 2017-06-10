@@ -56,3 +56,15 @@
 .repo {
   color: #333333;
 }
+
+.settings {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin-right: 20px;
+  margin-top: 10px;
+}
+
+.settings-container {
+  min-width: 250px;
+}

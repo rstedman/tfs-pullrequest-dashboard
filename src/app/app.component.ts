@@ -13,7 +13,12 @@ import { TfsServiceProvider } from "./tfsService.provider";
 })
 export class AppComponent implements OnInit {
 
+    // settings key for the list of repositories that the user has unselected from the other section
     private static repoFilterKey = "repoFilter";
+    // settings key for the datetime format the user wants dates to display in
+    private static dateFormatKey = "dateFormat";
+
+    private static defaultDateFormat = "dd/MM/yyyy HH:mm";
 
     public pullRequests: PullRequestViewModel[] = [];
 
@@ -44,6 +49,8 @@ export class AppComponent implements OnInit {
 
     public repoOptions: IMultiSelectOption[] = [];
 
+    public dateFormat: string = AppComponent.defaultDateFormat;
+
     constructor(private tfsService: TfsService, private storage: StorageService) { }
 
     public ngOnInit() {
@@ -54,6 +61,10 @@ export class AppComponent implements OnInit {
         const serializedFilter = await this.storage.getValue(AppComponent.repoFilterKey);
         if (serializedFilter && serializedFilter !== "") {
             this.filteredRepoIds = JSON.parse(serializedFilter);
+        }
+        const savedFormat = await this.storage.getValue(AppComponent.dateFormatKey);
+        if (savedFormat && savedFormat !== "") {
+            this.dateFormat = savedFormat;
         }
         this.currentUser = await this.tfsService.getCurrentUser();
         const repos = await this.tfsService.getRepositories();
@@ -99,6 +110,11 @@ export class AppComponent implements OnInit {
         }
 
         this.storage.setValue(AppComponent.repoFilterKey, JSON.stringify(this.filteredRepoIds));
+    }
+
+    public onDateFormatChanged(format: string) {
+        this.dateFormat = format;
+        this.storage.setValue(AppComponent.dateFormatKey, format);
     }
 
     public getVoteClasses(reviewer: IdentityRefWithVote): string {

@@ -12,6 +12,9 @@ export class PullRequestComponent {
     @Input()
     public pullRequest: PullRequestViewModel;
 
+    @Input()
+    public dateFormat: string;
+
     public getVoteClasses(reviewer: IdentityRefWithVote): string {
         let result = "fa vote";
         if (reviewer.vote === Vote.NoResponse) {
