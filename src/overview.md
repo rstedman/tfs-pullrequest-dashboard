@@ -39,5 +39,17 @@ Each pull request displayed shows a number of useful pieces if information.
 
 For an organization with dozens of different code repositories, an individual developer may only actively work in a handful of those repos, and may not care about PRs in other repos.  Next to the Other Pull Requests group header is a filter button that allows users to select just the repositories that they are interested in, and the Other Open Pull Requests category will dynamically update to show PRs only in repos selected.  Filter selections will be saved, allowing subesquent page loads to keep the user's filter selection.
 
+###Settings
+
+![Settings](assets/screenshots/settings.png)
+
+At the top right of the dashboard plugin is a button which will drop down user-specific settings.  The settings supported are:
+* Date Format - specifies the format to display PR creation date timestamps.  Default is "dd/MM/yyyy HH:mm".
+
 ##Source Code and Issue Tracking
 Source code for this extension can be found in the [tfs-pullrequest-dashboard](https://github.com/rstedman/tfs-pullrequest-dashboard) GitHub Repository.  Please report any issues found with this extension to the issues section of the GitHub repository [here](https://github.com/rstedman/tfs-pullrequest-dashboard/issues).
+
+##Change Log
+* (17/16/2017) 1.1.0 - added date format user setting
+* (03/11/2016) 1.0.1 - bug fix: navigating to a PR would open the PR in the plugin iframe, instead of navigating the parent page
+* (02/11/2016) 1.0.0 - initial release
