@@ -28,7 +28,7 @@ export class AppComponent implements OnInit {
 
     public filterSettings: IMultiSelectSettings = {
         enableSearch: true,
-        buttonClasses: "btn btn-default fa fa-filter",
+        buttonClasses: "btn btn-default btn-sm fa fa-filter",
         closeOnSelect: false,
         showCheckAll: true,
         showUncheckAll: true

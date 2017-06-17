@@ -10,7 +10,8 @@
             <div class="container-fluid settings-container">
               <div class="form-group">
                 <label label-default="" for="inputDateFormat">Date Format</label>
-                <input class="form-control" id="inputDateFormat" [(ngModel)]="dateFormat" (ngModelChange)="onDateFormatChanged($event)" name="dateformat">
+                <input class="form-control" id="inputDateFormat" [(ngModel)]="dateFormat" (ngModelChange)="onDateFormatChanged($event)" name="dateformat" aria-describedby="dateFormatHelp">
+                <span id="dateFormatHelp" class="help-block">Date display format. Format details <a target="_blank" [href]="'https://docs.angularjs.org/api/ng/filter/date'">here</a>.</span>
               </div>
             </div>
           </li>
