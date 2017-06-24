@@ -13,6 +13,7 @@ This extension adds a new hub to the code section of Visual Studio Team Services
 
 ###Pull Request Grouping
 The hub queries for all active pull requests, and groups them into sevaral different categories.  Each grouping sorts pull requests, showing the oldest pull requests first.
+
 * Requested by me - Pull requests requested by the current user
 * Assigned to me - Pull requests created by another user that have the current user assigned as a reviewer
 * Assigned to my team - Pull requests created by another user that have a team assigned as a reviewer that the current user is directly or indirectly a member of.
@@ -22,6 +23,7 @@ The hub queries for all active pull requests, and groups them into sevaral diffe
 
 ###Pull Request Details
 Each pull request displayed shows a number of useful pieces if information.
+
 * PR Title & Author
 * Repository name, from brach & to branch
 * Merge conflicts - merge conflicts icon displayed only if the PR has merge conflicts.
@@ -44,12 +46,15 @@ For an organization with dozens of different code repositories, an individual de
 ![Settings](assets/screenshots/settings.png)
 
 At the top right of the dashboard plugin is a button which will drop down user-specific settings.  The settings supported are:
+
 * Date Format - specifies the format to display PR creation date timestamps.  Default is "dd/MM/yyyy HH:mm".
 
 ##Source Code and Issue Tracking
 Source code for this extension can be found in the [tfs-pullrequest-dashboard](https://github.com/rstedman/tfs-pullrequest-dashboard) GitHub Repository.  Please report any issues found with this extension to the issues section of the GitHub repository [here](https://github.com/rstedman/tfs-pullrequest-dashboard/issues).
 
 ##Change Log
-* (17/16/2017) 1.1.0 - added date format user setting
+
+* (24/06/2017) 1.1.1 - don't show PRs in "Assigned To My Team" if also "Assigned To Me".
+* (17/06/2017) 1.1.0 - added date format user setting
 * (03/11/2016) 1.0.1 - bug fix: navigating to a PR would open the PR in the plugin iframe, instead of navigating the parent page
 * (02/11/2016) 1.0.0 - initial release
