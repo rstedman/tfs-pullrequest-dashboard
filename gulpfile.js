@@ -99,7 +99,7 @@ gulp.task('compile:sources', function(callback) {
     runSequence( ['tslint', 'compile:typecheck', 'test'], 'compile:copy', 'compile:embed', callback);
 });
 
-gulp.task('compile', ['copy:vendor', 'compile:sources']);
+gulp.task('compile', ['copy:vendor', 'bundle:vendor', 'compile:sources']);
 
 gulp.task('test', function(callback) {
     new karma.Server({
@@ -115,7 +115,7 @@ gulp.task('test:watch', function(callback) {
 });
 
 gulp.task('build', function(callback) {
-    runSequence('clean', 'compile', ['bundle:vendor', 'bundle:app', 'html:replace'], callback);
+    runSequence('clean', 'compile', ['bundle:app', 'html:replace'], callback);
 });
 
 gulp.task('package', ['build'], function() {
