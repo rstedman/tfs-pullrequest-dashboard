@@ -17,6 +17,8 @@ export class AppComponent implements OnInit {
     private static repoFilterKey = "repoFilter";
     // settings key for the datetime format the user wants dates to display in
     private static dateFormatKey = "dateFormat";
+    // settings key for showing PRs across all projects instead of just the current
+    private static allProjectsKey = "allProjects";
 
     private static defaultDateFormat = "dd/MM/yyyy HH:mm";
 
@@ -51,6 +53,10 @@ export class AppComponent implements OnInit {
 
     public dateFormat: string = AppComponent.defaultDateFormat;
 
+    public allProjects: boolean = false;
+
+    public loading: boolean = false;
+
     constructor(private tfsService: TfsService, private storage: StorageService) { }
 
     public ngOnInit() {
@@ -58,49 +64,79 @@ export class AppComponent implements OnInit {
     }
 
     public async refresh() {
-        const serializedFilter = await this.storage.getValue(AppComponent.repoFilterKey);
-        if (serializedFilter && serializedFilter !== "") {
-            this.filteredRepoIds = JSON.parse(serializedFilter);
-        }
-        const savedFormat = await this.storage.getValue(AppComponent.dateFormatKey);
-        if (savedFormat && savedFormat !== "") {
-            this.dateFormat = savedFormat;
-        }
-        this.currentUser = await this.tfsService.getCurrentUser();
-        const repos = await this.tfsService.getRepositories(true);
-        this.repositories = repos.sort((a, b) => {
-            if (a.name.toLowerCase() > b.name.toLowerCase()) {
-                return 1;
-            }
-            if (a.name.toLowerCase() < b.name.toLowerCase()) {
-                return -1;
-            }
-            return 0;
-        });
+        this.loading = true;
+        try {
+            const filterPromise = this.storage.getValue(AppComponent.repoFilterKey);
+            const formatPromise = this.storage.getValue(AppComponent.dateFormatKey);
+            const allProjectsPromise = this.storage.getValue(AppComponent.allProjectsKey);
+            const currentUserPromise = this.tfsService.getCurrentUser();
 
-        this.pullRequests = [];
-        for (let i = 0; i < this.repositories.length; i++) {
-            const repo = this.repositories[i];
+            const serializedFilter = await filterPromise;
+            if (serializedFilter) {
+                this.filteredRepoIds = JSON.parse(serializedFilter);
+            }
+            const savedFormat = await formatPromise;
+            if (savedFormat && savedFormat !== "") {
+                this.dateFormat = savedFormat;
+            }
+            const savedAllProjects = await allProjectsPromise;
+            if (savedAllProjects === "true") {
+                this.allProjects = true;
+            }
 
-            this.repoOptions.push({
-                id: i,
-                name: repo.name
+            this.currentUser = await currentUserPromise;
+            await this.reloadPullRequests();
+        } finally {
+            this.loading = false;
+        }
+    }
+
+    public async reloadPullRequests() {
+        this.loading = true;
+        try {
+            const repos = await this.tfsService.getRepositories(this.allProjects);
+            this.repositories = repos.sort((a, b) => {
+                if (a.name.toLowerCase() > b.name.toLowerCase()) {
+                    return 1;
+                }
+                if (a.name.toLowerCase() < b.name.toLowerCase()) {
+                    return -1;
+                }
+                return 0;
             });
 
-            if (this.filteredRepoIds.indexOf(repo.id) < 0) {
-                this.unfilteredRepoSelections.push(i);
-            }
-            // use continuation instead of await here, as we don't want to block fetching of prs from other repos
-            this.tfsService.getPullRequests(repo)
-                .then((prs) => {
-                    for (const pr of prs) {
-                        this.pullRequests.push(new PullRequestViewModel(pr, repo, this.currentUser));
-                    }
+            this.pullRequests = [];
+            this.repoOptions = [];
+            this.unfilteredRepoSelections.length = 0;
+            for (let i = 0; i < this.repositories.length; i++) {
+                const repo = this.repositories[i];
+
+                this.repoOptions.push({
+                    id: i,
+                    name: repo.name
                 });
+
+                if (this.filteredRepoIds.indexOf(repo.id) < 0) {
+                    this.unfilteredRepoSelections.push(i);
+                }
+                // use continuation instead of await here, as we don't want to block fetching of prs from other repos
+                this.tfsService.getPullRequests(repo)
+                    .then((prs) => {
+                        for (const pr of prs) {
+                            this.pullRequests.push(new PullRequestViewModel(pr, repo, this.currentUser));
+                        }
+                    });
+            }
+        } finally {
+            this.loading = false;
         }
     }
 
     public onFilteredSelectionsChanged(unfiltered: number[]) {
+        if (this.loading) {
+            return;
+        }
+
         this.filteredRepoIds = [];
         for (const repoOption of this.repoOptions) {
             if (unfiltered.indexOf(repoOption.id) < 0) {
@@ -113,22 +149,22 @@ export class AppComponent implements OnInit {
     }
 
     public onDateFormatChanged(format: string) {
+        if (this.loading) {
+            return;
+        }
+
         this.dateFormat = format;
         this.storage.setValue(AppComponent.dateFormatKey, format);
     }
 
-    public getVoteClasses(reviewer: IdentityRefWithVote): string {
-        let result = "fa vote";
-        if (reviewer.vote === 0) {
-            result += " fa-minus-circle";
-        } else if (reviewer.vote === -10) {
-            result += " fa-times-circle rejected";
-        } else if (reviewer.vote === 10 || reviewer.vote === 5) {
-            result += " fa-check-circle approved";
-        } else if (reviewer.vote === -5) {
-            result += " fa-minus-circle waiting";
+    public onAllProjectsChanged(allProjects: boolean) {
+        if (this.loading) {
+            return;
         }
-        return result;
+
+        this.allProjects = allProjects;
+        this.storage.setValue(AppComponent.allProjectsKey, allProjects.toString());
+        this.reloadPullRequests();
     }
 
     private getRepoByName(name: string): GitRepository {

@@ -13,6 +13,13 @@
                 <input class="form-control" id="inputDateFormat" [(ngModel)]="dateFormat" (ngModelChange)="onDateFormatChanged($event)" name="dateformat" aria-describedby="dateFormatHelp">
                 <span id="dateFormatHelp" class="help-block">Date display format. Format details <a target="_blank" [href]="'https://docs.angularjs.org/api/ng/filter/date'">here</a>.</span>
               </div>
+              <div class="form-check">
+                <label class="form-check-label">
+                  <input type="checkbox" class="form-check-input" id="inputAllProjects" [(ngModel)]="allProjects" (ngModelChange)="onAllProjectsChanged($event)" name="allProjects" aria-describedby="allProjectsHelp">
+                  All Projects
+                </label>
+                <span id="allProjectsHelp" class="help-block">Show PRs from repos across all projects.</span>
+              </div>
             </div>
           </li>
         </form>
