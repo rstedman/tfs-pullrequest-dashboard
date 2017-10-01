@@ -48,12 +48,14 @@ For an organization with dozens of different code repositories, an individual de
 At the top right of the dashboard plugin is a button which will drop down user-specific settings.  The settings supported are:
 
 * Date Format - specifies the format to display PR creation date timestamps.  Default is "dd/MM/yyyy HH:mm".
+* All Projects - show pull requests from repositories across all projects.
 
 ##Source Code and Issue Tracking
 Source code for this extension can be found in the [tfs-pullrequest-dashboard](https://github.com/rstedman/tfs-pullrequest-dashboard) GitHub Repository.  Please report any issues found with this extension to the issues section of the GitHub repository [here](https://github.com/rstedman/tfs-pullrequest-dashboard/issues).
 
 ##Change Log
 
+* (01/10/2017) 1.2.0 - Added user setting to show PRs from repos across all projects.  Default behavior still shows PRs from the current project.
 * (24/06/2017) 1.1.1 - don't show PRs in "Assigned To My Team" if also "Assigned To Me".
 * (17/06/2017) 1.1.0 - added date format user setting
 * (03/11/2016) 1.0.1 - bug fix: navigating to a PR would open the PR in the plugin iframe, instead of navigating the parent page
