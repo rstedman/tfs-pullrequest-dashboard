@@ -1720,11 +1720,11 @@ interface TeamProjectReference {
     /**
      * Project abbreviation.
      */
-    abbreviation: string;
+    abbreviation?: string;
     /**
      * The project's description (if any).
      */
-    description: string;
+    description?: string;
     /**
      * Project identifier.
      */
@@ -1736,15 +1736,15 @@ interface TeamProjectReference {
     /**
      * Project revision.
      */
-    revision: number;
+    revision?: number;
     /**
      * Project state.
      */
-    state: any;
+    state?: any;
     /**
      * Url to the full version of the object.
      */
-    url: string;
+    url?: string;
 }
 
 interface GitPullRequestSearchCriteria {

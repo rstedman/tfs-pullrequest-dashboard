@@ -22,7 +22,7 @@ export class TestUtils {
         return {
             customDisplayName: id,
             descriptor: null,
-            id: id,
+            id,
             isActive: true,
             isContainer: true,
             masterId: id,
@@ -38,7 +38,7 @@ export class TestUtils {
     }
 
     public static voterToIdentityRef(voter: Voter): IdentityRefWithVote {
-        let result: IdentityRefWithVote = {
+        const result: IdentityRefWithVote = {
             displayName: voter.id,
             id: voter.id,
             imageUrl: null,
@@ -56,7 +56,7 @@ export class TestUtils {
     }
 
     public static createPullRequest(details: SimplePullRequest): GitPullRequest {
-        let result: GitPullRequest = {
+        const result: GitPullRequest = {
             _links: null,
             pullRequestId: details.id,
             autoCompleteSetBy: null,
@@ -97,14 +97,17 @@ export class TestUtils {
         return result;
     }
 
-    public static createRepository(name: string): GitRepository {
+    public static createRepository(name: string, project = "Test"): GitRepository {
         return {
             _links: null,
             defaultBranch: "master",
             url: `http://git/${name}`,
             id: name,
-            name: name,
-            project: null,
+            name,
+            project: {
+                name: project,
+                id: project
+            },
             remoteUrl: `http://git/${name}`
         };
     }

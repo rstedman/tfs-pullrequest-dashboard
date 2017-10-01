@@ -84,7 +84,7 @@ export class RestfulTfsService extends TfsService {
         return (prs as GitPullRequest[]);
     }
 
-    public getRepositories(): Promise<GitRepository[]> {
+    public getRepositories(allProjects?: boolean): Promise<GitRepository[]> {
         return this.http.get(`${this.baseUri}/_apis/git/repositories`, {withCredentials: true})
             .toPromise()
             .then(this.extractData)

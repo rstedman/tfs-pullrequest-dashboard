@@ -65,8 +65,8 @@ export class ExtensionsApiTfsService extends TfsService {
         });
     }
 
-    public async getRepositories(): Promise<GitRepository[]> {
-        const repos = await this.gitClient.getRepositories(this.projectName, true);
+    public async getRepositories(allProjects?: boolean): Promise<GitRepository[]> {
+        const repos = await this.gitClient.getRepositories(allProjects ? null : this.projectName, true);
         return new Promise<GitRepository[]>((resolve, reject) => {
             // use ngzone to bring promise callback back into the angular zone
             this.zone.run(() => resolve(repos));

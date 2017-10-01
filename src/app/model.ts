@@ -39,7 +39,7 @@ export enum PullRequestAsyncStatus {
 export abstract class TfsService {
     public abstract getCurrentUser(): Promise<User>;
     public abstract getPullRequests(repo: GitRepository): Promise<GitPullRequest[]>;
-    public abstract getRepositories(): Promise<GitRepository[]>;
+    public abstract getRepositories(allProjects?: boolean): Promise<GitRepository[]>;
 }
 
 export abstract class StorageService {

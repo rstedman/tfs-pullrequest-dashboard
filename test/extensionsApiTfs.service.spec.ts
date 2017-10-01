@@ -4,11 +4,11 @@ import {TestUtils} from "./testHelpers";
 
 describe("ExtensionsApiTfsService", () => {
 
-    let zoneMock: any = {
+    const zoneMock: any = {
         run: (fn: () => any): any => { fn(); }
     };
 
-    let userContext: UserContext = {
+    const userContext: UserContext = {
         email: "test@test.com",
         id: "Microsoft.TeamFoundation.Identity.testuser",
         limitedAccess: false,
@@ -16,33 +16,34 @@ describe("ExtensionsApiTfsService", () => {
         uniqueName: "testuser1"
     };
 
-    let membersMap = {
+    const membersMap = {
         "Microsoft.TeamFoundation.Identity.testuser": ["Microsoft.TeamFoundation.Identity.group1", "Microsoft.TeamFoundation.Identity.group2", "Microsoft.TeamFoundation.Identity.groupOfGroups"],
         "Microsoft.TeamFoundation.Identity.group1": [],
         "Microsoft.TeamFoundation.Identity.group2": [],
         "Microsoft.TeamFoundation.Identity.groupOfGroups": ["Microsoft.TeamFoundation.Identity.group3", "Microsoft.TeamFoundation.Identity.group4", "SomeOtherGroup"]
     };
 
-    let repos: GitRepository[] = [
-        TestUtils.createRepository("repo1"),
-        TestUtils.createRepository("repo2"),
-        TestUtils.createRepository("repo3"),
-        TestUtils.createRepository("repo4"),
-        TestUtils.createRepository("repo5")
+    const repos: GitRepository[] = [
+        TestUtils.createRepository("repo1", "P1"),
+        TestUtils.createRepository("repo2", "P1"),
+        TestUtils.createRepository("repo3", "P1"),
+        TestUtils.createRepository("repo4", "P1"),
+        TestUtils.createRepository("repo5", "P1"),
+        TestUtils.createRepository("repo6", "P2")
     ];
 
-    let prMap = {
-        "repo1": [createPR(1), createPR(2), createPR(3), createPR(4)],
-        "repo3": [createPR(5), createPR(6)]
+    const prMap = {
+        repo1: [createPR(1), createPR(2), createPR(3), createPR(4)],
+        repo3: [createPR(5), createPR(6)]
     };
 
-    let projectName = "Test Project";
+    const projectName = "P1";
     let gitClient: GitClient = null;
     let identitiesClient: IdentitiesClient = null;
 
     function createPR(id: number): GitPullRequest {
         return TestUtils.createPullRequest({
-            id: id,
+            id,
             mergeStatus: PullRequestAsyncStatus.Succeeded,
             reviewers: []
         });
@@ -94,13 +95,17 @@ describe("ExtensionsApiTfsService", () => {
                 return Promise.resolve(prs);
             },
             getRepositories: (project?: string, includeLinks?: boolean): Promise<GitRepository[]> => {
+                if (project) {
+                    const filtered = repos.filter((r) => r.project.name === project);
+                    return Promise.resolve(filtered);
+                }
                 return Promise.resolve(repos);
             }
         };
     });
 
     it("Doesn't call API if hosted when getCurrentUser is called", async (done) => {
-        let subject = createSubject(true);
+        const subject = createSubject(true);
         spyOn(identitiesClient, "readIdentity");
         spyOn(identitiesClient, "readMembersOf");
 
@@ -111,8 +116,8 @@ describe("ExtensionsApiTfsService", () => {
     });
 
     it("Returns user details from UserContext if hosted with getCurrentUser", async (done) => {
-        let subject = createSubject(true);
-        let user = await subject.getCurrentUser();
+        const subject = createSubject(true);
+        const user = await subject.getCurrentUser();
         expect(user).not.toBeNull();
         expect(user.id).toEqual(userContext.id);
         expect(user.displayName).toEqual(userContext.name);
@@ -122,8 +127,8 @@ describe("ExtensionsApiTfsService", () => {
     });
 
     it("Resolves a user's membersOf if not hosted", async (done) => {
-        let subject = createSubject(false);
-        let user = await subject.getCurrentUser();
+        const subject = createSubject(false);
+        const user = await subject.getCurrentUser();
         expect(user).not.toBeNull();
         expect(user.memberOf).toBeDefined();
         expect(user.memberOf.length).toEqual(5);
@@ -136,18 +141,30 @@ describe("ExtensionsApiTfsService", () => {
         done();
     });
 
-    it("Returns all repositories", async (done) => {
-        let subject = createSubject(true);
+    it("Returns all repositories if allProjects true", async (done) => {
+        const subject = createSubject(true);
 
-        let repositories = await subject.getRepositories();
+        const repositories = await subject.getRepositories(true);
 
         expect(repositories).toEqual(repos);
 
         done();
     });
 
+    it("Only returns repositories from current project if allProjects false", async (done) => {
+        const subject = createSubject(true);
+
+        const repositories = await subject.getRepositories(false);
+
+        const expected = repos.filter((r) => r.project.name === projectName);
+
+        expect(repositories).toEqual(expected);
+
+        done();
+    });
+
     it("Returns all PRs for a repository", async (done) => {
-        let subject = createSubject(true);
+        const subject = createSubject(true);
 
         let repositories = await subject.getPullRequests(repos[0]);
 
@@ -161,9 +178,9 @@ describe("ExtensionsApiTfsService", () => {
     });
 
     it("Returns an empty list if repo has no PRs", async (done) => {
-        let subject = createSubject(true);
+        const subject = createSubject(true);
 
-        let repositories = await subject.getPullRequests(repos[3]);
+        const repositories = await subject.getPullRequests(repos[3]);
 
         expect(repositories.length).toEqual(0);
 

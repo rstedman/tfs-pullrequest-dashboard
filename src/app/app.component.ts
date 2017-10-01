@@ -67,7 +67,7 @@ export class AppComponent implements OnInit {
             this.dateFormat = savedFormat;
         }
         this.currentUser = await this.tfsService.getCurrentUser();
-        const repos = await this.tfsService.getRepositories();
+        const repos = await this.tfsService.getRepositories(true);
         this.repositories = repos.sort((a, b) => {
             if (a.name.toLowerCase() > b.name.toLowerCase()) {
                 return 1;
