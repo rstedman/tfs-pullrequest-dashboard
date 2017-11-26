@@ -1,51 +1,56 @@
-<div class="container">
-  <div class="settings">
-    <div class="btn-group">
-      <button class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" title="Settings">
-        <i class="fa fa-cog"></i> <span class="caret"></span>
-      </button>
-      <ul class="dropdown-menu dropdown-menu-right" role="menu">
-        <form>
-          <li>
-            <div class="container-fluid settings-container">
-              <div class="form-group">
-                <label label-default="" for="inputDateFormat">Date Format</label>
-                <input class="form-control" id="inputDateFormat" [(ngModel)]="dateFormat" (ngModelChange)="onDateFormatChanged($event)" name="dateformat" aria-describedby="dateFormatHelp">
-                <span id="dateFormatHelp" class="help-block">Date display format. Format details <a target="_blank" [href]="'https://docs.angularjs.org/api/ng/filter/date'">here</a>.</span>
+<div [ngClass]="{'widget': widgetMode }">
+  <h2 class="title" *ngIf="widgetMode">PR Widget</h2>
+  <div class="container">
+    <div class="settings" *ngIf="!widgetMode">
+      <div class="btn-group">
+        <button class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" title="Settings">
+          <i class="fa fa-cog"></i> <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-right" role="menu">
+          <form>
+            <li>
+              <div class="container-fluid settings-container">
+                <div class="form-group">
+                  <label label-default="" for="inputDateFormat">Date Format</label>
+                  <input class="form-control" id="inputDateFormat" [(ngModel)]="dateFormat" (ngModelChange)="onDateFormatChanged($event)" name="dateformat" aria-describedby="dateFormatHelp">
+                  <span id="dateFormatHelp" class="help-block">Date display format. Format details <a target="_blank" [href]="'https://docs.angularjs.org/api/ng/filter/date'">here</a>.</span>
+                </div>
+                <div class="form-check">
+                  <label class="form-check-label">
+                    <input type="checkbox" class="form-check-input" id="inputAllProjects" [(ngModel)]="allProjects" (ngModelChange)="onAllProjectsChanged($event)" name="allProjects" aria-describedby="allProjectsHelp">
+                    All Projects
+                  </label>
+                  <span id="allProjectsHelp" class="help-block">Show PRs from repos across all projects.</span>
+                </div>
               </div>
-              <div class="form-check">
-                <label class="form-check-label">
-                  <input type="checkbox" class="form-check-input" id="inputAllProjects" [(ngModel)]="allProjects" (ngModelChange)="onAllProjectsChanged($event)" name="allProjects" aria-describedby="allProjectsHelp">
-                  All Projects
-                </label>
-                <span id="allProjectsHelp" class="help-block">Show PRs from repos across all projects.</span>
-              </div>
-            </div>
-          </li>
-        </form>
-      </ul>
+            </li>
+          </form>
+        </ul>
+      </div>
     </div>
-  </div>
-  <div *ngIf="(pullRequests | prFilter:'requestedByMe').length > 0">
-    <h4>Requested By Me</h4>
-    <div *ngFor="let pr of pullRequests | prFilter:'requestedByMe' | prSort" class="row">
-      <pull-request [pullRequest]="pr" [dateFormat]="dateFormat"></pull-request>
+    <div *ngIf="(pullRequests | prFilter:'requestedByMe').length > 0">
+      <h4 *ngIf="!widgetMode">Requested By Me</h4>
+      <div *ngFor="let pr of pullRequests | prFilter:'requestedByMe' | prSort" class="row">
+        <pull-request [pullRequest]="pr" [dateFormat]="dateFormat"></pull-request>
+      </div>
     </div>
-  </div>
-  <div *ngIf="(pullRequests | prFilter:'assignedToMe').length > 0">
-    <h4>Assigned To Me</h4>
-    <div *ngFor="let pr of pullRequests | prFilter:'assignedToMe' | prSort" class="row">
-      <pull-request [pullRequest]="pr" [dateFormat]="dateFormat"></pull-request>
+    <div *ngIf="!widgetMode && (pullRequests | prFilter:'assignedToMe').length > 0">
+      <h4 *ngIf="!widgetMode">Assigned To Me</h4>
+      <div *ngFor="let pr of pullRequests | prFilter:'assignedToMe' | prSort" class="row">
+        <pull-request [pullRequest]="pr" [dateFormat]="dateFormat"></pull-request>
+      </div>
     </div>
-  </div>
-  <div *ngIf="(pullRequests | prFilter:'assignedToMyTeam').length > 0">
-    <h4>Assigned To My Team</h4>
-    <div *ngFor="let pr of pullRequests | prFilter:'assignedToMyTeam' | prSort" class="row">
-      <pull-request [pullRequest]="pr" [dateFormat]="dateFormat"></pull-request>
+    <div *ngIf="!widgetMode && (pullRequests | prFilter:'assignedToMyTeam').length > 0">
+      <h4 *ngIf="!widgetMode">Assigned To My Team</h4>
+      <div *ngFor="let pr of pullRequests | prFilter:'assignedToMyTeam' | prSort" class="row">
+        <pull-request [pullRequest]="pr" [dateFormat]="dateFormat"></pull-request>
+      </div>
     </div>
-  </div>
-  <h4>Other Open Pull Requests <ss-multiselect-dropdown [options]="repoOptions" [settings]="filterSettings" [texts]="filterTexts" [(ngModel)]="unfilteredRepoSelections" (ngModelChange)="onFilteredSelectionsChanged($event)"></ss-multiselect-dropdown></h4>
-  <div *ngFor="let pr of pullRequests | prFilter:'other' | repoFilter:filteredRepoIds | prSort" class="row">
-    <pull-request [pullRequest]="pr" [dateFormat]="dateFormat"></pull-request>
+    <div *ngIf="!widgetMode">
+      <h4>Other Open Pull Requests <ss-multiselect-dropdown [options]="repoOptions" [settings]="filterSettings" [texts]="filterTexts" [(ngModel)]="unfilteredRepoSelections" (ngModelChange)="onFilteredSelectionsChanged($event)"></ss-multiselect-dropdown></h4>
+      <div *ngFor="let pr of pullRequests | prFilter:'other' | repoFilter:filteredRepoIds | prSort" class="row">
+        <pull-request [pullRequest]="pr" [dateFormat]="dateFormat"></pull-request>
+      </div>
+    </div>
   </div>
 </div>

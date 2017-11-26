@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { IMultiSelectOption, IMultiSelectSettings, IMultiSelectTexts } from "angular-2-dropdown-multiselect";
 
+import { AppConfigService } from "./appConfig.service";
 import { StorageService, TfsService, User } from "./model";
 import { PullRequestViewModel } from "./pullRequestViewModel";
 import { StorageServiceProvider } from "./storageService.provider";
@@ -9,7 +10,7 @@ import { TfsServiceProvider } from "./tfsService.provider";
 @Component({
     selector: "my-app",
     templateUrl: "app.component.html",
-    providers: [new TfsServiceProvider(), new StorageServiceProvider()]
+    providers: [new TfsServiceProvider(), new StorageServiceProvider()],
 })
 export class AppComponent implements OnInit {
 
@@ -57,7 +58,10 @@ export class AppComponent implements OnInit {
 
     public loading: boolean = false;
 
-    constructor(private tfsService: TfsService, private storage: StorageService) { }
+    public widgetMode: boolean = false;
+
+    constructor(private tfsService: TfsService, private storage: StorageService) {
+    }
 
     public ngOnInit() {
         this.refresh();
@@ -66,6 +70,7 @@ export class AppComponent implements OnInit {
     public async refresh() {
         this.loading = true;
         try {
+            this.widgetMode = this.tfsService.widgetContext();
             const filterPromise = this.storage.getValue(AppComponent.repoFilterKey);
             const formatPromise = this.storage.getValue(AppComponent.dateFormatKey);
             const allProjectsPromise = this.storage.getValue(AppComponent.allProjectsKey);

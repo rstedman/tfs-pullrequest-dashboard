@@ -40,6 +40,7 @@ export abstract class TfsService {
     public abstract getCurrentUser(): Promise<User>;
     public abstract getPullRequests(repo: GitRepository): Promise<GitPullRequest[]>;
     public abstract getRepositories(allProjects?: boolean): Promise<GitRepository[]>;
+    public abstract widgetContext(): boolean;
 }
 
 export abstract class StorageService {

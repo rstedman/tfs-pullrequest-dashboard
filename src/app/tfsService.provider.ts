@@ -25,7 +25,7 @@ export class TfsServiceProvider implements FactoryProvider {
       const isHosted = context.getPageContext().webAccessConfiguration.isHosted;
       const user = context.getPageContext().webContext.user;
       const projectName = context.getPageContext().webContext.project.name;
-      return new ExtensionsApiTfsService(gitClient, identitiesClient, isHosted, projectName, user, zone);
+      return new ExtensionsApiTfsService(gitClient, identitiesClient, isHosted, projectName, user, zone, config.widgetMode);
     }
   }
 }

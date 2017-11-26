@@ -69,7 +69,7 @@ describe("ExtensionsApiTfsService", () => {
     }
 
     function createSubject(isHosted: boolean): ExtensionsApiTfsService {
-        return new ExtensionsApiTfsService(gitClient, identitiesClient, isHosted, projectName, userContext, zoneMock);
+        return new ExtensionsApiTfsService(gitClient, identitiesClient, isHosted, projectName, userContext, zoneMock, false);
     }
 
     beforeEach(() => {

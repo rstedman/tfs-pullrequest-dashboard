@@ -33,7 +33,37 @@
                 "order": 99,
                 "uri": "index.html"
             }
-        }
+        },
+        {
+            "id": "tfs-pullrequest-dashboard-widget",
+            "type": "ms.vss-dashboards-web.widget",
+            "targets": [
+                "ms.vss-dashboards-web.widget-catalog",
+                "ryanstedman.tfs-pullrequest-dashboard.tfs-pullrequest-dashboard-widget.Configuration"
+            ],
+            "properties": {
+                "name": "Pullrequest Dashboard Widget",
+                "description": "Displays pull requests across all repositories",
+                "previewImageUrl": "assets/images/logo.png",
+                "uri": "index.html",
+                "supportedSizes": [
+                    { "rowSpan": 2, "columnSpan": 3 },
+                    { "rowSpan": 3, "columnSpan": 3 },
+                    { "rowSpan": 4, "columnSpan": 3 }
+                ],
+                "supportedScopes": ["project_team"]
+             }
+         },
+         {
+             "id": "tfs-pullrequest-dashboard-widget.Configuration",
+             "type": "ms.vss-dashboards-web.widget-configuration",
+             "targets": [ "ms.vss-dashboards-web.widget-configuration" ],
+             "properties": {
+                 "name": "Pullrequest Dashboard Widget Configuration",
+                 "description": "Configures Pullrequest Dashboard Widget",
+                 "uri": "configuration.html"
+             }
+         }
     ],
     "scopes": ["vso.code", "vso.identity"],
     "files": [

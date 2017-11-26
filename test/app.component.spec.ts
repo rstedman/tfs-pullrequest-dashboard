@@ -1,10 +1,10 @@
 import {AppComponent} from "../src/app/app.component";
-import {User, TfsService, StorageService} from "../src/app/model";
+import {StorageService, TfsService, User} from "../src/app/model";
 import {TestUtils} from "./testHelpers";
 
 describe("AppComponent", () => {
 
-    let defaultUser: User = {
+    const defaultUser: User = {
         id: "123",
         displayName: "test user",
         uniqueName: "testuser1",
@@ -17,7 +17,7 @@ describe("AppComponent", () => {
     let tfsMock: TfsService;
     let storageMock: StorageService;
 
-    let repos = [TestUtils.createRepository("repo1"),
+    const repos = [TestUtils.createRepository("repo1"),
         TestUtils.createRepository("repo2"),
         TestUtils.createRepository("repo3"),
         TestUtils.createRepository("repo4")];
@@ -26,25 +26,26 @@ describe("AppComponent", () => {
 
     beforeEach(() => {
         tfsMock = {
-            getCurrentUser: function(): Promise<User> {
+            getCurrentUser: (): Promise<User> => {
                 return Promise.resolve(defaultUser);
             },
-            getPullRequests: function(repo: GitRepository): Promise<GitPullRequest[]>{
+            getPullRequests: (repo: GitRepository): Promise<GitPullRequest[]> => {
                 return Promise.resolve([]);
             },
-            getRepositories: function(): Promise<GitRepository[]> {
+            getRepositories: (): Promise<GitRepository[]> => {
                 return Promise.resolve(repos);
-            }
+            },
+            widgetContext: (): boolean => true
         };
         spyOn(tfsMock, "getCurrentUser");
         spyOn(tfsMock, "getPullRequests");
         spyOn(tfsMock, "getRepositories");
 
         storageMock = {
-            getValue: function(key: string): Promise<string> {
+            getValue: (key: string): Promise<string> => {
                 return Promise.resolve("");
             },
-            setValue: function(key: string, value: string): Promise<string> {
+            setValue: (key: string, value: string): Promise<string> => {
                 return Promise.resolve(value);
             }
         };
