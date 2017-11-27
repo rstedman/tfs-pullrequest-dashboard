@@ -91,10 +91,6 @@ export class RestfulTfsService extends TfsService {
             .catch(this.handleError);
     }
 
-    public widgetContext(): boolean {
-        return false;
-    }
-
     private async getMembersOf(userId: string): Promise<Identity[]> {
         const response = await (this.http.get(`${this.baseUri}/_apis/Identities/${userId}/membersOf`, {
             withCredentials: true,

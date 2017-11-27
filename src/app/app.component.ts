@@ -2,15 +2,15 @@ import { Component, OnInit } from "@angular/core";
 import { IMultiSelectOption, IMultiSelectSettings, IMultiSelectTexts } from "angular-2-dropdown-multiselect";
 
 import { AppConfigService } from "./appConfig.service";
-import { StorageService, TfsService, User } from "./model";
+import { AppSettingsServiceProvider } from "./appSettingsService.provider";
+import { AppSettingsService, TfsService, User } from "./model";
 import { PullRequestViewModel } from "./pullRequestViewModel";
-import { StorageServiceProvider } from "./storageService.provider";
 import { TfsServiceProvider } from "./tfsService.provider";
 
 @Component({
     selector: "my-app",
     templateUrl: "app.component.html",
-    providers: [new TfsServiceProvider(), new StorageServiceProvider()],
+    providers: [new TfsServiceProvider(), new AppSettingsServiceProvider()],
 })
 export class AppComponent implements OnInit {
 
@@ -60,7 +60,10 @@ export class AppComponent implements OnInit {
 
     public widgetMode: boolean = false;
 
-    constructor(private tfsService: TfsService, private storage: StorageService) {
+    public widgetCategory: string = "assignedToMe";
+
+    constructor(private tfsService: TfsService, private settings: AppSettingsService) {
+        this.settings.categoryChanged().on((data) => this.widgetCategory = data);
     }
 
     public ngOnInit() {
@@ -70,25 +73,16 @@ export class AppComponent implements OnInit {
     public async refresh() {
         this.loading = true;
         try {
-            this.widgetMode = this.tfsService.widgetContext();
-            const filterPromise = this.storage.getValue(AppComponent.repoFilterKey);
-            const formatPromise = this.storage.getValue(AppComponent.dateFormatKey);
-            const allProjectsPromise = this.storage.getValue(AppComponent.allProjectsKey);
+            this.widgetMode = this.settings.getIsWidgetContext();
+            this.widgetCategory = this.settings.getWidgetFilterCategory();
+            const filterPromise = this.settings.getRepoFilter();
+            const formatPromise = this.settings.getDateFormat();
+            const allProjectsPromise = this.settings.getShowAllProjects();
             const currentUserPromise = this.tfsService.getCurrentUser();
 
-            const serializedFilter = await filterPromise;
-            if (serializedFilter) {
-                this.filteredRepoIds = JSON.parse(serializedFilter);
-            }
-            const savedFormat = await formatPromise;
-            if (savedFormat && savedFormat !== "") {
-                this.dateFormat = savedFormat;
-            }
-            const savedAllProjects = await allProjectsPromise;
-            if (savedAllProjects === "true") {
-                this.allProjects = true;
-            }
-
+            this.filteredRepoIds = await filterPromise;
+            this.dateFormat = await formatPromise;
+            this.allProjects = await allProjectsPromise;
             this.currentUser = await currentUserPromise;
             await this.reloadPullRequests();
         } finally {
@@ -96,7 +90,7 @@ export class AppComponent implements OnInit {
         }
     }
 
-    public async reloadPullRequests() {
+    public async reloadPullRequests(): Promise<void> {
         this.loading = true;
         try {
             const repos = await this.tfsService.getRepositories(this.allProjects);
@@ -149,8 +143,7 @@ export class AppComponent implements OnInit {
                 this.filteredRepoIds.push(repo.id);
             }
         }
-
-        this.storage.setValue(AppComponent.repoFilterKey, JSON.stringify(this.filteredRepoIds));
+        this.settings.setRepoFilter(this.filteredRepoIds);
     }
 
     public onDateFormatChanged(format: string) {
@@ -159,7 +152,7 @@ export class AppComponent implements OnInit {
         }
 
         this.dateFormat = format;
-        this.storage.setValue(AppComponent.dateFormatKey, format);
+        this.settings.setDateFormat(format);
     }
 
     public onAllProjectsChanged(allProjects: boolean) {
@@ -168,7 +161,7 @@ export class AppComponent implements OnInit {
         }
 
         this.allProjects = allProjects;
-        this.storage.setValue(AppComponent.allProjectsKey, allProjects.toString());
+        this.settings.setShowAllProjects(allProjects);
         this.reloadPullRequests();
     }
 

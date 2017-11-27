@@ -1,8 +1,18 @@
 import {AppComponent} from "../src/app/app.component";
-import {StorageService, TfsService, User} from "../src/app/model";
+import {AppSettingsService, TfsService, User} from "../src/app/model";
 import {TestUtils} from "./testHelpers";
 
 describe("AppComponent", () => {
+
+    class SettingsMock extends AppSettingsService {
+        protected getValue(key: string): Promise<string> {
+            return Promise.resolve("");
+        }
+
+        protected setValue(key: string, value: string): Promise<string> {
+            return Promise.resolve(value);
+        }
+    }
 
     const defaultUser: User = {
         id: "123",
@@ -15,7 +25,7 @@ describe("AppComponent", () => {
     };
 
     let tfsMock: TfsService;
-    let storageMock: StorageService;
+    let settingsMock: AppSettingsService;
 
     const repos = [TestUtils.createRepository("repo1"),
         TestUtils.createRepository("repo2"),
@@ -34,33 +44,27 @@ describe("AppComponent", () => {
             },
             getRepositories: (): Promise<GitRepository[]> => {
                 return Promise.resolve(repos);
-            },
-            widgetContext: (): boolean => true
+            }
         };
         spyOn(tfsMock, "getCurrentUser");
         spyOn(tfsMock, "getPullRequests");
         spyOn(tfsMock, "getRepositories");
 
-        storageMock = {
-            getValue: (key: string): Promise<string> => {
-                return Promise.resolve("");
-            },
-            setValue: (key: string, value: string): Promise<string> => {
-                return Promise.resolve(value);
-            }
-        };
-        spyOn(storageMock, "getValue");
-        spyOn(storageMock, "setValue");
+        settingsMock = new SettingsMock(false, null, null);
+        spyOn(settingsMock, "getDateFormat");
+        spyOn(settingsMock, "getRepoFilter");
+        spyOn(settingsMock, "getShowAllProjects");
 
-        subject = new AppComponent(tfsMock, storageMock);
+        subject = new AppComponent(tfsMock, settingsMock);
     });
 
     it("doesn't make any service calls in the constructor", () => {
         expect(tfsMock.getCurrentUser).toHaveBeenCalledTimes(0);
         expect(tfsMock.getPullRequests).toHaveBeenCalledTimes(0);
         expect(tfsMock.getRepositories).toHaveBeenCalledTimes(0);
-        expect(storageMock.getValue).toHaveBeenCalledTimes(0);
-        expect(storageMock.setValue).toHaveBeenCalledTimes(0);
+        expect(settingsMock.getDateFormat).toHaveBeenCalledTimes(0);
+        expect(settingsMock.getRepoFilter).toHaveBeenCalledTimes(0);
+        expect(settingsMock.getShowAllProjects).toHaveBeenCalledTimes(0);
     });
 
 });

@@ -12,8 +12,7 @@ export class ExtensionsApiTfsService extends TfsService {
                 private isHosted: boolean,
                 private projectName: string,
                 private userContext: UserContext,
-                private zone: NgZone,
-                private iswidgetContext: boolean) {
+                private zone: NgZone) {
 
         super();
     }
@@ -72,10 +71,6 @@ export class ExtensionsApiTfsService extends TfsService {
             // use ngzone to bring promise callback back into the angular zone
             this.zone.run(() => resolve(repos));
         });
-    }
-
-    public widgetContext(): boolean {
-        return this.iswidgetContext;
     }
 
     private async getMembersOf(userId: string): Promise<Identity[]> {

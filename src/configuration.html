@@ -10,7 +10,7 @@
             });
 
             VSS.require("TFS/Dashboards/WidgetHelpers", function (WidgetHelpers) {
-                VSS.register("tfs-pullrequest-dashboard-widget-dev.Configuration", function () {
+                VSS.register("tfs-pullrequest-dashboard-widget.Configuration", function () {
                     var $categoryDropdown = $("#pr-category-dropdown");
 
                     return {
@@ -19,16 +19,16 @@
                             if (settings && settings.prCategory) {
                                  $categoryDropdown.val(settings.prCategory).trigger("chosen:updated");
                              } else {
-                                    // Set the Please select... item as the default
-                                    $categoryDropdown.val("Mine");
-                                }
+                                // Set the Please select... item as the default
+                                $categoryDropdown.val("Mine");
+                            }
 
-                             $categoryDropdown.on("change", function () {
-                                 var customSettings = {data: JSON.stringify({prCategory: $categoryDropdown.val()})};
-                                 var eventName = WidgetHelpers.WidgetEvent.ConfigurationChange;
-                                 var eventArgs = WidgetHelpers.WidgetEvent.Args(customSettings);
-                                 widgetConfigurationContext.notify(eventName, eventArgs);
-                             });
+                            $categoryDropdown.on("change", function () {
+                                var customSettings = {data: JSON.stringify({prCategory: $categoryDropdown.val()})};
+                                var eventName = WidgetHelpers.WidgetEvent.ConfigurationChange;
+                                var eventArgs = WidgetHelpers.WidgetEvent.Args(customSettings);
+                                widgetConfigurationContext.notify(eventName, eventArgs);
+                            });
 
                             return WidgetHelpers.WidgetStatusHelper.Success();
                         },
@@ -48,9 +48,9 @@
                 <label>Pull Request Category</label>
                 <div class="wrapper">
                     <select id="pr-category-dropdown">
-                        <option value="Mine">Requested By Me</option>
-                        <option value="AssignedToMe">Assigned To Me</option>
-                        <option value="AssignedToTeam">Assigned To My Team</option>
+                        <option value="requestedByMe">Requested By Me</option>
+                        <option value="assignedToMe">Assigned To Me</option>
+                        <option value="assignedToMyTeam">Assigned To My Team</option>
                     </select>
                 </div>
             </div>

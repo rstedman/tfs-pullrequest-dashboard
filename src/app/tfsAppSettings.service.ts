@@ -1,14 +1,17 @@
 import {NgZone} from "@angular/core";
 
-import {StorageService} from "./model";
+import {AppSettingsService} from "./model";
 
-export class TfsStorageService extends StorageService {
+export class TfsAppSettingsService extends AppSettingsService {
 
-    constructor(private storageService: IExtensionDataService, private zone: NgZone) {
-        super();
+    constructor(private storageService: IExtensionDataService,
+                zone: NgZone,
+                isWidgetContext: boolean,
+                widgetCategory: string) {
+        super(isWidgetContext, widgetCategory, zone);
     }
 
-    public getValue(key: string): Promise<string> {
+    protected getValue(key: string): Promise<string> {
       return new Promise((resolve, reject) =>
           this.storageService.getValue<string>(key, {scopeType: "User", defaultValue: null})
             .then((x) =>
@@ -17,7 +20,7 @@ export class TfsStorageService extends StorageService {
               this.zone.run(() => resolve(x))));
     }
 
-    public setValue(key: string, value: string): Promise<string> {
+    protected setValue(key: string, value: string): Promise<string> {
         return new Promise<string>((resolve, reject) =>
           this.storageService.setValue(key, value, {scopeType: "User"})
            .then((x) =>
