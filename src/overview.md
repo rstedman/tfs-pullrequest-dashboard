@@ -22,7 +22,7 @@ The hub queries for all active pull requests, and groups them into sevaral diffe
 * Other Open pull requests - All other active pull requests that don't fall into any of the above categories
 
 ###Pull Request Details
-Each pull request displayed shows a number of useful pieces if information.
+Each pull request displayed shows a number of useful pieces of information.
 
 * PR Title & Author
 * Repository name, from brach & to branch
