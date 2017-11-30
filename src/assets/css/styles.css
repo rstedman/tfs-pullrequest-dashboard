@@ -4,7 +4,7 @@
 .pull-request {
   display: flex;
   align-items: center;
-  margin: 5px;
+  margin: 2px;
 }
 
 .identity-image-container {
@@ -38,7 +38,7 @@
 }
 
 .vote {
-  font-size: 16px !important;
+  font-size: 14px !important;
 }
 
 .approved {
@@ -50,7 +50,16 @@
 }
 
 .waiting {
-  color: #ffcc00;
+  color: #f8a800;
+}
+
+.conflicts {
+  color: #e60000;
+  border-radius: 3px;
+  border: 1px solid;
+  padding-left: 2px;
+  padding-right: 1px;
+  padding-top: 1px;
 }
 
 .repo {
