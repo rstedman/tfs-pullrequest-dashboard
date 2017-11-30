@@ -60,10 +60,10 @@ export class AppComponent implements OnInit {
 
     public widgetMode: boolean = false;
 
-    public widgetCategory: string = "assignedToMe";
+    public enabledCategories: string[] = ["requestedByMe", "assignedToMe", "assignedToMyTeam"];
 
     constructor(private tfsService: TfsService, private settings: AppSettingsService) {
-        this.settings.categoryChanged().on((data) => this.widgetCategory = data);
+        this.settings.categoryChanged().on((data) => this.enabledCategories = [data]);
     }
 
     public ngOnInit() {
@@ -74,7 +74,9 @@ export class AppComponent implements OnInit {
         this.loading = true;
         try {
             this.widgetMode = this.settings.getIsWidgetContext();
-            this.widgetCategory = this.settings.getWidgetFilterCategory();
+            if (this.widgetMode) {
+                this.enabledCategories = [this.settings.getWidgetFilterCategory()];
+            }
             const filterPromise = this.settings.getRepoFilter();
             const formatPromise = this.settings.getDateFormat();
             const allProjectsPromise = this.settings.getShowAllProjects();
@@ -144,6 +146,35 @@ export class AppComponent implements OnInit {
             }
         }
         this.settings.setRepoFilter(this.filteredRepoIds);
+    }
+
+    public getCategoryDisplay(category: string): string {
+        if (!this.widgetMode) {
+            switch (category) {
+                case "requestedByMe": {
+                    return "Requested By Me";
+                }
+                case "assignedToMe": {
+                    return "Assigned To Me";
+                }
+                case "assignedToMyTeam": {
+                    return "Assigned To My Team";
+                }
+            }
+        } else {
+            switch (category) {
+                case "requestedByMe": {
+                    return "My PRs";
+                }
+                case "assignedToMe": {
+                    return "PRs Assigned To Me";
+                }
+                case "assignedToMyTeam": {
+                    return "PRs Assigned To Team";
+                }
+            }
+        }
+        return "Unknown Category";
     }
 
     public onDateFormatChanged(format: string) {

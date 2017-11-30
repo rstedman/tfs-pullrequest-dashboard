@@ -1,6 +1,5 @@
 <div [ngClass]="{'widget': widgetMode }">
   <div class="container">
-      <h2 class="title" *ngIf="widgetMode">PR Widget</h2>
     <div class="settings" *ngIf="!widgetMode">
       <div class="btn-group">
         <button class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" title="Settings">
@@ -28,26 +27,16 @@
         </ul>
       </div>
     </div>
-    <div *ngIf="(!widgetMode || widgetCategory==='requestedByMe') && (pullRequests | prFilter:'requestedByMe').length > 0">
-      <h4 *ngIf="!widgetMode">Requested By Me</h4>
-      <div *ngFor="let pr of pullRequests | prFilter:'requestedByMe' | prSort" class="row">
-        <pull-request [pullRequest]="pr" [dateFormat]="dateFormat"></pull-request>
-      </div>
-    </div>
-    <div *ngIf="(!widgetMode || widgetCategory==='assignedToMe') && (pullRequests | prFilter:'assignedToMe').length > 0">
-      <h4 *ngIf="!widgetMode">Assigned To Me</h4>
-      <div *ngFor="let pr of pullRequests | prFilter:'assignedToMe' | prSort" class="row">
-        <pull-request [pullRequest]="pr" [dateFormat]="dateFormat"></pull-request>
-      </div>
-    </div>
-    <div *ngIf="(!widgetMode || widgetCategory==='assignedToMyTeam') && (pullRequests | prFilter:'assignedToMyTeam').length > 0">
-      <h4 *ngIf="!widgetMode">Assigned To My Team</h4>
-      <div *ngFor="let pr of pullRequests | prFilter:'assignedToMyTeam' | prSort" class="row">
-        <pull-request [pullRequest]="pr" [dateFormat]="dateFormat"></pull-request>
+    <div *ngFor="let category of enabledCategories">
+      <div *ngIf="(pullRequests | prFilter: category).length > 0">
+        <h4>{{getCategoryDisplay(category) + ' (' + (pullRequests | prFilter: category).length + ')'}}</h4>
+        <div *ngFor="let pr of pullRequests | prFilter: category | prSort" class="row">
+          <pull-request [pullRequest]="pr" [dateFormat]="dateFormat"></pull-request>
+        </div>
       </div>
     </div>
     <div *ngIf="!widgetMode">
-      <h4>Other Open Pull Requests <ss-multiselect-dropdown [options]="repoOptions" [settings]="filterSettings" [texts]="filterTexts" [(ngModel)]="unfilteredRepoSelections" (ngModelChange)="onFilteredSelectionsChanged($event)"></ss-multiselect-dropdown></h4>
+      <h4>Other Open Pull Requests ({{(pullRequests | prFilter:'other' | repoFilter:filteredRepoIds).length}})&nbsp;<ss-multiselect-dropdown [options]="repoOptions" [settings]="filterSettings" [texts]="filterTexts" [(ngModel)]="unfilteredRepoSelections" (ngModelChange)="onFilteredSelectionsChanged($event)"></ss-multiselect-dropdown></h4>
       <div *ngFor="let pr of pullRequests | prFilter:'other' | repoFilter:filteredRepoIds | prSort" class="row">
         <pull-request [pullRequest]="pr" [dateFormat]="dateFormat"></pull-request>
       </div>
