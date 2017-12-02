@@ -1,10 +1,22 @@
+.category-header {
+  border-bottom: 1px #f9f9f9 solid;
+  margin: 0px;
+  padding-bottom: 6px;
+  padding-top: 10px;
+  font-size: 16px;
+}
+
 .pull-requests {
+}
+
+.pr-row {
+  border-bottom: 1px #f9f9f9 solid;
 }
 
 .pull-request {
   display: flex;
   align-items: center;
-  margin: 2px;
+  margin: 3px;
 }
 
 .identity-image-container {
@@ -23,8 +35,8 @@
   font-size: 12px;
 }
 
-.pull-request-details .fa {
-  font-size: 14px;
+.pull-request-details div {
+  display: block;
 }
 
 .pull-request-title {
@@ -33,11 +45,26 @@
   text-decoration: none;
 }
 
+.title-container {
+    margin-bottom: -4px;
+}
+
 .pull-request-title a:hover {
   text-decoration: none;
 }
 
+.git-icon {
+  margin-right: 1px;
+  font-size: 14px !important;
+}
+
+.branch-icon {
+  margin-right: 2px;
+  font-size: 14px !important;
+}
+
 .vote {
+  margin-right: 2px;
   font-size: 14px !important;
 }
 
@@ -51,6 +78,10 @@
 
 .waiting {
   color: #f8a800;
+}
+
+.repo-icon {
+  transform: scale(0.75)
 }
 
 .conflicts {
