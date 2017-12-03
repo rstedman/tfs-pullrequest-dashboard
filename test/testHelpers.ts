@@ -15,6 +15,8 @@ export interface SimplePullRequest {
     sourceBranch?: string;
     targetBranch?: string;
     title?: string;
+    repo?: string;
+    project?: string;
 }
 
 export class TestUtils {
@@ -90,7 +92,18 @@ export class TestUtils {
             url: null,
             workItemRefs: [],
             remoteUrl: null,
-            repository: null,
+            repository: {
+                _links: null,
+                defaultBranch: null,
+                id: details.repo,
+                name: details.repo,
+                remoteUrl: null,
+                url: null,
+                project: {
+                    id: details.project,
+                    name : details.project
+                }
+            },
             mergeStatus: details.mergeStatus,
             reviewers: details.reviewers.map(TestUtils.voterToIdentityRef)
         };

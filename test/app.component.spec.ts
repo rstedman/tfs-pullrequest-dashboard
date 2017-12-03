@@ -39,7 +39,7 @@ describe("AppComponent", () => {
             getCurrentUser: (): Promise<User> => {
                 return Promise.resolve(defaultUser);
             },
-            getPullRequests: (repo: GitRepository): Promise<GitPullRequest[]> => {
+            getPullRequests: (allProjects?: boolean): Promise<GitPullRequest[]> => {
                 return Promise.resolve([]);
             },
             getRepositories: (): Promise<GitRepository[]> => {

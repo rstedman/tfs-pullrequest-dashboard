@@ -12,6 +12,8 @@ export class AppConfigService {
     private _devMode: boolean = false;
     // change this to the endpoint of the tfs service that you wish to develop against
     private _devApiEndpoint: string = "http://<host>:8080/tfs/DefaultCollection";
+    private _devDefaultProject: string = "MyFirstProject";
+
     private _widgetMode: boolean = false;
     private _widgetCategory: string = "assignedToMe";
 
@@ -23,9 +25,11 @@ export class AppConfigService {
     private _onCategoryChanged = new LiteEvent<string>();
 
     get devMode(): boolean { return this._devMode; }
+    get devApiEndpoint(): string { return this._devApiEndpoint; }
+    get devDefaultProject(): string { return this._devDefaultProject; }
+
     get widgetMode(): boolean { return this._widgetMode; }
     get widgetCategory(): string { return this._widgetCategory; }
-    get devApiEndpoint(): string { return this._devApiEndpoint; }
     get gitClientFactory(): GitClientFactory { return this._gitClientFactory; }
     get identitiesClientFactory(): IdentitiesClientFactory { return this._identitiesClientFactory; }
     get context(): Context { return this._context; }

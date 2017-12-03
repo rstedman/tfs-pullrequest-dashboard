@@ -95,7 +95,10 @@ export class AppComponent implements OnInit {
     public async reloadPullRequests(): Promise<void> {
         this.loading = true;
         try {
-            const repos = await this.tfsService.getRepositories(this.allProjects);
+            const getReposPromise = this.tfsService.getRepositories(this.allProjects);
+            const getPRsPromise = this.tfsService.getPullRequests(this.allProjects);
+
+            const repos = await getReposPromise;
             this.repositories = repos.sort((a, b) => {
                 if (a.name.toLowerCase() > b.name.toLowerCase()) {
                     return 1;
@@ -109,8 +112,10 @@ export class AppComponent implements OnInit {
             this.pullRequests = [];
             this.repoOptions = [];
             this.unfilteredRepoSelections.length = 0;
+            const repoById: Map<string, GitRepository> = new Map<string, GitRepository>();
             for (let i = 0; i < this.repositories.length; i++) {
                 const repo = this.repositories[i];
+                repoById[repo.id] = repo;
 
                 this.repoOptions.push({
                     id: i,
@@ -120,13 +125,11 @@ export class AppComponent implements OnInit {
                 if (this.filteredRepoIds.indexOf(repo.id) < 0) {
                     this.unfilteredRepoSelections.push(i);
                 }
-                // use continuation instead of await here, as we don't want to block fetching of prs from other repos
-                this.tfsService.getPullRequests(repo)
-                    .then((prs) => {
-                        for (const pr of prs) {
-                            this.pullRequests.push(new PullRequestViewModel(pr, repo, this.currentUser));
-                        }
-                    });
+            }
+
+            const prs = await getPRsPromise;
+            for (const pr of prs) {
+                this.pullRequests.push(new PullRequestViewModel(pr, repoById[pr.repository.id], this.currentUser));
             }
         } finally {
             this.loading = false;

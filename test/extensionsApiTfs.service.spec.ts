@@ -32,20 +32,19 @@ describe("ExtensionsApiTfsService", () => {
         TestUtils.createRepository("repo6", "P2")
     ];
 
-    const prMap = {
-        repo1: [createPR(1), createPR(2), createPR(3), createPR(4)],
-        repo3: [createPR(5), createPR(6)]
-    };
+    const prs = [createPR(1, "repo1", "P1"), createPR(2, "repo2", "P1"), createPR(3, "repo3", "P3"), createPR(4, "repo4", "P1"), createPR(5, "repo5", "P1"), createPR(6, "repo6", "P2")];
 
     const projectName = "P1";
     let gitClient: GitClient = null;
     let identitiesClient: IdentitiesClient = null;
 
-    function createPR(id: number): GitPullRequest {
+    function createPR(id: number, repo: string, project: string): GitPullRequest {
         return TestUtils.createPullRequest({
             id,
             mergeStatus: PullRequestAsyncStatus.Succeeded,
-            reviewers: []
+            reviewers: [],
+            repo,
+            project
         });
     }
 
@@ -88,11 +87,8 @@ describe("ExtensionsApiTfsService", () => {
 
         gitClient = {
             getPullRequests: (repositoryId: string, searchCriteria: GitPullRequestSearchCriteria, project?: string, maxCommentLength?: number, skip?: number, top?: number): Promise<GitPullRequest[]> => {
-                let prs = prMap[repositoryId];
-                if (prs == null) {
-                    prs = [];
-                }
-                return Promise.resolve(prs);
+                const filtered = prs.filter((p) => p.repository.id === repositoryId);
+                return Promise.resolve(filtered);
             },
             getRepositories: (project?: string, includeLinks?: boolean): Promise<GitRepository[]> => {
                 if (project) {
@@ -100,6 +96,13 @@ describe("ExtensionsApiTfsService", () => {
                     return Promise.resolve(filtered);
                 }
                 return Promise.resolve(repos);
+            },
+            getPullRequestsByProject: (project: string, searchCriteria: GitPullRequestSearchCriteria, maxCommentLength?: number, skip?: number, top?: number): Promise<GitPullRequest[]> => {
+                if (project) {
+                    const filtered = prs.filter((p) => p.repository.project.name === project);
+                    return Promise.resolve(filtered);
+                }
+                return Promise.resolve(prs);
             }
         };
     });
@@ -163,26 +166,24 @@ describe("ExtensionsApiTfsService", () => {
         done();
     });
 
-    it("Returns all PRs for a repository", async (done) => {
+    it("Returns PRs from all projects if allProjects true", async (done) => {
         const subject = createSubject(true);
 
-        let repositories = await subject.getPullRequests(repos[0]);
+        const result = await subject.getPullRequests(true);
 
-        expect(repositories).toEqual(prMap[repos[0].id]);
-
-        repositories = await subject.getPullRequests(repos[2]);
-
-        expect(repositories).toEqual(prMap[repos[2].id]);
+        expect(result).toEqual(prs);
 
         done();
     });
 
-    it("Returns an empty list if repo has no PRs", async (done) => {
+    it("Returns PRs from only the current project if allProjects false", async (done) => {
         const subject = createSubject(true);
 
-        const repositories = await subject.getPullRequests(repos[3]);
+        const expected = prs.filter((p) => p.repository.project.name === projectName);
 
-        expect(repositories.length).toEqual(0);
+        const result = await subject.getPullRequests(false);
+
+        expect(result).toEqual(expected);
 
         done();
     });
