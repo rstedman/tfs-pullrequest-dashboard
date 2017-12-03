@@ -19,8 +19,7 @@
                             if (settings && settings.prCategory) {
                                  $categoryDropdown.val(settings.prCategory).trigger("chosen:updated");
                              } else {
-                                // Set the Please select... item as the default
-                                $categoryDropdown.val("Mine");
+                                $categoryDropdown.val("assignedToMe");
                             }
 
                             $categoryDropdown.on("change", function () {
@@ -51,6 +50,7 @@
                         <option value="requestedByMe">Requested By Me</option>
                         <option value="assignedToMe">Assigned To Me</option>
                         <option value="assignedToMyTeam">Assigned To My Team</option>
+                        <option value="all">All</option>
                     </select>
                 </div>
             </div>

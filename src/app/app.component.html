@@ -29,14 +29,14 @@
     </div>
     <div *ngFor="let category of enabledCategories">
       <div *ngIf="(pullRequests | prFilter: category).length > 0">
-        <h4 class="category-header">{{getCategoryDisplay(category) + ' (' + (pullRequests | prFilter: category).length + ')'}}</h4>
+        <div class="row category-header">{{getCategoryDisplay(category) + ' (' + (pullRequests | prFilter: category).length + ')'}}</div>
         <div *ngFor="let pr of pullRequests | prFilter: category | prSort" class="row pr-row">
           <pull-request [pullRequest]="pr" [dateFormat]="dateFormat"></pull-request>
         </div>
       </div>
     </div>
     <div *ngIf="!widgetMode">
-      <h4 class="category-header">Other Open Pull Requests ({{(pullRequests | prFilter:'other' | repoFilter:filteredRepoIds).length}})&nbsp;<ss-multiselect-dropdown [options]="repoOptions" [settings]="filterSettings" [texts]="filterTexts" [(ngModel)]="unfilteredRepoSelections" (ngModelChange)="onFilteredSelectionsChanged($event)"></ss-multiselect-dropdown></h4>
+      <div class="row category-header">Other Open Pull Requests ({{(pullRequests | prFilter:'other' | repoFilter:filteredRepoIds).length}})&nbsp;<ss-multiselect-dropdown [options]="repoOptions" [settings]="filterSettings" [texts]="filterTexts" [(ngModel)]="unfilteredRepoSelections" (ngModelChange)="onFilteredSelectionsChanged($event)"></ss-multiselect-dropdown></div>
       <div *ngFor="let pr of pullRequests | prFilter:'other' | repoFilter:filteredRepoIds | prSort" class="row pr-row">
         <pull-request [pullRequest]="pr" [dateFormat]="dateFormat"></pull-request>
       </div>

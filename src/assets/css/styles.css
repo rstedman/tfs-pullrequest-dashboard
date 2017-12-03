@@ -1,6 +1,7 @@
+.widget {
+}
+
 .category-header {
-  border-bottom: 1px #f9f9f9 solid;
-  margin: 0px;
   padding-bottom: 6px;
   padding-top: 10px;
   font-size: 16px;
@@ -10,7 +11,7 @@
 }
 
 .pr-row {
-  border-bottom: 1px #f9f9f9 solid;
+  border-top: 1px #f9f9f9 solid;
 }
 
 .pull-request {
@@ -27,12 +28,16 @@
 .identity-image {
   width: 40px;
   height: 40px;
+  border-radius: 50%;
 }
 
 .pull-request-details {
   flex-grow: 1;
   color: #6d6d6d;
   font-size: 12px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .pull-request-details div {

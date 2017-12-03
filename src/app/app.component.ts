@@ -174,7 +174,7 @@ export class AppComponent implements OnInit {
                 }
             }
         }
-        return "Unknown Category";
+        return category;
     }
 
     public onDateFormatChanged(format: string) {
