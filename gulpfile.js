@@ -146,7 +146,7 @@ gulp.task('package:dev', ['build:dev'], function() {
 
 gulp.task('serve', ['compile'], function() {
 
-    gulp.watch(['./src/**/*.*', './tsconfig.json', './tslint.json'], ['compile:sources']);
+    gulp.watch(['./src/**/*.*', './test/**/*.*', './tsconfig.json', './tslint.json'], ['compile:sources']);
 
     connect.server({
         root: './build'

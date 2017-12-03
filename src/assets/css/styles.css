@@ -3,7 +3,7 @@
 
 .category-header {
   padding-bottom: 6px;
-  padding-top: 10px;
+  padding-top: 8px;
   font-size: 16px;
 }
 
@@ -35,13 +35,7 @@
   flex-grow: 1;
   color: #6d6d6d;
   font-size: 12px;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.pull-request-details div {
-  display: block;
+  width: calc(100% - 40px);
 }
 
 .pull-request-title {
@@ -51,7 +45,14 @@
 }
 
 .title-container {
-    margin-bottom: -4px;
+  margin-bottom: -4px;
+}
+
+.container-nowrap {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .pull-request-title a:hover {
@@ -66,6 +67,10 @@
 .branch-icon {
   margin-right: 2px;
   font-size: 14px !important;
+}
+
+.vote-container {
+  display: inline-block;
 }
 
 .vote {

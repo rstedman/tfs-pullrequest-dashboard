@@ -3,14 +3,14 @@
     <img src="{{pullRequest.createdByImageUrl}}" class="identity-image">
   </div>
   <div class="pull-request-details">
-    <div class="title-container">
+    <div class="title-container container-nowrap">
       <a class="pull-request-title" href="{{pullRequest.remoteUrl}}" target="_parent">{{pullRequest.title}}</a>
     </div>
-    <div>
+    <div class="details-container container-nowrap">
         by {{pullRequest.createdBy}} at {{pullRequest.createdDate | date: dateFormat}} into <i class="mdi mdi-git git-icon"></i><span class="repo">{{pullRequest.repositoryName}}</span> <i class="fa fa-code-fork branch-icon"></i>{{pullRequest.targetRefName}}
     </div>
-    <div>
-      <span *ngIf="pullRequest.hasMergeConflicts" class="conflicts"><i class="fa fa-exclamation-circle vote"></i> Merge Conflicts</span><span *ngFor="let reviewer of pullRequest.reviewers; let i=index;"><span *ngIf="i>0 || pullRequest.hasMergeConflicts">,</span><i class={{getVoteClasses(reviewer)}} title="{{getVoteTooltip(reviewer)}}"></i><span title="{{reviewer.isRequired ? reviewer.displayName + ' (Required)' : reviewer.displayName}}">{{reviewer.isRequired ? reviewer.displayName + '*' : reviewer.displayName}}</span></span>
+    <div class="votes-container">
+      <span *ngIf="pullRequest.hasMergeConflicts" class="conflicts vote-container"><i class="fa fa-exclamation-circle vote"></i> Merge Conflicts</span><span *ngFor="let reviewer of pullRequest.reviewers; let i=index;"><span *ngIf="i>0 || pullRequest.hasMergeConflicts">,</span><span class="vote-container"><i class={{getVoteClasses(reviewer)}} title="{{getVoteTooltip(reviewer)}}"></i><span title="{{reviewer.isRequired ? reviewer.displayName + ' (Required)' : reviewer.displayName}}">{{reviewer.isRequired ? reviewer.displayName + '*' : reviewer.displayName}}</span></span></span>
     </div>
   </div>
 </div>
