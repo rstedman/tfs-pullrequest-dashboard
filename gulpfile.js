@@ -97,10 +97,10 @@ gulp.task('compile:embed', function () {
 
 // compiles just local sources
 gulp.task('compile:sources', function(callback) {
-    runSequence( ['tslint', 'compile:typecheck', 'test'], 'compile:copy', 'compile:embed', callback);
+    runSequence( ['tslint', 'compile:typecheck'], 'compile:copy', 'compile:embed', callback);
 });
 
-gulp.task('compile', ['copy:vendor', 'bundle:vendor', 'compile:sources']);
+gulp.task('compile', ['copy:vendor', 'bundle:vendor', 'compile:sources', 'test']);
 
 gulp.task('test', function(callback) {
     new karma.Server({
