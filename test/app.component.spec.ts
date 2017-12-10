@@ -1,5 +1,5 @@
 import {AppComponent} from "../src/app/app.component";
-import {AppSettingsService, TfsService, User} from "../src/app/model";
+import {AppSettingsService, Layout, TfsService, User} from "../src/app/model";
 import {TestUtils} from "./testHelpers";
 
 describe("AppComponent", () => {
@@ -22,6 +22,11 @@ describe("AppComponent", () => {
             TestUtils.createIdentity("group1"),
             TestUtils.createIdentity("group2")
         ]
+    };
+
+    const layout: Layout = {
+        categories: [{key: "test", name: "Test"}],
+        widgetMode: false
     };
 
     let tfsMock: TfsService;
@@ -50,7 +55,7 @@ describe("AppComponent", () => {
         spyOn(tfsMock, "getPullRequests");
         spyOn(tfsMock, "getRepositories");
 
-        settingsMock = new SettingsMock(false, null, null);
+        settingsMock = new SettingsMock(layout, null);
         spyOn(settingsMock, "getDateFormat");
         spyOn(settingsMock, "getRepoFilter");
         spyOn(settingsMock, "getShowAllProjects");

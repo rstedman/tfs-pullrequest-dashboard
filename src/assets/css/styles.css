@@ -1,4 +1,5 @@
-.widget {
+.my-widget {
+  padding: 0px 8px;
 }
 
 .category-header {
@@ -11,7 +12,7 @@
 }
 
 .pr-row {
-  border-top: 1px #f9f9f9 solid;
+  border-top: 1px #e4e6e8 solid;
 }
 
 .pull-request {
@@ -20,15 +21,23 @@
   margin: 3px;
 }
 
+.my-widget .pull-request {
+  margin: 1px !important;
+}
+
 .identity-image-container {
   margin-right: 5px;
-  margin-left: 5px;
 }
 
 .identity-image {
   width: 40px;
   height: 40px;
   border-radius: 50%;
+}
+
+.my-widget .identity-image {
+  width: 32px !important;
+  height: 32px !important;
 }
 
 .pull-request-details {
@@ -44,6 +53,10 @@
   text-decoration: none;
 }
 
+a.pull-request-title:hover {
+  text-decoration: none;
+}
+
 .title-container {
   margin-bottom: -4px;
 }
@@ -53,10 +66,6 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-}
-
-.pull-request-title a:hover {
-  text-decoration: none;
 }
 
 .git-icon {
@@ -71,6 +80,24 @@
 
 .vote-container {
   display: inline-block;
+}
+
+.compact-details {
+  display: flex;
+}
+
+.compact-details-bottom-left {
+  flex-shrink: 1;
+  flex-grow: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.compact-details-bottom-right {
+  align-self: flex-end;
+  flex-grow: 0;
+  flex-shrink: 0;
 }
 
 .vote {
@@ -98,9 +125,8 @@
   color: #e60000;
   border-radius: 3px;
   border: 1px solid;
-  padding-left: 2px;
-  padding-right: 1px;
-  padding-top: 1px;
+  margin: -2px;
+  font-size: 12px;
 }
 
 .repo {
@@ -118,4 +144,15 @@
 .settings-container {
   min-width: 250px;
   font-size: 12px;
+}
+
+.widget-footer {
+  position: fixed;
+  text-align: right;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 5px 10px;
+  z-index: 1050;
 }

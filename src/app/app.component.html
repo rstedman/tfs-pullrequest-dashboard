@@ -1,6 +1,6 @@
-<div [ngClass]="{'widget': widgetMode }">
+<div [ngClass]="{'my-widget': layout.widgetMode }">
   <div class="container">
-    <div class="settings" *ngIf="!widgetMode">
+    <div class="settings" *ngIf="!layout.widgetMode">
       <div class="btn-group">
         <button class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" title="Settings">
           <i class="fa fa-cog"></i> <span class="caret"></span>
@@ -27,19 +27,22 @@
         </ul>
       </div>
     </div>
-    <div *ngFor="let category of enabledCategories">
-      <div *ngIf="(pullRequests | prFilter: category).length > 0">
-        <div class="row category-header">{{getCategoryDisplay(category) + ' (' + (pullRequests | prFilter: category).length + ')'}}</div>
-        <div *ngFor="let pr of pullRequests | prFilter: category | prSort" class="row pr-row">
-          <pull-request [pullRequest]="pr" [dateFormat]="dateFormat"></pull-request>
+    <div *ngFor="let category of layout.categories">
+      <div *ngIf="!layout.widgetMode && (pullRequests | prFilter: category.key).length > 0">
+        <div class="row category-header">{{category.name + ' (' + (pullRequests | prFilter: category.key).length + ')'}}</div>
+        <div *ngFor="let pr of pullRequests | prFilter: category.key | prSort" class="row pr-row">
+          <pull-request [pullRequest]="pr" [dateFormat]="dateFormat" [compactMode]="layout.widgetMode"></pull-request>
         </div>
       </div>
     </div>
-    <div *ngIf="!widgetMode">
+    <div *ngIf="!layout.widgetMode">
       <div class="row category-header">Other Open Pull Requests ({{(pullRequests | prFilter:'other' | repoFilter:filteredRepoIds).length}})&nbsp;<ss-multiselect-dropdown [options]="repoOptions" [settings]="filterSettings" [texts]="filterTexts" [(ngModel)]="unfilteredRepoSelections" (ngModelChange)="onFilteredSelectionsChanged($event)"></ss-multiselect-dropdown></div>
       <div *ngFor="let pr of pullRequests | prFilter:'other' | repoFilter:filteredRepoIds | prSort" class="row pr-row">
-        <pull-request [pullRequest]="pr" [dateFormat]="dateFormat"></pull-request>
+        <pull-request [pullRequest]="pr" [dateFormat]="dateFormat" [compactMode]="layout.widgetMode"></pull-request>
       </div>
     </div>
+  </div>
+  <div *ngIf="layout.widgetMode" class="widget-footer">
+    <a href="{{hubUri}}" target="_parent">View Summary</a>
   </div>
 </div>

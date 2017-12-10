@@ -3,7 +3,7 @@ import { IMultiSelectOption, IMultiSelectSettings, IMultiSelectTexts } from "ang
 
 import { AppConfigService } from "./appConfig.service";
 import { AppSettingsServiceProvider } from "./appSettingsService.provider";
-import { AppSettingsService, TfsService, User } from "./model";
+import { AppSettingsService, Layout, TfsService, User } from "./model";
 import { PullRequestViewModel } from "./pullRequestViewModel";
 import { TfsServiceProvider } from "./tfsService.provider";
 
@@ -58,12 +58,15 @@ export class AppComponent implements OnInit {
 
     public loading: boolean = false;
 
-    public widgetMode: boolean = false;
+    public layout: Layout;
 
-    public enabledCategories: string[] = ["requestedByMe", "assignedToMe", "assignedToMyTeam"];
+    public hubUri: string = "#";
 
-    constructor(private tfsService: TfsService, private settings: AppSettingsService) {
-        this.settings.categoryChanged().on((data) => this.enabledCategories = [data]);
+    constructor(private tfsService: TfsService,
+                private settings: AppSettingsService) {
+
+        this.settings.layoutChanged().on((data) => this.layout = data);
+        this.hubUri = this.settings.getHubUri();
     }
 
     public ngOnInit() {
@@ -73,10 +76,7 @@ export class AppComponent implements OnInit {
     public async refresh() {
         this.loading = true;
         try {
-            this.widgetMode = this.settings.getIsWidgetContext();
-            if (this.widgetMode) {
-                this.enabledCategories = [this.settings.getWidgetFilterCategory()];
-            }
+            this.layout = this.settings.getLayout();
             const filterPromise = this.settings.getRepoFilter();
             const formatPromise = this.settings.getDateFormat();
             const allProjectsPromise = this.settings.getShowAllProjects();
@@ -149,35 +149,6 @@ export class AppComponent implements OnInit {
             }
         }
         this.settings.setRepoFilter(this.filteredRepoIds);
-    }
-
-    public getCategoryDisplay(category: string): string {
-        if (!this.widgetMode) {
-            switch (category) {
-                case "requestedByMe": {
-                    return "Requested By Me";
-                }
-                case "assignedToMe": {
-                    return "Assigned To Me";
-                }
-                case "assignedToMyTeam": {
-                    return "Assigned To My Team";
-                }
-            }
-        } else {
-            switch (category) {
-                case "requestedByMe": {
-                    return "My PRs";
-                }
-                case "assignedToMe": {
-                    return "PRs Assigned To Me";
-                }
-                case "assignedToMyTeam": {
-                    return "PRs Assigned To Team";
-                }
-            }
-        }
-        return category;
     }
 
     public onDateFormatChanged(format: string) {

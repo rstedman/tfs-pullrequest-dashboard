@@ -1,7 +1,7 @@
 {
     "manifestVersion": 1,
     "id": "tfs-pullrequest-dashboard-dev",
-    "version": "0.3.18",
+    "version": "0.3.43",
     "name": "Pull Request Dashboard (dev)",
     "description": "A pull request dashboard for Visual Studio Team Services/Team Foundation Services.",
     "publisher": "ryanstedman",
@@ -41,10 +41,11 @@
                 "ryanstedman.tfs-pullrequest-dashboard-dev.tfs-pullrequest-dashboard-widget-dev.Configuration"
             ],
             "properties": {
-                "name": "Pullrequest Dashboard Widget",
+                "name": "Pull Request Dashboard Widget (dev)",
                 "description": "Displays pull requests across all repositories",
                 "previewImageUrl": "assets/images/logo.png",
                 "uri": "index.html",
+                "isNameConfigurable": true,
                 "supportedSizes": [
                     { "rowSpan": 2, "columnSpan": 3 },
                     { "rowSpan": 3, "columnSpan": 3 },

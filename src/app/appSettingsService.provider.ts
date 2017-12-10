@@ -18,8 +18,8 @@ export class AppSettingsServiceProvider implements FactoryProvider {
     if (config.devMode) {
       return new LocalAppSettingsService(zone);
     } else {
-      const res = new TfsAppSettingsService(config.extensionDataService, zone, config.widgetMode, config.widgetCategory);
-      config.categoryChanged.on((data) => res.setWidgetFilterCategory(data));
+      const res = new TfsAppSettingsService(config.extensionDataService, VSS.getWebContext(), zone, config.layout);
+      config.layoutChanged.on((data) => res.setLayout(data));
       return res;
     }
   }

@@ -26,6 +26,22 @@ export class LiteEvent<T> implements ILiteEvent<T> {
     }
 }
 
+export interface Category {
+    key: string;
+    name: string;
+}
+
+export interface LayoutSize {
+    columnSpan: number;
+    rowSpan: number;
+}
+
+export interface Layout {
+    categories: Category[];
+    widgetMode?: boolean;
+    size?: LayoutSize;
+}
+
 // Represents an user in tfs. Extends the identity model to include the identity
 // info for membersOf
 export interface User {
@@ -77,8 +93,9 @@ export abstract class AppSettingsService {
 
     private onCategoryChanged = new LiteEvent<string>();
 
-    constructor(private isWidgetContext: boolean,
-                private widgetCategory: string,
+    private onLayoutchanged = new LiteEvent<Layout>();
+
+    constructor(private layout: Layout,
                 protected zone: NgZone) {
     }
 
@@ -118,21 +135,21 @@ export abstract class AppSettingsService {
         await this.setValue(AppSettingsService.allProjectsKey, value.toString());
     }
 
-    public getIsWidgetContext(): boolean {
-        return this.isWidgetContext;
+    public getLayout(): Layout {
+        return this.layout;
     }
 
-    public getWidgetFilterCategory(): string {
-        return this.widgetCategory;
+    public setLayout(layout: Layout) {
+        this.layout = layout;
+        this.zone.run(() => this.onLayoutchanged.trigger(layout));
     }
 
-    public setWidgetFilterCategory(category: string) {
-        this.widgetCategory = category;
-        this.zone.run(() => this.onCategoryChanged.trigger(category));
+    public layoutChanged(): ILiteEvent<Layout> {
+        return this.onLayoutchanged.expose();
     }
 
-    public categoryChanged() {
-        return this.onCategoryChanged.expose();
+    public getHubUri(): string {
+        return "#";
     }
 
     protected abstract getValue(key: string): Promise<string>;

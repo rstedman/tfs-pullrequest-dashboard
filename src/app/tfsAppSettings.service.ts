@@ -1,14 +1,18 @@
 import {NgZone} from "@angular/core";
 
-import {AppSettingsService} from "./model";
+import {AppSettingsService, Layout} from "./model";
 
 export class TfsAppSettingsService extends AppSettingsService {
 
     constructor(private storageService: IExtensionDataService,
+                private webContext: WebContext,
                 zone: NgZone,
-                isWidgetContext: boolean,
-                widgetCategory: string) {
-        super(isWidgetContext, widgetCategory, zone);
+                layout: Layout) {
+        super(layout, zone);
+    }
+
+    public getHubUri(): string {
+        return `${this.webContext.host.uri}/${this.webContext.project.name}/_apps/hub/ryanstedman.tfs-pullrequest-dashboard.tfs-pullrequest-dashboard`;
     }
 
     protected getValue(key: string): Promise<string> {
