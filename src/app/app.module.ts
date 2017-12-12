@@ -7,6 +7,8 @@ import { MultiselectDropdownModule } from "angular-2-dropdown-multiselect";
 
 import { AppComponent } from "./app.component";
 import { AppConfigService } from "./appConfig.service";
+import { LimitPipe } from "./limit.pipe";
+import { VarDirective } from "./ng-var.directive";
 import { PullRequestSortPipe } from "./prSort.pipe";
 import { PullRequestComponent } from "./pullRequest.component";
 import { PullRequestFilterPipe } from "./pullRequestFilter.pipe";
@@ -24,7 +26,9 @@ import { RepoFilterPipe } from "./repoFilter.pipe";
     PullRequestComponent,
     PullRequestFilterPipe,
     RepoFilterPipe,
-    PullRequestSortPipe
+    PullRequestSortPipe,
+    VarDirective,
+    LimitPipe
   ],
   providers: [
     AppConfigService,

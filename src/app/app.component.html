@@ -28,10 +28,15 @@
       </div>
     </div>
     <div *ngFor="let category of layout.categories">
-      <div *ngIf="!layout.widgetMode && (pullRequests | prFilter: category.key).length > 0">
-        <div class="row category-header">{{category.name + ' (' + (pullRequests | prFilter: category.key).length + ')'}}</div>
-        <div *ngFor="let pr of pullRequests | prFilter: category.key | prSort" class="row pr-row">
-          <pull-request [pullRequest]="pr" [dateFormat]="dateFormat" [compactMode]="layout.widgetMode"></pull-request>
+      <div *ngVar="(pullRequests | prFilter: category.key | prSort) as filtered">
+        <div *ngIf="(layout.widgetMode === true) || (filtered.length > 0)">
+          <div class="row category-header">{{category.name + ' (' + filtered.length + ')'}}</div>
+          <div *ngFor="let pr of filtered | limit: rowLimit" class="row pr-row">
+            <pull-request [pullRequest]="pr" [dateFormat]="dateFormat" [compactMode]="layout.widgetMode"></pull-request>
+          </div>
+          <div *ngIf="layout.widgetMode && filtered.length > rowLimit" class="row pr-row">
+            <span class="category-remainder">{{filtered.length - rowLimit}} more...</span>
+          </div>
         </div>
       </div>
     </div>

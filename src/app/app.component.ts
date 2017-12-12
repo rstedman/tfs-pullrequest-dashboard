@@ -62,10 +62,12 @@ export class AppComponent implements OnInit {
 
     public hubUri: string = "#";
 
+    public rowLimit: number = 0;
+
     constructor(private tfsService: TfsService,
                 private settings: AppSettingsService) {
 
-        this.settings.layoutChanged().on((data) => this.layout = data);
+        this.settings.layoutChanged().on((data) => this.updateLayout(data));
         this.hubUri = this.settings.getHubUri();
     }
 
@@ -76,7 +78,7 @@ export class AppComponent implements OnInit {
     public async refresh() {
         this.loading = true;
         try {
-            this.layout = this.settings.getLayout();
+            this.updateLayout(this.settings.getLayout());
             const filterPromise = this.settings.getRepoFilter();
             const formatPromise = this.settings.getDateFormat();
             const allProjectsPromise = this.settings.getShowAllProjects();
@@ -175,6 +177,13 @@ export class AppComponent implements OnInit {
             if (repo.name === name) {
                 return repo;
             }
+        }
+    }
+
+    private updateLayout(layout: Layout) {
+        this.layout = layout;
+        if (layout.widgetMode && layout.size) {
+            this.rowLimit = layout.size.rowSpan * 3;
         }
     }
 }
