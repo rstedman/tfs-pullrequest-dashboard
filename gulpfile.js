@@ -130,8 +130,9 @@ gulp.task('replace-id-dev-html', function() {
 });
 
 gulp.task('replace-id-dev-ts', function() {
-    gulp.src(['build/app/appConfig.service.ts'])
+    gulp.src(['build/app/appConfig.service.ts', 'build/app/tfsAppSettings.service.ts'])
         .pipe(replace('tfs-pullrequest-dashboard-widget', 'tfs-pullrequest-dashboard-widget-dev'))
+        .pipe(replace('tfs-pullrequest-dashboard.tfs-pullrequest-dashboard', 'tfs-pullrequest-dashboard-dev.tfs-pullrequest-dashboard-dev'))
         .pipe(gulp.dest('build/app/'));
 });
 

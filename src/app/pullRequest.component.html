@@ -10,7 +10,7 @@
         by {{pullRequest.createdBy}} at {{pullRequest.createdDate | date: dateFormat}} into <i class="mdi mdi-git git-icon"></i><span class="repo">{{pullRequest.repositoryName}}</span> <i class="fa fa-code-fork branch-icon"></i>{{pullRequest.targetRefName}}
     </div>
     <div *ngIf="!compactMode" class="votes-container">
-      <span *ngIf="pullRequest.hasMergeConflicts" class="conflicts vote-container"><i class="fa fa-exclamation-triangle vote"></i>Conflicts</span><span *ngFor="let reviewer of pullRequest.reviewers; let i=index;"><span *ngIf="i>0 || pullRequest.hasMergeConflicts">, </span><span class="vote-container"><i class={{getVoteClasses(reviewer.vote)}} title="{{getVoteTooltip(reviewer.vote)}}"></i><span title="{{reviewer.isRequired ? reviewer.displayName + ' (Required)' : reviewer.displayName}}">{{reviewer.isRequired ? reviewer.displayName + '*' : reviewer.displayName}}</span></span></span>
+      <span *ngIf="pullRequest.hasMergeConflicts" class="conflicts"><i class="fa fa-exclamation-triangle vote"></i>Conflicts</span><span *ngFor="let reviewer of pullRequest.reviewers; let i=index;"><span *ngIf="i>0 || pullRequest.hasMergeConflicts">, </span><span class="vote-container"><i class={{getVoteClasses(reviewer.vote)}} title="{{getVoteTooltip(reviewer.vote)}}"></i><span title="{{reviewer.isRequired ? reviewer.displayName + ' (Required)' : reviewer.displayName}}">{{reviewer.isRequired ? reviewer.displayName + '*' : reviewer.displayName}}</span></span></span>
     </div>
     <div *ngIf="compactMode" class="compact-details">
       <div class="compact-details-bottom-left" title="into {{pullRequest.repositoryName}}, {{pullRequest.targetRefName}}">

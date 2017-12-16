@@ -74,20 +74,27 @@ export class AppConfigService {
                         VSS.register("tfs-pullrequest-dashboard-widget", () => {
                           return {
                             load: (settings) => {
+                              let loadedCategory = false;
                               if (settings.customSettings.data) {
                                   const s = JSON.parse(settings.customSettings.data);
                                   if (s && s.prCategory) {
                                       this._layout.categories = [{
                                         key: s.prCategory,
-                                        name: settings.name
+                                        name: this.getWidgetCatName(s.prCategory)
                                       }];
-                                  } else {
-                                    this._layout.categories = [{
-                                        key: "assignedToMe",
-                                        name: "Assigned To Me"
-                                      }];
+                                      loadedCategory = true;
                                   }
                               }
+
+                              if (!loadedCategory) {
+                                this._layout.categories = [{
+                                      key: "assignedToMe",
+                                      name: this.getWidgetCatName("assignedToMe")
+                                }];
+                              }
+
+                              this._layout.size = settings.size;
+
                               resolve(true);
                               return widgetHelpers.WidgetStatusHelper.Success();
                             },
@@ -97,11 +104,12 @@ export class AppConfigService {
                                   if (s && s.prCategory) {
                                       this._layout.categories = [{
                                         key: s.prCategory,
-                                        name: settings.name
+                                        name: this.getWidgetCatName(s.prCategory)
                                       }];
-                                      this._layoutChanged.trigger(this._layout);
                                   }
                               }
+                              this._layout.size = settings.size;
+                              this._layoutChanged.trigger(this._layout);
                               return widgetHelpers.WidgetStatusHelper.Success();
                             }
                           };
@@ -114,5 +122,18 @@ export class AppConfigService {
                   });
           });
       });
+    }
+
+    private getWidgetCatName(cat: string): string {
+      switch (cat) {
+        case "requestedByMe":
+          return "My Pull Requests";
+        case "assignedToMe":
+          return "Pull Requests Assigned To Me";
+        case "assignedToMyTeam" :
+          return "Pull Requests Assigned to My Team";
+        default:
+          return "All Pull Requests";
+      }
     }
 }

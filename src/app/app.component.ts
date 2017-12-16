@@ -183,7 +183,9 @@ export class AppComponent implements OnInit {
     private updateLayout(layout: Layout) {
         this.layout = layout;
         if (layout.widgetMode && layout.size) {
-            this.rowLimit = layout.size.rowSpan * 3;
+            // trial & error - this allows the most PRs to be displayed while fitting nicely in the available
+            //                 widget space
+            this.rowLimit = (layout.size.rowSpan * 3) + (layout.size.rowSpan - 2);
         }
     }
 }

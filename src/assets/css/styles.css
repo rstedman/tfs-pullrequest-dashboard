@@ -127,8 +127,10 @@ a.pull-request-title:hover {
   color: #e60000;
   border-radius: 3px;
   border: 1px solid;
-  margin: -2px;
   font-size: 12px;
+  padding-left: 1px;
+  padding-top: 1px;
+  padding-right: 1px
 }
 
 .repo {
