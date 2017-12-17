@@ -1,30 +1,52 @@
+.my-widget {
+  padding: 0px 8px;
+}
+
+.category-header {
+  padding-bottom: 6px;
+  padding-top: 8px;
+  font-size: 16px;
+}
+
+.category-remainder {
+  margin-top: 6px;
+  margin-left: 6px;
+  font-size: 14px;
+}
+
 .pull-requests {
+}
+
+.pr-row {
+  border-top: 1px #e4e6e8 solid;
 }
 
 .pull-request {
   display: flex;
   align-items: center;
-  margin: 5px;
+  margin: 3px;
 }
 
 .identity-image-container {
   margin-right: 5px;
-  margin-left: 5px;
 }
 
 .identity-image {
   width: 40px;
   height: 40px;
+  border-radius: 50%;
+}
+
+.my-widget .identity-image {
+  width: 32px !important;
+  height: 32px !important;
 }
 
 .pull-request-details {
   flex-grow: 1;
   color: #6d6d6d;
   font-size: 12px;
-}
-
-.pull-request-details .fa {
-  font-size: 14px;
+  width: calc(100% - 40px);
 }
 
 .pull-request-title {
@@ -33,12 +55,56 @@
   text-decoration: none;
 }
 
-.pull-request-title a:hover {
+a.pull-request-title:hover {
   text-decoration: none;
 }
 
+.title-container {
+  margin-bottom: -4px;
+}
+
+.container-nowrap {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.git-icon {
+  margin-right: 1px;
+  font-size: 14px !important;
+}
+
+.branch-icon {
+  margin-right: 2px;
+  font-size: 14px !important;
+}
+
+.vote-container {
+  display: inline-block;
+}
+
+.compact-details {
+  display: flex;
+}
+
+.compact-details-bottom-left {
+  flex-shrink: 1;
+  flex-grow: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.compact-details-bottom-right {
+  align-self: flex-end;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
 .vote {
-  font-size: 16px !important;
+  margin-right: 2px;
+  font-size: 14px !important;
 }
 
 .approved {
@@ -50,7 +116,21 @@
 }
 
 .waiting {
-  color: #ffcc00;
+  color: #f8a800;
+}
+
+.repo-icon {
+  transform: scale(0.75)
+}
+
+.conflicts {
+  color: #e60000;
+  border-radius: 3px;
+  border: 1px solid;
+  font-size: 12px;
+  padding-left: 1px;
+  padding-top: 1px;
+  padding-right: 1px
 }
 
 .repo {
@@ -68,4 +148,15 @@
 .settings-container {
   min-width: 250px;
   font-size: 12px;
+}
+
+.widget-footer {
+  position: fixed;
+  text-align: right;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 5px 10px;
+  z-index: 1050;
 }

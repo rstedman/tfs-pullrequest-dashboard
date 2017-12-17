@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <script src="vendor/vendor.bundle.min.js"></script>
+        <script type="text/javascript">
+            VSS.init({
+                explicitNotifyLoaded: true,
+                usePlatformStyles: true,
+                usePlatformScripts: true
+            });
+
+            VSS.require("TFS/Dashboards/WidgetHelpers", function (WidgetHelpers) {
+                VSS.register("tfs-pullrequest-dashboard-widget.Configuration", function () {
+                    var $categoryDropdown = $("#pr-category-dropdown");
+
+                    return {
+                        load: function (widgetSettings, widgetConfigurationContext) {
+                            var settings = JSON.parse(widgetSettings.customSettings.data);
+                            if (settings && settings.prCategory) {
+                                 $categoryDropdown.val(settings.prCategory).trigger("chosen:updated");
+                             } else {
+                                $categoryDropdown.val("assignedToMe");
+                            }
+
+                            $categoryDropdown.on("change", function () {
+                                var customSettings = {data: JSON.stringify({prCategory: $categoryDropdown.val()})};
+                                var eventName = WidgetHelpers.WidgetEvent.ConfigurationChange;
+                                var eventArgs = WidgetHelpers.WidgetEvent.Args(customSettings);
+                                widgetConfigurationContext.notify(eventName, eventArgs);
+                            });
+
+                            return WidgetHelpers.WidgetStatusHelper.Success();
+                        },
+                        onSave: function() {
+                            var customSettings = {data: JSON.stringify({prCategory: $categoryDropdown.val()})};
+                            return WidgetHelpers.WidgetConfigurationSave.Valid(customSettings); 
+                        }
+                    }
+                });
+                VSS.notifyLoadSucceeded();
+            });
+        </script>
+    </head>
+    <body>
+        <div class="widget-configuration">
+            <div class="dropdown">
+                <div class="configuration-label-container">
+                    <label>Pull Request Category</label>
+                </div>
+                <div class="wrapper">
+                    <select id="pr-category-dropdown">
+                        <option value="requestedByMe">Requested By Me</option>
+                        <option value="assignedToMe">Assigned To Me</option>
+                        <option value="assignedToMyTeam">Assigned To My Team</option>
+                        <option value="all">All</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

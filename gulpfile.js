@@ -14,6 +14,7 @@ var htmlreplace = require('gulp-html-replace');
 var tslint = require('gulp-tslint');
 var ts = require('gulp-typescript');
 var karma = require('karma');
+var replace = require('gulp-replace');
 
 var paths = {
     buildFiles: ['./gulpfile.js', './package.json', './typings.json', './tsconfig.json', './system.config.js'],
@@ -96,10 +97,10 @@ gulp.task('compile:embed', function () {
 
 // compiles just local sources
 gulp.task('compile:sources', function(callback) {
-    runSequence( ['tslint', 'compile:typecheck', 'test'], 'compile:copy', 'compile:embed', callback);
+    runSequence( ['tslint', 'compile:typecheck'], 'compile:copy', 'compile:embed', callback);
 });
 
-gulp.task('compile', ['copy:vendor', 'bundle:vendor', 'compile:sources']);
+gulp.task('compile', ['copy:vendor', 'bundle:vendor', 'compile:sources', 'test']);
 
 gulp.task('test', function(callback) {
     new karma.Server({
@@ -122,14 +123,31 @@ gulp.task('package', ['build'], function() {
     return run('tfx extension create --root build --manifest-globs manifest.json  --output-path dist').exec()
 });
 
+gulp.task('replace-id-dev-html', function() {
+    gulp.src(['build/configuration.html'])
+        .pipe(replace('tfs-pullrequest-dashboard-widget', 'tfs-pullrequest-dashboard-widget-dev'))
+        .pipe(gulp.dest('build/'));
+});
+
+gulp.task('replace-id-dev-ts', function() {
+    gulp.src(['build/app/appConfig.service.ts', 'build/app/tfsAppSettings.service.ts'])
+        .pipe(replace('tfs-pullrequest-dashboard-widget', 'tfs-pullrequest-dashboard-widget-dev'))
+        .pipe(replace('tfs-pullrequest-dashboard.tfs-pullrequest-dashboard', 'tfs-pullrequest-dashboard-dev.tfs-pullrequest-dashboard-dev'))
+        .pipe(gulp.dest('build/app/'));
+});
+
+gulp.task('build:dev', function(callback) {
+    runSequence('clean', 'compile', ['replace-id-dev-html', 'replace-id-dev-ts'], ['bundle:app', 'html:replace'], callback);
+});
+
 // for building dev versions of the extension that can be uploaded without chaning the released version
-gulp.task('package:dev', ['build'], function() {
+gulp.task('package:dev', ['build:dev'], function() {
     return run('tfx extension create --root build --manifest-globs manifest-dev.json  --output-path dist').exec()
 });
 
 gulp.task('serve', ['compile'], function() {
 
-    gulp.watch(['./src/**/*.*', './tsconfig.json', './tslint.json'], ['compile:sources']);
+    gulp.watch(['./src/**/*.*', './test/**/*.*', './tsconfig.json', './tslint.json'], ['compile:sources']);
 
     connect.server({
         root: './build'

@@ -1,15 +1,16 @@
 import { Component, OnInit } from "@angular/core";
 import { IMultiSelectOption, IMultiSelectSettings, IMultiSelectTexts } from "angular-2-dropdown-multiselect";
 
-import { StorageService, TfsService, User } from "./model";
+import { AppConfigService } from "./appConfig.service";
+import { AppSettingsServiceProvider } from "./appSettingsService.provider";
+import { AppSettingsService, Layout, TfsService, User } from "./model";
 import { PullRequestViewModel } from "./pullRequestViewModel";
-import { StorageServiceProvider } from "./storageService.provider";
 import { TfsServiceProvider } from "./tfsService.provider";
 
 @Component({
     selector: "my-app",
     templateUrl: "app.component.html",
-    providers: [new TfsServiceProvider(), new StorageServiceProvider()]
+    providers: [new TfsServiceProvider(), new AppSettingsServiceProvider()],
 })
 export class AppComponent implements OnInit {
 
@@ -57,7 +58,18 @@ export class AppComponent implements OnInit {
 
     public loading: boolean = false;
 
-    constructor(private tfsService: TfsService, private storage: StorageService) { }
+    public layout: Layout;
+
+    public hubUri: string = "#";
+
+    public rowLimit: number = 0;
+
+    constructor(private tfsService: TfsService,
+                private settings: AppSettingsService) {
+
+        this.settings.layoutChanged().on((data) => this.updateLayout(data));
+        this.hubUri = this.settings.getHubUri();
+    }
 
     public ngOnInit() {
         this.refresh();
@@ -66,24 +78,15 @@ export class AppComponent implements OnInit {
     public async refresh() {
         this.loading = true;
         try {
-            const filterPromise = this.storage.getValue(AppComponent.repoFilterKey);
-            const formatPromise = this.storage.getValue(AppComponent.dateFormatKey);
-            const allProjectsPromise = this.storage.getValue(AppComponent.allProjectsKey);
+            this.updateLayout(this.settings.getLayout());
+            const filterPromise = this.settings.getRepoFilter();
+            const formatPromise = this.settings.getDateFormat();
+            const allProjectsPromise = this.settings.getShowAllProjects();
             const currentUserPromise = this.tfsService.getCurrentUser();
 
-            const serializedFilter = await filterPromise;
-            if (serializedFilter) {
-                this.filteredRepoIds = JSON.parse(serializedFilter);
-            }
-            const savedFormat = await formatPromise;
-            if (savedFormat && savedFormat !== "") {
-                this.dateFormat = savedFormat;
-            }
-            const savedAllProjects = await allProjectsPromise;
-            if (savedAllProjects === "true") {
-                this.allProjects = true;
-            }
-
+            this.filteredRepoIds = await filterPromise;
+            this.dateFormat = await formatPromise;
+            this.allProjects = await allProjectsPromise;
             this.currentUser = await currentUserPromise;
             await this.reloadPullRequests();
         } finally {
@@ -91,10 +94,13 @@ export class AppComponent implements OnInit {
         }
     }
 
-    public async reloadPullRequests() {
+    public async reloadPullRequests(): Promise<void> {
         this.loading = true;
         try {
-            const repos = await this.tfsService.getRepositories(this.allProjects);
+            const getReposPromise = this.tfsService.getRepositories(this.allProjects);
+            const getPRsPromise = this.tfsService.getPullRequests(this.allProjects);
+
+            const repos = await getReposPromise;
             this.repositories = repos.sort((a, b) => {
                 if (a.name.toLowerCase() > b.name.toLowerCase()) {
                     return 1;
@@ -108,8 +114,10 @@ export class AppComponent implements OnInit {
             this.pullRequests = [];
             this.repoOptions = [];
             this.unfilteredRepoSelections.length = 0;
+            const repoById: Map<string, GitRepository> = new Map<string, GitRepository>();
             for (let i = 0; i < this.repositories.length; i++) {
                 const repo = this.repositories[i];
+                repoById[repo.id] = repo;
 
                 this.repoOptions.push({
                     id: i,
@@ -119,13 +127,11 @@ export class AppComponent implements OnInit {
                 if (this.filteredRepoIds.indexOf(repo.id) < 0) {
                     this.unfilteredRepoSelections.push(i);
                 }
-                // use continuation instead of await here, as we don't want to block fetching of prs from other repos
-                this.tfsService.getPullRequests(repo)
-                    .then((prs) => {
-                        for (const pr of prs) {
-                            this.pullRequests.push(new PullRequestViewModel(pr, repo, this.currentUser));
-                        }
-                    });
+            }
+
+            const prs = await getPRsPromise;
+            for (const pr of prs) {
+                this.pullRequests.push(new PullRequestViewModel(pr, repoById[pr.repository.id], this.currentUser));
             }
         } finally {
             this.loading = false;
@@ -144,8 +150,7 @@ export class AppComponent implements OnInit {
                 this.filteredRepoIds.push(repo.id);
             }
         }
-
-        this.storage.setValue(AppComponent.repoFilterKey, JSON.stringify(this.filteredRepoIds));
+        this.settings.setRepoFilter(this.filteredRepoIds);
     }
 
     public onDateFormatChanged(format: string) {
@@ -154,7 +159,7 @@ export class AppComponent implements OnInit {
         }
 
         this.dateFormat = format;
-        this.storage.setValue(AppComponent.dateFormatKey, format);
+        this.settings.setDateFormat(format);
     }
 
     public onAllProjectsChanged(allProjects: boolean) {
@@ -163,7 +168,7 @@ export class AppComponent implements OnInit {
         }
 
         this.allProjects = allProjects;
-        this.storage.setValue(AppComponent.allProjectsKey, allProjects.toString());
+        this.settings.setShowAllProjects(allProjects);
         this.reloadPullRequests();
     }
 
@@ -172,6 +177,15 @@ export class AppComponent implements OnInit {
             if (repo.name === name) {
                 return repo;
             }
+        }
+    }
+
+    private updateLayout(layout: Layout) {
+        this.layout = layout;
+        if (layout.widgetMode && layout.size) {
+            // trial & error - this allows the most PRs to be displayed while fitting nicely in the available
+            //                 widget space
+            this.rowLimit = (layout.size.rowSpan * 3) + (layout.size.rowSpan - 2);
         }
     }
 }

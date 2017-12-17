@@ -12,7 +12,8 @@ export class PullRequestFilterPipe  implements PipeTransform {
             return (arg === "requestedByMe" && x.requestedByMe) ||
                    (arg === "assignedToMe" && x.assignedToMe && !x.requestedByMe) ||
                    (arg === "assignedToMyTeam" && x.assignedToMyTeam && !x.requestedByMe && !x.assignedToMe) ||
-                   (arg === "other" && !x.requestedByMe && !x.assignedToMe && !x.assignedToMyTeam);
+                   (arg === "other" && !x.requestedByMe && !x.assignedToMe && !x.assignedToMyTeam) ||
+                   (arg === "all");
         });
     }
 }

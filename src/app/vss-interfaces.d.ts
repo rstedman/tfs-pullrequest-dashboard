@@ -1701,6 +1701,18 @@ interface GitClient {
      * @return Promise<Contracts.GitPullRequest[]>
      */
     getPullRequests(repositoryId: string, searchCriteria: GitPullRequestSearchCriteria, project?: string, maxCommentLength?: number, skip?: number, top?: number): Promise<GitPullRequest[]>;
+
+    /**
+     * Retrieve all pull requests matching a specified criteria.
+     *
+     * @param {string} project - Project ID or project name
+     * @param {Contracts.GitPullRequestSearchCriteria} searchCriteria - Pull requests will be returned that match this search criteria.
+     * @param {number} maxCommentLength - Not used.
+     * @param {number} skip - The number of pull requests to ignore. For example, to retrieve results 101-150, set top to 50 and skip to 100.
+     * @param {number} top - The number of pull requests to retrieve.
+     * @return IPromise<Contracts.GitPullRequest[]>
+     */
+    getPullRequestsByProject(project: string, searchCriteria: GitPullRequestSearchCriteria, maxCommentLength?: number, skip?: number, top?: number): Promise<GitPullRequest[]>;
 }
 
 interface GitRepository {

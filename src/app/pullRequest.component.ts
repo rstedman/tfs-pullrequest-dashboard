@@ -15,33 +15,67 @@ export class PullRequestComponent {
     @Input()
     public dateFormat: string;
 
-    public getVoteClasses(reviewer: IdentityRefWithVote): string {
+    @Input()
+    public compactMode: boolean;
+
+    public getVoteClasses(vote: number): string {
         let result = "fa vote";
-        if (reviewer.vote === Vote.NoResponse) {
+        if (vote === Vote.NoResponse) {
             result += " fa-minus-circle";
-        } else if (reviewer.vote === Vote.Rejected) {
+        } else if (vote === Vote.Rejected) {
             result += " fa-times-circle rejected";
-        } else if (reviewer.vote === Vote.Approved) {
+        } else if (vote === Vote.Approved) {
             result += " fa-check-circle approved";
-        } else if (reviewer.vote === Vote.ApprovedWithSuggestions) {
+        } else if (vote === Vote.ApprovedWithSuggestions) {
              result += " fa-check-circle-o approved";
-        } else if (reviewer.vote === Vote.WaitingForAuthor) {
+        } else if (vote === Vote.WaitingForAuthor) {
             result += " fa-minus-circle waiting";
         }
         return result;
     }
 
-    public getVoteTooltip(reviewer: IdentityRefWithVote): string {
-        if (reviewer.vote === Vote.NoResponse) {
+    public getVoteTooltip(vote: number): string {
+        if (vote === Vote.NoResponse) {
             return "No Response";
-        } else if (reviewer.vote === Vote.Rejected) {
+        } else if (vote === Vote.Rejected) {
             return "Rejected";
-        } else if (reviewer.vote === Vote.Approved) {
+        } else if (vote === Vote.Approved) {
             return "Approved";
-        } else if (reviewer.vote === Vote.ApprovedWithSuggestions) {
+        } else if (vote === Vote.ApprovedWithSuggestions) {
              return "Approved With Suggestions";
-        } else if (reviewer.vote === Vote.WaitingForAuthor) {
+        } else if (vote === Vote.WaitingForAuthor) {
             return "Waiting for Author";
         }
+    }
+
+    public getVoteGroups() {
+        const groups = {};
+        for (const r of this.pullRequest.reviewers) {
+            if (groups[r.vote]) {
+                groups[r.vote].push(r);
+            } else {
+                groups[r.vote] = [r];
+            }
+        }
+
+        const result = [];
+        for (const key of Object.keys(groups)) {
+            let tooltip = this.getVoteTooltip(Number(key)) + ": ";
+            let i = 0;
+            for (const r of groups[key]) {
+                if (i > 0) {
+                    tooltip += ", ";
+                }
+                tooltip += r.displayName;
+                i++;
+            }
+            result.push({
+                vote: Number(key),
+                count: groups[key].length,
+                tooltip
+            });
+        }
+
+        return result;
     }
 }

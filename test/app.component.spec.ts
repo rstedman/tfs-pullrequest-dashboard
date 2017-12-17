@@ -1,10 +1,20 @@
 import {AppComponent} from "../src/app/app.component";
-import {User, TfsService, StorageService} from "../src/app/model";
+import {AppSettingsService, Layout, TfsService, User} from "../src/app/model";
 import {TestUtils} from "./testHelpers";
 
 describe("AppComponent", () => {
 
-    let defaultUser: User = {
+    class SettingsMock extends AppSettingsService {
+        protected getValue(key: string): Promise<string> {
+            return Promise.resolve("");
+        }
+
+        protected setValue(key: string, value: string): Promise<string> {
+            return Promise.resolve(value);
+        }
+    }
+
+    const defaultUser: User = {
         id: "123",
         displayName: "test user",
         uniqueName: "testuser1",
@@ -14,10 +24,15 @@ describe("AppComponent", () => {
         ]
     };
 
-    let tfsMock: TfsService;
-    let storageMock: StorageService;
+    const layout: Layout = {
+        categories: [{key: "test", name: "Test"}],
+        widgetMode: false
+    };
 
-    let repos = [TestUtils.createRepository("repo1"),
+    let tfsMock: TfsService;
+    let settingsMock: AppSettingsService;
+
+    const repos = [TestUtils.createRepository("repo1"),
         TestUtils.createRepository("repo2"),
         TestUtils.createRepository("repo3"),
         TestUtils.createRepository("repo4")];
@@ -26,13 +41,13 @@ describe("AppComponent", () => {
 
     beforeEach(() => {
         tfsMock = {
-            getCurrentUser: function(): Promise<User> {
+            getCurrentUser: (): Promise<User> => {
                 return Promise.resolve(defaultUser);
             },
-            getPullRequests: function(repo: GitRepository): Promise<GitPullRequest[]>{
+            getPullRequests: (allProjects?: boolean): Promise<GitPullRequest[]> => {
                 return Promise.resolve([]);
             },
-            getRepositories: function(): Promise<GitRepository[]> {
+            getRepositories: (): Promise<GitRepository[]> => {
                 return Promise.resolve(repos);
             }
         };
@@ -40,26 +55,21 @@ describe("AppComponent", () => {
         spyOn(tfsMock, "getPullRequests");
         spyOn(tfsMock, "getRepositories");
 
-        storageMock = {
-            getValue: function(key: string): Promise<string> {
-                return Promise.resolve("");
-            },
-            setValue: function(key: string, value: string): Promise<string> {
-                return Promise.resolve(value);
-            }
-        };
-        spyOn(storageMock, "getValue");
-        spyOn(storageMock, "setValue");
+        settingsMock = new SettingsMock(layout, null);
+        spyOn(settingsMock, "getDateFormat");
+        spyOn(settingsMock, "getRepoFilter");
+        spyOn(settingsMock, "getShowAllProjects");
 
-        subject = new AppComponent(tfsMock, storageMock);
+        subject = new AppComponent(tfsMock, settingsMock);
     });
 
     it("doesn't make any service calls in the constructor", () => {
         expect(tfsMock.getCurrentUser).toHaveBeenCalledTimes(0);
         expect(tfsMock.getPullRequests).toHaveBeenCalledTimes(0);
         expect(tfsMock.getRepositories).toHaveBeenCalledTimes(0);
-        expect(storageMock.getValue).toHaveBeenCalledTimes(0);
-        expect(storageMock.setValue).toHaveBeenCalledTimes(0);
+        expect(settingsMock.getDateFormat).toHaveBeenCalledTimes(0);
+        expect(settingsMock.getRepoFilter).toHaveBeenCalledTimes(0);
+        expect(settingsMock.getShowAllProjects).toHaveBeenCalledTimes(0);
     });
 
 });

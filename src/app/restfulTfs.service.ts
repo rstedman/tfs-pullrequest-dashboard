@@ -14,11 +14,13 @@ export class RestfulTfsService extends TfsService {
     private IDENTITIES_API_ACCEPT_HEADER: string = "application/json; api-version=2.3-preview.1";
 
     private baseUri: string;
+    private currentProject: string;
 
     constructor(private http: Http, config: AppConfigService) {
         super();
 
         this.baseUri = config.devApiEndpoint;
+        this.currentProject = config.devDefaultProject;
     }
 
     public async getCurrentUser(): Promise<User> {
@@ -61,12 +63,17 @@ export class RestfulTfsService extends TfsService {
         return user;
     }
 
-    public async getPullRequests(repo: GitRepository): Promise<GitPullRequest[]> {
-        const url = `${repo.url}/pullRequests?status=active`;
+    public async getPullRequests(allProjects?: boolean): Promise<GitPullRequest[]> {
+        let url = `${this.baseUri}/${this.currentProject}/_apis/git/pullRequests?status=active`;
+        if (allProjects) {
+            url = `${this.baseUri}/_apis/git/pullRequests?status=active`;
+        }
+
         const prs: any[] = await this.http.get(url, {withCredentials: true})
             .toPromise()
             .then(this.extractData)
             .catch(this.handleError);
+
         for (const pr of prs) {
             if (pr.mergeStatus) {
                 // the rest apis return a string for the mergestatus, but the VSS APIs convert that into
@@ -85,7 +92,11 @@ export class RestfulTfsService extends TfsService {
     }
 
     public getRepositories(allProjects?: boolean): Promise<GitRepository[]> {
-        return this.http.get(`${this.baseUri}/_apis/git/repositories`, {withCredentials: true})
+        let url = `${this.baseUri}/${this.currentProject}/_apis/git/repositories`;
+        if (allProjects) {
+            url = `${this.baseUri}/_apis/git/repositories`;
+        }
+        return this.http.get(url, {withCredentials: true})
             .toPromise()
             .then(this.extractData)
             .catch(this.handleError);

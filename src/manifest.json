@@ -1,22 +1,32 @@
 {
     "manifestVersion": 1,
     "id": "tfs-pullrequest-dashboard",
-    "version": "1.2.0",
+    "version": "2.0.0",
     "name": "Pull Request Dashboard",
     "description": "A pull request dashboard for Visual Studio Team Services/Team Foundation Services.",
     "publisher": "ryanstedman",
     "links": {
-        "repository":{"uri": "https://github.com/rstedman/tfs-pullrequest-dashboard"},
-        "issues":{"uri": "https://github.com/rstedman/tfs-pullrequest-dashboard/issues"}
+        "getstarted": {"uri": "https://github.com/rstedman/tfs-pullrequest-dashboard"},
+        "learn": {"uri": "https://github.com/rstedman/tfs-pullrequest-dashboard"},
+        "license": {"uri": "https://github.com/rstedman/tfs-pullrequest-dashboard/blob/master/LICENSE"},
+        "support": {"uri": "https://github.com/rstedman/tfs-pullrequest-dashboard/issues"}
+    },
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/rstedman/tfs-pullrequest-dashboard"
     },
     "content": {
         "details":{ "path": "overview.md" }
     },
-    "tags": ["code", "pull request", "git", "code review","open source"],
+    "tags": ["code", "pull request", "git", "code review", "open source"],
     "screenshots": [
         {"path":"assets/screenshots/hub_tab.png"},
         {"path":"assets/screenshots/hub_view.png"},
-        {"path":"assets/screenshots/repo_filter.png"}
+        {"path":"assets/screenshots/repo_filter.png"},
+        {"path":"assets/screenshots/settings.png"},
+        {"path":"assets/screenshots/add_widget.png"},
+        {"path":"assets/screenshots/widget.png"},
+        {"path":"assets/screenshots/widget_config.png"}
     ],
     "targets": [{ "id": "Microsoft.VisualStudio.Services" }],
     "icons": {"default": "assets/images/logo.png"},
@@ -33,12 +43,45 @@
                 "order": 99,
                 "uri": "index.html"
             }
-        }
+        },
+        {
+            "id": "tfs-pullrequest-dashboard-widget",
+            "type": "ms.vss-dashboards-web.widget",
+            "targets": [
+                "ms.vss-dashboards-web.widget-catalog",
+                "ryanstedman.tfs-pullrequest-dashboard.tfs-pullrequest-dashboard-widget.Configuration"
+            ],
+            "properties": {
+                "name": "Pull Request Dashboard Widget",
+                "description": "Displays pull requests across all repositories",
+                "previewImageUrl": "assets/images/logo.png",
+                "uri": "index.html",
+                "supportedSizes": [
+                    { "rowSpan": 2, "columnSpan": 3 },
+                    { "rowSpan": 3, "columnSpan": 3 },
+                    { "rowSpan": 4, "columnSpan": 3 }
+                ],
+                "supportedScopes": ["project_team"]
+             }
+         },
+         {
+             "id": "tfs-pullrequest-dashboard-widget.Configuration",
+             "type": "ms.vss-dashboards-web.widget-configuration",
+             "targets": [ "ms.vss-dashboards-web.widget-configuration" ],
+             "properties": {
+                 "name": "Pullrequest Dashboard Widget Configuration",
+                 "description": "Configures Pullrequest Dashboard Widget",
+                 "uri": "configuration.html"
+             }
+         }
     ],
     "scopes": ["vso.code", "vso.identity"],
     "files": [
         {
             "path": "index.html", "addressable": true
+        },
+        {
+            "path": "configuration.html", "addressable": true
         },
         {
             "path": "app/app.bundle.min.js", "addressable": true
