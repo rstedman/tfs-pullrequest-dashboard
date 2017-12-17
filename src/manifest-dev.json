@@ -6,8 +6,14 @@
     "description": "A pull request dashboard for Visual Studio Team Services/Team Foundation Services.",
     "publisher": "ryanstedman",
     "links": {
-        "repository":{"uri": "https://github.com/rstedman/tfs-pullrequest-dashboard"},
-        "issues":{"uri": "https://github.com/rstedman/tfs-pullrequest-dashboard/issues"}
+        "getstarted": {"uri": "https://github.com/rstedman/tfs-pullrequest-dashboard"},
+        "learn": {"uri": "https://github.com/rstedman/tfs-pullrequest-dashboard"},
+        "license": {"uri": "https://github.com/rstedman/tfs-pullrequest-dashboard/blob/master/LICENSE"},
+        "support": {"uri": "https://github.com/rstedman/tfs-pullrequest-dashboard/issues"}
+    },
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/rstedman/tfs-pullrequest-dashboard"
     },
     "content": {
         "details":{ "path": "overview.md" }
@@ -16,7 +22,11 @@
     "screenshots": [
         {"path":"assets/screenshots/hub_tab.png"},
         {"path":"assets/screenshots/hub_view.png"},
-        {"path":"assets/screenshots/repo_filter.png"}
+        {"path":"assets/screenshots/repo_filter.png"},
+        {"path":"assets/screenshots/settings.png"},
+        {"path":"assets/screenshots/add_widget.png"},
+        {"path":"assets/screenshots/widget.png"},
+        {"path":"assets/screenshots/widget_config.png"}
     ],
     "targets": [{ "id": "Microsoft.VisualStudio.Services" }],
     "icons": {"default": "assets/images/logo.png"},

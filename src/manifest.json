@@ -22,7 +22,11 @@
     "screenshots": [
         {"path":"assets/screenshots/hub_tab.png"},
         {"path":"assets/screenshots/hub_view.png"},
-        {"path":"assets/screenshots/repo_filter.png"}
+        {"path":"assets/screenshots/repo_filter.png"},
+        {"path":"assets/screenshots/settings.png"},
+        {"path":"assets/screenshots/add_widget.png"},
+        {"path":"assets/screenshots/widget.png"},
+        {"path":"assets/screenshots/widget_config.png"}
     ],
     "targets": [{ "id": "Microsoft.VisualStudio.Services" }],
     "icons": {"default": "assets/images/logo.png"},
