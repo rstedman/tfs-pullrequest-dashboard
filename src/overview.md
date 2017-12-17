@@ -22,8 +22,7 @@ The hub queries for all active pull requests, and groups them into several diffe
 ![Pull Request Categories](assets/screenshots/hub_view.png)
 
 ###Pull Request Details
-
-Each pull request displayed shows a number of useful pieces if information.
+Each pull request displayed shows a number of useful pieces of information.
 
 * PR Title & Author
 * Repository name, from brach & to branch
