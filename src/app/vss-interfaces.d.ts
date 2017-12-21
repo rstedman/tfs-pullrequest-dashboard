@@ -1715,6 +1715,23 @@ interface GitClient {
     getPullRequestsByProject(project: string, searchCriteria: GitPullRequestSearchCriteria, maxCommentLength?: number, skip?: number, top?: number): Promise<GitPullRequest[]>;
 }
 
+interface CoreHttpClientFactory { 
+    getClient(): CoreHttpClient;
+}
+
+interface CoreHttpClient {
+    /**
+     * Get project references with the specified state
+     *
+     * @param {any} stateFilter - Filter on team projects in a specific team project state (default: WellFormed).
+     * @param {number} top
+     * @param {number} skip
+     * @param {string} continuationToken
+     * @return IPromise<Contracts.TeamProjectReference[]>
+     */
+    getProjects(stateFilter?: any, top?: number, skip?: number, continuationToken?: string): Promise<TeamProjectReference[]>;
+}
+
 interface GitRepository {
     _links: any;
     defaultBranch: string;

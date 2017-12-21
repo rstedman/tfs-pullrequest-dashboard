@@ -9,6 +9,7 @@ export class ExtensionsApiTfsService extends TfsService {
 
     constructor(private gitClient: GitClient,
                 private identitiesClient: IdentitiesClient,
+                private coreTfsClient: CoreHttpClient,
                 private isHosted: boolean,
                 private projectName: string,
                 private userContext: UserContext,
@@ -52,19 +53,30 @@ export class ExtensionsApiTfsService extends TfsService {
 
     public async getPullRequests(allProjects?: boolean): Promise<GitPullRequest[]> {
         const project = (allProjects) ? null : this.projectName;
+        const prPromises: Array<Promise<GitPullRequest[]>> = [];
+        let projects: string[] = [this.projectName];
 
-        const prs = await this.gitClient.getPullRequestsByProject(project, {
-            includeLinks: true,
-            creatorId: null,
-            repositoryId: null,
-            reviewerId: null,
-            sourceRefName: null,
-            status: 1,
-            targetRefName: null});
+        if (allProjects) {
+            projects = (await this.coreTfsClient.getProjects()).map((x) => x.name);
+        }
+
+        for (const proj of projects) {
+            prPromises.push(this.gitClient.getPullRequestsByProject(proj, {
+                                                includeLinks: true,
+                                                creatorId: null,
+                                                repositoryId: null,
+                                                reviewerId: null,
+                                                sourceRefName: null,
+                                                status: 1,
+                                                targetRefName: null}));
+        }
+
+        const allPrs = await Promise.all(prPromises);
 
         return new Promise<GitPullRequest[]>((resolve, reject) => {
+            const all = ([].concat.apply([], allPrs));
             // use ngzone to bring promise callback back into the angular zone
-            this.zone.run(() => resolve(prs));
+            this.zone.run(() => resolve(all));
         });
     }
 
