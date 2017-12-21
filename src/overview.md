@@ -82,6 +82,7 @@ Source code for this extension can be found in the [tfs-pullrequest-dashboard](h
 
 ##Change Log
 
+* (20/12/2017) 2.0.1 - fix bug when showing pull requests across all projects in a TFS deployment.
 * (17/12/2017) 2.0.0
     * Added VSTS dashboard widget
     * Update pull request display layout - more compact & more in line with how VSTS displays pull requests in other views.

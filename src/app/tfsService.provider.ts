@@ -21,11 +21,12 @@ export class TfsServiceProvider implements FactoryProvider {
     } else {
       const gitClient = config.gitClientFactory.getClient();
       const identitiesClient = config.identitiesClientFactory.getClient();
+      const coreClient = config.coreClientFactory.getClient();
       const context = config.context;
       const isHosted = context.getPageContext().webAccessConfiguration.isHosted;
       const user = context.getPageContext().webContext.user;
       const projectName = context.getPageContext().webContext.project.name;
-      return new ExtensionsApiTfsService(gitClient, identitiesClient, isHosted, projectName, user, zone);
+      return new ExtensionsApiTfsService(gitClient, identitiesClient, coreClient, isHosted, projectName, user, zone);
     }
   }
 }

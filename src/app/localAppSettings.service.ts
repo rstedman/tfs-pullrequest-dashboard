@@ -28,7 +28,7 @@ export class LocalAppSettingsService extends AppSettingsService {
     };
 
     constructor(zone: NgZone) {
-        super(LocalAppSettingsService._widgetLayout, zone);
+        super(LocalAppSettingsService._layout, zone);
     }
 
     protected getValue(key: string): Promise<string> {

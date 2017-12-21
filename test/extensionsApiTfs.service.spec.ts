@@ -32,11 +32,12 @@ describe("ExtensionsApiTfsService", () => {
         TestUtils.createRepository("repo6", "P2")
     ];
 
-    const prs = [createPR(1, "repo1", "P1"), createPR(2, "repo2", "P1"), createPR(3, "repo3", "P3"), createPR(4, "repo4", "P1"), createPR(5, "repo5", "P1"), createPR(6, "repo6", "P2")];
+    const prs = [createPR(1, "repo1", "P1"), createPR(2, "repo2", "P1"), createPR(3, "repo3", "P1"), createPR(4, "repo4", "P1"), createPR(5, "repo5", "P1"), createPR(6, "repo6", "P2")];
 
     const projectName = "P1";
     let gitClient: GitClient = null;
     let identitiesClient: IdentitiesClient = null;
+    let coreClient: CoreHttpClient = null;
 
     function createPR(id: number, repo: string, project: string): GitPullRequest {
         return TestUtils.createPullRequest({
@@ -68,7 +69,7 @@ describe("ExtensionsApiTfsService", () => {
     }
 
     function createSubject(isHosted: boolean): ExtensionsApiTfsService {
-        return new ExtensionsApiTfsService(gitClient, identitiesClient, isHosted, projectName, userContext, zoneMock);
+        return new ExtensionsApiTfsService(gitClient, identitiesClient, coreClient, isHosted, projectName, userContext, zoneMock);
     }
 
     beforeEach(() => {
@@ -103,6 +104,22 @@ describe("ExtensionsApiTfsService", () => {
                     return Promise.resolve(filtered);
                 }
                 return Promise.resolve(prs);
+            }
+        };
+
+        coreClient = {
+            getProjects: (stateFilter?: any, top?: number, skip?: number, continuationToken?: string): Promise<TeamProjectReference[]> => {
+                const projects = [
+                {
+                    id: "1",
+                    name: "P1"
+                },
+                {
+                    id: "2",
+                    name: "P2"
+                }];
+
+                return Promise.resolve(projects);
             }
         };
     });

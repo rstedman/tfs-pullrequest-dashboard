@@ -17,6 +17,7 @@ export class AppConfigService {
 
     private _gitClientFactory: GitClientFactory;
     private _identitiesClientFactory: IdentitiesClientFactory;
+    private _coreClientFactory: CoreHttpClientFactory;
     private _context: Context;
     private _extensionDataService: IExtensionDataService;
     private _layout: Layout = {
@@ -40,6 +41,7 @@ export class AppConfigService {
 
     get gitClientFactory(): GitClientFactory { return this._gitClientFactory; }
     get identitiesClientFactory(): IdentitiesClientFactory { return this._identitiesClientFactory; }
+    get coreClientFactory(): CoreHttpClientFactory { return this._coreClientFactory; }
     get context(): Context { return this._context; }
     get extensionDataService(): IExtensionDataService { return this._extensionDataService; }
     get layout(): Layout { return this._layout; }
@@ -60,10 +62,11 @@ export class AppConfigService {
             explicitNotifyLoaded: true
         });
 
-        VSS.require(["TFS/VersionControl/GitRestClient", "VSS/Identities/RestClient", "VSS/Context", "TFS/Dashboards/WidgetHelpers"],
-          (gitFactory: GitClientFactory, identityFactory: IdentitiesClientFactory, context: Context, widgetHelpers: any) => {
+        VSS.require(["TFS/VersionControl/GitRestClient", "VSS/Identities/RestClient", "VSS/Context", "TFS/Dashboards/WidgetHelpers", "TFS/Core/RestClient"],
+          (gitFactory: GitClientFactory, identityFactory: IdentitiesClientFactory, context: Context, widgetHelpers: any, coreClientFactory: CoreHttpClientFactory) => {
               this._gitClientFactory = gitFactory;
               this._identitiesClientFactory = identityFactory;
+              this._coreClientFactory = coreClientFactory;
               this._context = context;
               this._layout.widgetMode = context.getPageContext().navigation.currentController === "dashboards";
               VSS.getService<IExtensionDataService>(VSS.ServiceIds.ExtensionData)
