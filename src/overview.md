@@ -1,14 +1,14 @@
-#Pull Request Dashboard
+# Pull Request Dashboard
 
 When working with a codebase that can span dozens of different code repositories, it can be difficult to keep track of the pull requests that you have created, or ones created by others that you may need to review.  This extension solves this issue by providing a place that pull requests across all repositories can be viewed on a single page.
 
-##Pull Request Dashboard Code Hub
+## Pull Request Dashboard Code Hub
 
 This extension adds a new hub to the code section of Visual Studio Team Services/Team Foundation Service for viewing all active pull requests across all repositories.
 
 ![New Hub](assets/screenshots/hub_tab.png)
 
-###Pull Request Categories
+### Pull Request Categories
 
 The hub queries for all active pull requests, and groups them into several different categories.  Each category sorts pull requests, showing the oldest pull requests first.
 
@@ -21,7 +21,7 @@ The hub queries for all active pull requests, and groups them into several diffe
 
 ![Pull Request Categories](assets/screenshots/hub_view.png)
 
-###Pull Request Details
+### Pull Request Details
 Each pull request displayed shows a number of useful pieces of information.
 
 * PR Title & Author
@@ -35,13 +35,13 @@ Each pull request displayed shows a number of useful pieces of information.
         * Red Circle X = Rejected
     * If a reviewer is marked as required on a PR, an asterisk is added next to their name (ex "User1*" indicates that User1 is a required reviewer on the PR)
 
-###Filtering by Repository
+### Filtering by Repository
 
 For an organization with dozens of different code repositories, an individual developer may only actively work in a handful of those repos, and may not care about PRs in other repos.  Next to the Other Pull Requests group header is a filter button that allows users to select just the repositories that they are interested in, and the Other Open Pull Requests category will dynamically update to show PRs only in repos selected.  Filter selections will be saved, allowing subsequent page loads to keep the user's filter selection.
 
 ![Filtering Repositories](assets/screenshots/repo_filter.png)
 
-###Settings
+### Settings
 
 At the top right of the dashboard plugin is a button which will drop down user-specific settings.  The settings supported are:
 
@@ -50,13 +50,13 @@ At the top right of the dashboard plugin is a button which will drop down user-s
 
 ![Settings](assets/screenshots/settings.png)
 
-##Pull Request Dashboard Widget
+## Pull Request Dashboard Widget
 
 This extension also adds a new widget that can be added to any VSTS dashboard.
 
 ![Add Widget](assets/screenshots/add_widget.png)
 
-###Widget Display
+### Widget Display
 
 The widget shows a more compact version of the pull request details, compared to the code hub dashboard.  The differences are:
 
@@ -67,7 +67,7 @@ The widget shows a more compact version of the pull request details, compared to
 
 ![Widget](assets/screenshots/widget.png)
 
-###Widget Configuration
+### Widget Configuration
 
 The widget allows configuration of the size, as well as the category of pull requests to display.  The categories are:
 
@@ -76,11 +76,11 @@ The widget allows configuration of the size, as well as the category of pull req
 * Assigned To My Team - Pull requests assigned to the team of the current user.
 * All - All pull requests, with no filtering applied.
 
-##Source Code and Issue Tracking
+## Source Code and Issue Tracking
 
 Source code for this extension can be found in the [tfs-pullrequest-dashboard](https://github.com/rstedman/tfs-pullrequest-dashboard) GitHub Repository.  Please report any issues found with this extension to the issues section of the GitHub repository [here](https://github.com/rstedman/tfs-pullrequest-dashboard/issues).
 
-##Change Log
+## Change Log
 
 * (20/12/2017) 2.0.1 - fix bug when showing pull requests across all projects in a TFS deployment.
 * (17/12/2017) 2.0.0
