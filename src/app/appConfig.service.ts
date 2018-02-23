@@ -68,7 +68,7 @@ export class AppConfigService {
               this._identitiesClientFactory = identityFactory;
               this._coreClientFactory = coreClientFactory;
               this._context = context;
-              this._layout.widgetMode = context.getPageContext().navigation.currentController === "dashboards";
+              this._layout.widgetMode = context.getPageContext().hubsContext.selectedHubId.startsWith("ms.vss-dashboards-web");
               VSS.getService<IExtensionDataService>(VSS.ServiceIds.ExtensionData)
                   .then((service) => {
                       this._extensionDataService = service;

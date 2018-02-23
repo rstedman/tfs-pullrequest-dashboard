@@ -2034,6 +2034,7 @@ interface MicrosoftAjaxConfig {
 interface HubsContext {
     HubGroupsCollectionContributionId: string;
     selectedHubGroupId: string;
+    selectedHubId: string;
     hubGroups: HubGroup[];
     hubs: Hub[];
     /**
