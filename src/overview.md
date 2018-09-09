@@ -82,8 +82,9 @@ Source code for this extension can be found in the [tfs-pullrequest-dashboard](h
 
 ## Change Log
 
+* (09/09/2018) 2.0.3 - bug fix: dashboard only shows top 101 active PRs.  Update that to top 1000 active PRs. 
 * (22/02/2018) 2.0.2 - bug fix: dashboard widget breaks with the new dashboards experience VSTS setting enabled.
-* (20/12/2017) 2.0.1 - fix bug when showing pull requests across all projects in a TFS deployment.
+* (20/12/2017) 2.0.1 - bug fix: when showing pull requests across all projects in a TFS deployment.
 * (17/12/2017) 2.0.0
     * Added VSTS dashboard widget
     * Update pull request display layout - more compact & more in line with how VSTS displays pull requests in other views.
