@@ -68,7 +68,10 @@ export class ExtensionsApiTfsService extends TfsService {
                                                 reviewerId: null,
                                                 sourceRefName: null,
                                                 status: 1,
-                                                targetRefName: null}));
+                                                targetRefName: null},
+                                            null,
+                                            0,
+                                            1000));
         }
 
         const allPrs = await Promise.all(prPromises);

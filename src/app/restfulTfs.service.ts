@@ -64,9 +64,9 @@ export class RestfulTfsService extends TfsService {
     }
 
     public async getPullRequests(allProjects?: boolean): Promise<GitPullRequest[]> {
-        let url = `${this.baseUri}/${this.currentProject}/_apis/git/pullRequests?status=active`;
+        let url = `${this.baseUri}/${this.currentProject}/_apis/git/pullRequests?status=active&$top=1000`;
         if (allProjects) {
-            url = `${this.baseUri}/_apis/git/pullRequests?status=active`;
+            url = `${this.baseUri}/_apis/git/pullRequests?status=active&$top=1000`;
         }
 
         const prs: any[] = await this.http.get(url, {withCredentials: true})
