@@ -82,6 +82,7 @@ Source code for this extension can be found in the [tfs-pullrequest-dashboard](h
 
 ## Change Log
 
+* (11/18/2018) 2.0.5 - bug fix: navigating to a PR from this extension would result in an error when using dev.azure.com.
 * (09/09/2018) 2.0.4 - bug fix: dashboard only shows top 101 active PRs.  Update that to top 1000 active PRs. 
 * (22/02/2018) 2.0.2 - bug fix: dashboard widget breaks with the new dashboards experience VSTS setting enabled.
 * (20/12/2017) 2.0.1 - bug fix: when showing pull requests across all projects in a TFS deployment.
