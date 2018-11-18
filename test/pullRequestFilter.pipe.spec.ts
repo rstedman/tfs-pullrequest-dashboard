@@ -1,6 +1,6 @@
-import {PullRequestViewModel} from "../src/app/pullRequestViewModel";
-import {User, PullRequestAsyncStatus} from "../src/app/model";
+import {PullRequestAsyncStatus, User} from "../src/app/model";
 import {PullRequestFilterPipe} from "../src/app/pullRequestFilter.pipe";
+import {PullRequestViewModel} from "../src/app/pullRequestViewModel";
 import {TestUtils} from "./testHelpers";
 
 describe("PullRequestFilterPipe", () => {
@@ -16,7 +16,11 @@ describe("PullRequestFilterPipe", () => {
             ]
         };
         const repo: GitRepository = {
-            _links: null,
+            _links: {
+                web: {
+                    href: "http://git/repo"
+                }
+            },
             defaultBranch: "master",
             url: `http://git/repo`,
             id: "repo",
@@ -32,7 +36,7 @@ describe("PullRequestFilterPipe", () => {
             sourceBranch: "testbranch",
             targetBranch: "master",
             title: "test123",
-            reviewers: reviewers.map(x => {
+            reviewers: reviewers.map( (x) => {
                 return {
                     id: x,
                     required: false,

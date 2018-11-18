@@ -1,19 +1,23 @@
+import {PullRequestAsyncStatus, User} from "../src/app/model";
 import {PullRequestViewModel} from "../src/app/pullRequestViewModel";
-import {User, PullRequestAsyncStatus} from "../src/app/model";
 import {PullRequestSortPipe} from "../src/app/prSort.pipe";
 import {TestUtils} from "./testHelpers";
 
 describe("PullRequestSortPipe", () => {
 
     function createPRViewModel(createdDate: Date): PullRequestViewModel {
-        let user: User = {
+        const user: User = {
             id: "123",
             displayName: "test user",
             uniqueName: "testuser1",
             memberOf: []
         };
-        let repo: GitRepository = {
-            _links: null,
+        const repo: GitRepository = {
+            _links: {
+                web: {
+                    href: "http://git/repo"
+                }
+            },
             defaultBranch: "master",
             url: "http://git/repo",
             id: "repo",
@@ -21,7 +25,7 @@ describe("PullRequestSortPipe", () => {
             project: null,
             remoteUrl: "http://git/repo"
         };
-        let pr = TestUtils.createPullRequest({
+        const pr = TestUtils.createPullRequest({
             created: createdDate,
             createdById: "user1",
             id: 1,
@@ -41,16 +45,16 @@ describe("PullRequestSortPipe", () => {
     });
 
     it("does nothing with an empty list", () => {
-        let result = subject.transform([]);
+        const result = subject.transform([]);
         expect(result).toBeDefined();
         expect(result.length).toEqual(0);
     });
 
     it("sorts prs oldest first", () => {
-        let pr1 = createPRViewModel(new Date(2016, 5, 12, 8, 30));
-        let pr2 = createPRViewModel(new Date(2016, 5, 12, 8, 15));
-        let pr3 = createPRViewModel(new Date(2016, 5, 4, 8, 15));
-        let result = subject.transform([pr1, pr2, pr3]);
+        const pr1 = createPRViewModel(new Date(2016, 5, 12, 8, 30));
+        const pr2 = createPRViewModel(new Date(2016, 5, 12, 8, 15));
+        const pr3 = createPRViewModel(new Date(2016, 5, 4, 8, 15));
+        const result = subject.transform([pr1, pr2, pr3]);
 
         expect(result).toBeDefined();
         expect(result.length).toEqual(3);

@@ -112,10 +112,14 @@ export class TestUtils {
 
     public static createRepository(name: string, project = "Test"): GitRepository {
         return {
-            _links: null,
+            _links: {
+               web: {
+                   href: `http://git/${name}`
+               }
+            },
             defaultBranch: "master",
-            url: `http://git/${name}`,
-            id: name,
+            url:           `http://git/${name}`,
+            id:            name,
             name,
             project: {
                 name: project,
