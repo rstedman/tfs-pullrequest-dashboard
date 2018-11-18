@@ -92,9 +92,9 @@ export class RestfulTfsService extends TfsService {
     }
 
     public getRepositories(allProjects?: boolean): Promise<GitRepository[]> {
-        let url = `${this.baseUri}/${this.currentProject}/_apis/git/repositories`;
+        let url = `${this.baseUri}/${this.currentProject}/_apis/git/repositories?includeLinks=true`;
         if (allProjects) {
-            url = `${this.baseUri}/_apis/git/repositories`;
+            url = `${this.baseUri}/_apis/git/repositories?includeLinks=true`;
         }
         return this.http.get(url, {withCredentials: true})
             .toPromise()
