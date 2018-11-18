@@ -11,7 +11,7 @@ export class AppConfigService {
     // Set this to true to develop & test locally
     private _devMode: boolean = false;
     // change this to the endpoint of the tfs service that you wish to develop against
-    private _devApiEndpoint: string = "http://<host>:8080/tfs/DefaultCollection";
+    private _devApiEndpoint: string = "https://<url>/tfs/DefaultCollection";
     // change this to the default project to filter to if all projects is not selected
     private _devDefaultProject: string = "MyFirstProject";
 
@@ -68,7 +68,10 @@ export class AppConfigService {
               this._identitiesClientFactory = identityFactory;
               this._coreClientFactory = coreClientFactory;
               this._context = context;
-              this._layout.widgetMode = context.getPageContext().hubsContext.selectedHubId.startsWith("ms.vss-dashboards-web");
+              this._layout.widgetMode = false;
+              if (context.getPageContext().hubsContext.selectedHubId) {
+                this._layout.widgetMode = context.getPageContext().hubsContext.selectedHubId.startsWith("ms.vss-dashboards-web");
+              }
               VSS.getService<IExtensionDataService>(VSS.ServiceIds.ExtensionData)
                   .then((service) => {
                       this._extensionDataService = service;

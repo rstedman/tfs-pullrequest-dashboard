@@ -29,7 +29,7 @@ export class PullRequestViewModel {
     public reviewers: IdentityRefWithVote[];
 
     constructor(public pullRequest: GitPullRequest, public repository: GitRepository, currentUser: User) {
-        this.remoteUrl = `${repository.remoteUrl}/pullrequest/${pullRequest.pullRequestId}`;
+        this.remoteUrl = `${repository._links.web.href}/pullrequest/${pullRequest.pullRequestId}`;
 
         this.requestedByMe = pullRequest.createdBy.id === currentUser.id;
 
