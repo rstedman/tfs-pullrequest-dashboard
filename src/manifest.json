@@ -41,6 +41,12 @@
             "properties": {
                 "name": "Pull Request Dashboard",
                 "order": 99,
+                "iconAsset": "tfs-pullrequest-dashboard/assets/images/logo.png",
+                "_sharedData": {
+                    "assets": [
+                        "tfs-pullrequest-dashboard/assets/images/logo.png"
+                    ]
+                },
                 "uri": "index.html"
             }
         },
