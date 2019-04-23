@@ -69,8 +69,14 @@ export class AppConfigService {
               this._coreClientFactory = coreClientFactory;
               this._context = context;
               this._layout.widgetMode = false;
-              if (context.getPageContext().hubsContext.selectedHubId) {
-                this._layout.widgetMode = context.getPageContext().hubsContext.selectedHubId.startsWith("ms.vss-dashboards-web");
+
+              const pageContext = context.getPageContext();
+              if (pageContext.hubsContext.selectedHubId) {
+                // In VSTS 2017 you can use selectedHubId to determine if you're in the dasboards hub
+                this._layout.widgetMode = pageContext.hubsContext.selectedHubId.startsWith("ms.vss-dashboards-web");
+              } else if (pageContext.navigation.routeId) {
+                // In Azure Devops 2019 you can use routeId to determine if you're in the dasboards hub
+                this._layout.widgetMode = pageContext.navigation.routeId.startsWith("ms.vss-dashboards-web");
               }
               VSS.getService<IExtensionDataService>(VSS.ServiceIds.ExtensionData)
                   .then((service) => {
