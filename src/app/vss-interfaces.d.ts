@@ -1324,6 +1324,9 @@ interface ModuleLoaderShimConfiguration {
 * Structure to specify current navigation context of the executing request. The navigation context content's are generally obtained from the request URL. Some context specifiers such as "Account" can be implicit and might come from current IVssServiceHost.
 */
 interface NavigationContext {
+    // Id of the currently navigated route
+    routeId: string;
+
     /**
     * A token to show which area the request has been targeted to. By default there are two areas "Admin" and "Api". They can be specified in the URL as _admin and _api respectively.
     */
