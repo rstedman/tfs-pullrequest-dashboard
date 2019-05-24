@@ -4,20 +4,20 @@
   </div>
   <div class="pull-request-details">
     <div class="title-container container-nowrap">
-      <a class="pull-request-title" href="{{pullRequest.remoteUrl}}" target="_parent" title="{{pullRequest.title}}">{{pullRequest.title}}</a>
+      <span *ngIf="pullRequest.hasMergeConflicts" class="conflicts">Conflicts</span><span *ngIf="pullRequest.isDraft" class="draft">Draft</span><a class="pull-request-title" href="{{pullRequest.remoteUrl}}" target="_parent" title="{{pullRequest.title}}">{{pullRequest.title}}</a>
     </div>
     <div *ngIf="!compactMode" class="details-container container-nowrap">
         by {{pullRequest.createdBy}} at {{pullRequest.createdDate | date: dateFormat}} into <i class="mdi mdi-git git-icon"></i><span class="repo">{{pullRequest.repositoryName}}</span> <i class="fa fa-code-fork branch-icon"></i>{{pullRequest.targetRefName}}
     </div>
     <div *ngIf="!compactMode" class="votes-container">
-      <span *ngIf="pullRequest.hasMergeConflicts" class="conflicts"><i class="fa fa-exclamation-triangle vote"></i>Conflicts</span><span *ngFor="let reviewer of pullRequest.reviewers; let i=index;"><span *ngIf="i>0 || pullRequest.hasMergeConflicts">, </span><span class="vote-container"><i class={{getVoteClasses(reviewer.vote)}} title="{{getVoteTooltip(reviewer.vote)}}"></i><span title="{{reviewer.isRequired ? reviewer.displayName + ' (Required)' : reviewer.displayName}}">{{reviewer.isRequired ? reviewer.displayName + '*' : reviewer.displayName}}</span></span></span>
+      <span *ngFor="let reviewer of pullRequest.reviewers; let i=index;"><span *ngIf="i>0">, </span><span class="vote-container"><i class={{getVoteClasses(reviewer.vote)}} title="{{getVoteTooltip(reviewer.vote)}}"></i><span title="{{reviewer.isRequired ? reviewer.displayName + ' (Required)' : reviewer.displayName}}">{{reviewer.isRequired ? reviewer.displayName + '*' : reviewer.displayName}}</span></span></span>
     </div>
     <div *ngIf="compactMode" class="compact-details">
       <div class="compact-details-bottom-left" title="into {{pullRequest.repositoryName}}, {{pullRequest.targetRefName}}">
         into <i class="mdi mdi-git git-icon"></i><span class="repo">{{pullRequest.repositoryName}}</span> <i class="fa fa-code-fork branch-icon"></i>{{pullRequest.targetRefName}}
       </div>
       <div class="compact-details-bottom-right">
-        <span *ngIf="pullRequest.hasMergeConflicts"><i class="fa fa-exclamation-triangle conflicts" title="Conflicts"></i></span><span *ngFor="let group of getVoteGroups(); let i=index;"><span *ngIf="i>0 || pullRequest.hasMergeConflicts">, </span><span title="{{group.tooltip}}"><i class={{getVoteClasses(group.vote)}}></i>x{{group.count}}</span></span>
+        <span *ngFor="let group of getVoteGroups(); let i=index;"><span *ngIf="i>0">, </span><span title="{{group.tooltip}}"><i class={{getVoteClasses(group.vote)}}></i>x{{group.count}}</span></span>
       </div>
     </div>
   </div>

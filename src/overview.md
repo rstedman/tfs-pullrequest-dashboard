@@ -15,7 +15,7 @@ The hub queries for all active pull requests, and groups them into several diffe
 * Requested by me - Pull requests requested by the current user
 * Assigned to me - Pull requests created by another user that have the current user assigned as a reviewer
 * Assigned to my team - Pull requests created by another user that have a team assigned as a reviewer that the current user is directly or indirectly a member of.
-    * Inderect team membership means that a team that the current user is not a member of, but one of the teams that the user *is* a member of, is a member of the team (ex. User memberof Team1 memberof Team2).  This allows for pull requests assigned to "virtual" teams: a team made up of several other teams (ex. "UX Team" is made up of "UX Team 1" & "UX Team 2").
+    * Indirect team membership means that a team that the current user is not a member of, but one of the teams that the user *is* a member of, is a member of the team (ex. User memberof Team1 memberof Team2).  This allows for pull requests assigned to "virtual" teams: a team made up of several other teams (ex. "UX Team" is made up of "UX Team 1" & "UX Team 2").
     * **Note**: Currently only supported for on-premises Team Foundation Server installations, due to APIs used that are currently unavailable in Visual Studio Team Services
 * Other Open pull requests - All other active pull requests that don't fall into any of the above categories
 
@@ -25,8 +25,9 @@ The hub queries for all active pull requests, and groups them into several diffe
 Each pull request displayed shows a number of useful pieces of information.
 
 * PR Title & Author
-* Repository name, from brach & to branch
-* Merge conflicts - merge conflicts icon displayed only if the PR has merge conflicts.
+* Repository name, from branch & to branch
+* Merge conflicts - merge conflicts indicator displayed only if the PR has merge conflicts.
+* Drafts - draft PR indicator if the PR is in draft state
 * Reviewers
     * Each reviewer on the PR has an icon next to their name indicating their vote
         * Solid Green Circle Checkmark = Approved
@@ -82,7 +83,8 @@ Source code for this extension can be found in the [tfs-pullrequest-dashboard](h
 
 ## Change Log
 
-* (23/04/2019) 2/0/6 - bug fix: the dashboard widget stopped loading in Azure Devops 2019
+* (23/05/2019) 2.1.0 - feature: add indicator for draft PRs. Also change location of conflict indicator to be consistent.
+* (23/04/2019) 2.0.6 - bug fix: the dashboard widget stopped loading in Azure Devops 2019
 * (18/11/2018) 2.0.5 - bug fix: navigating to a PR from this extension would result in an error when using dev.azure.com.
 * (09/09/2018) 2.0.4 - bug fix: dashboard only shows top 101 active PRs.  Update that to top 1000 active PRs. 
 * (22/02/2018) 2.0.2 - bug fix: dashboard widget breaks with the new dashboards experience VSTS setting enabled.
