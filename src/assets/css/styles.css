@@ -84,6 +84,10 @@ a.pull-request-title:hover {
   display: inline-block;
 }
 
+.tag-container {
+  display: inline-block;
+}
+
 .compact-details {
   display: flex;
 }
@@ -123,28 +127,21 @@ a.pull-request-title:hover {
   transform: scale(0.75)
 }
 
-.conflicts {
-  color: rgba( var(--palette-accent1,218, 10, 0) , 1 );
+.tag {
   border-radius: 3px;
   border: 1px solid;
   font-size: 12px;
   padding-left: 3px;
   padding-top: 1px;
   padding-right: 3px;
-  margin-left: 3px;
-  margin-right: 3px;
+}
+
+.conflicts {
+  color: rgba( var(--palette-accent1,218, 10, 0) , 1 );
 }
 
 .draft {
   color: rgba( var(--palette-primary-shade-10,16, 110, 190) , 1 );
-  border-radius: 3px;
-  border: 1px solid;
-  font-size: 12px;
-  padding-left: 3px;
-  padding-top: 1px;
-  padding-right: 3px;
-  margin-left: 3px;
-  margin-right: 3px;
 }
 
 .repo {

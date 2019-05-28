@@ -3,6 +3,12 @@ import { Component, Input } from "@angular/core";
 import { Vote } from "./model";
 import { PullRequestViewModel } from "./pullRequestViewModel";
 
+interface Tag {
+    name: string;
+    description: string;
+    class: string;
+}
+
 @Component({
     selector: "pull-request",
     templateUrl: "pullRequest.component.html",
@@ -77,5 +83,25 @@ export class PullRequestComponent {
         }
 
         return result;
+    }
+
+    public getTags(): Tag[] {
+        const tags = new Array<Tag>();
+        if (this.pullRequest.isDraft) {
+            tags.push({
+                name: "Draft",
+                description: "Pull request is in a draft state",
+                class: "draft"
+            });
+        }
+        if (this.pullRequest.hasMergeConflicts) {
+            tags.push({
+                name: "Conflicts",
+                description: "Conflicts exist between the source and target branch",
+                class: "conflicts"
+            });
+        }
+
+        return tags;
     }
 }
