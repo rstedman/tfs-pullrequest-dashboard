@@ -1812,6 +1812,7 @@ interface GitPullRequest {
     createdBy: IdentityRef;
     creationDate: Date;
     description: string;
+    isDraft?: boolean;
     lastMergeCommit: GitCommitRef;
     lastMergeSourceCommit: GitCommitRef;
     lastMergeTargetCommit: GitCommitRef;

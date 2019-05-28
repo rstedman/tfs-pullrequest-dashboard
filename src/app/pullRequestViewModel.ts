@@ -26,6 +26,8 @@ export class PullRequestViewModel {
 
     public hasMergeConflicts: boolean;
 
+    public isDraft: boolean = false;
+
     public reviewers: IdentityRefWithVote[];
 
     constructor(public pullRequest: GitPullRequest, public repository: GitRepository, currentUser: User) {
@@ -62,5 +64,9 @@ export class PullRequestViewModel {
                 }
                 return 0;
             });
+
+        if (pullRequest.isDraft) {
+            this.isDraft = true;
+        }
     }
 }

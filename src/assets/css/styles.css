@@ -124,13 +124,27 @@ a.pull-request-title:hover {
 }
 
 .conflicts {
-  color: #e60000;
+  color: rgba( var(--palette-accent1,218, 10, 0) , 1 );
   border-radius: 3px;
   border: 1px solid;
   font-size: 12px;
-  padding-left: 1px;
+  padding-left: 3px;
   padding-top: 1px;
-  padding-right: 1px
+  padding-right: 3px;
+  margin-left: 3px;
+  margin-right: 3px;
+}
+
+.draft {
+  color: rgba( var(--palette-primary-shade-10,16, 110, 190) , 1 );
+  border-radius: 3px;
+  border: 1px solid;
+  font-size: 12px;
+  padding-left: 3px;
+  padding-top: 1px;
+  padding-right: 3px;
+  margin-left: 3px;
+  margin-right: 3px;
 }
 
 .repo {
