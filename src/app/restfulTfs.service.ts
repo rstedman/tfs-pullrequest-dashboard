@@ -1,5 +1,7 @@
 import {Injectable} from "@angular/core";
 import {Headers, Http, Response} from "@angular/http";
+
+import { Observable } from "rxjs";
 import "rxjs/Rx";
 
 import {AppConfigService} from "./appConfig.service";
@@ -63,32 +65,29 @@ export class RestfulTfsService extends TfsService {
         return user;
     }
 
-    public async getPullRequests(allProjects?: boolean): Promise<GitPullRequest[]> {
+    public getPullRequests(allProjects?: boolean): Observable<GitPullRequest> {
         let url = `${this.baseUri}/${this.currentProject}/_apis/git/pullRequests?status=active&$top=1000`;
         if (allProjects) {
             url = `${this.baseUri}/_apis/git/pullRequests?status=active&$top=1000`;
         }
 
-        const prs: any[] = await this.http.get(url, {withCredentials: true})
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
-
-        for (const pr of prs) {
-            if (pr.mergeStatus) {
-                // the rest apis return a string for the mergestatus, but the VSS APIs convert that into
-                // an int.  Do the same here, so we can treat PRs the same throughout the app.
-                // note - we only care about conflicts for now, since we only show something different on merge conflicts.
-                if (pr.mergeStatus === "conflicts") {
-                    pr.mergeStatus = PullRequestAsyncStatus.Conflicts;
-                } else {
-                    pr.mergeStatus = PullRequestAsyncStatus.Succeeded;
+        return this.http.get(url, {withCredentials: true})
+            .map((r: Response) => this.extractData(r))
+            .mergeMap((prs: GitPullRequest[]) => prs)
+            .map((pr: any) => {
+                if (pr.mergeStatus) {
+                    // the rest apis return a string for the mergestatus, but the VSS APIs convert that into
+                    // an int.  Do the same here, so we can treat PRs the same throughout the app.
+                    // note - we only care about conflicts for now, since we only show something different on merge conflicts.
+                    if (pr.mergeStatus === "conflicts") {
+                        pr.mergeStatus = PullRequestAsyncStatus.Conflicts;
+                    } else {
+                        pr.mergeStatus = PullRequestAsyncStatus.Succeeded;
+                    }
                 }
-            }
-        }
-        // with the mergeStatus converted, we should be able to just treat the prs returned by the rest api
-        // as a GitPullRequest
-        return (prs as GitPullRequest[]);
+                return pr;
+            })
+            .flatMap((pr) => this.getPullRequestComplete(pr));
     }
 
     public getRepositories(allProjects?: boolean): Promise<GitRepository[]> {
@@ -100,6 +99,12 @@ export class RestfulTfsService extends TfsService {
             .toPromise()
             .then(this.extractData)
             .catch(this.handleError);
+    }
+
+    private getPullRequestComplete(pullRequest: GitPullRequest): Observable<GitPullRequest> {
+        const url = `${this.baseUri}/_apis/git/repositories/${pullRequest.repository.id}/pullRequests/${pullRequest.pullRequestId}`;
+        return this.http.get(url, {withCredentials: true})
+            .map((r: Response) => r.json());
     }
 
     private async getMembersOf(userId: string): Promise<Identity[]> {

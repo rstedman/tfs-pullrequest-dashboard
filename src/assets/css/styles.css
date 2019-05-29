@@ -144,6 +144,11 @@ a.pull-request-title:hover {
   color: rgba( var(--palette-primary-shade-10,16, 110, 190) , 1 );
 }
 
+.autocomplete {
+  /* color: rgba(var(--palette-accent3,248, 168, 0),1); */
+  color: #f8a800
+}
+
 .repo {
   color: #333333;
 }

@@ -1,7 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { IMultiSelectOption, IMultiSelectSettings, IMultiSelectTexts } from "angular-2-dropdown-multiselect";
 
-import { AppConfigService } from "./appConfig.service";
 import { AppSettingsServiceProvider } from "./appSettingsService.provider";
 import { AppSettingsService, Layout, TfsService, User } from "./model";
 import { PullRequestViewModel } from "./pullRequestViewModel";
@@ -98,7 +97,6 @@ export class AppComponent implements OnInit {
         this.loading = true;
         try {
             const getReposPromise = this.tfsService.getRepositories(this.allProjects);
-            const getPRsPromise = this.tfsService.getPullRequests(this.allProjects);
 
             const repos = await getReposPromise;
             this.repositories = repos.sort((a, b) => {
@@ -112,6 +110,11 @@ export class AppComponent implements OnInit {
             });
 
             this.pullRequests = [];
+
+            this.tfsService.getPullRequests(this.allProjects)
+                .map((pr) => new PullRequestViewModel(pr, repoById[pr.repository.id], this.currentUser))
+                .subscribe((pr) => this.pullRequests.push(pr));
+
             this.repoOptions = [];
             this.unfilteredRepoSelections.length = 0;
             const repoById: Map<string, GitRepository> = new Map<string, GitRepository>();
@@ -127,11 +130,6 @@ export class AppComponent implements OnInit {
                 if (this.filteredRepoIds.indexOf(repo.id) < 0) {
                     this.unfilteredRepoSelections.push(i);
                 }
-            }
-
-            const prs = await getPRsPromise;
-            for (const pr of prs) {
-                this.pullRequests.push(new PullRequestViewModel(pr, repoById[pr.repository.id], this.currentUser));
             }
         } finally {
             this.loading = false;

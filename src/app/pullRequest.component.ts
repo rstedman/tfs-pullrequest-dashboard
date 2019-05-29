@@ -101,7 +101,13 @@ export class PullRequestComponent {
                 class: "conflicts"
             });
         }
-
+        if (this.pullRequest.autoComplete) {
+            tags.push({
+                name: "Auto-Complete",
+                description: "Pull Request is set to auto-complete once all policies have passed",
+                class: "autocomplete"
+            });
+        }
         return tags;
     }
 }

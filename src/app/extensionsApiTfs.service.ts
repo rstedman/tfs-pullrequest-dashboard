@@ -1,5 +1,5 @@
 import {Injectable, NgZone} from "@angular/core";
-import "rxjs/Rx";
+import { Observable } from "rxjs";
 
 import {TfsService, User} from "./model";
 
@@ -51,8 +51,9 @@ export class ExtensionsApiTfsService extends TfsService {
         });
     }
 
-    public async getPullRequests(allProjects?: boolean): Promise<GitPullRequest[]> {
-        const project = (allProjects) ? null : this.projectName;
+    public getPullRequests(allProjects?: boolean): Observable<GitPullRequest> {
+        return null;
+        /*const project = (allProjects) ? null : this.projectName;
         const prPromises: Array<Promise<GitPullRequest[]>> = [];
         let projects: string[] = [this.projectName];
 
@@ -80,7 +81,7 @@ export class ExtensionsApiTfsService extends TfsService {
             const all = ([].concat.apply([], allPrs));
             // use ngzone to bring promise callback back into the angular zone
             this.zone.run(() => resolve(all));
-        });
+        });*/
     }
 
     public async getRepositories(allProjects?: boolean): Promise<GitRepository[]> {

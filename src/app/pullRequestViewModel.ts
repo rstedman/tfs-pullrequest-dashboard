@@ -28,6 +28,8 @@ export class PullRequestViewModel {
 
     public isDraft: boolean = false;
 
+    public autoComplete: boolean = false;
+
     public reviewers: IdentityRefWithVote[];
 
     constructor(public pullRequest: GitPullRequest, public repository: GitRepository, currentUser: User) {
@@ -67,6 +69,9 @@ export class PullRequestViewModel {
 
         if (pullRequest.isDraft) {
             this.isDraft = true;
+        }
+        if (pullRequest.autoCompleteSetBy) {
+            this.autoComplete = true;
         }
     }
 }
