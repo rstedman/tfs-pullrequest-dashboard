@@ -1,5 +1,7 @@
 import {Injectable, NgZone} from "@angular/core";
+
 import { Observable } from "rxjs";
+import "rxjs/Rx";
 
 import {GitPullRequestWithStatuses, TfsService, User} from "./model";
 
@@ -52,36 +54,28 @@ export class ExtensionsApiTfsService extends TfsService {
     }
 
     public getPullRequests(allProjects?: boolean): Observable<GitPullRequestWithStatuses> {
-        return null;
-        /*const project = (allProjects) ? null : this.projectName;
-        const prPromises: Array<Promise<GitPullRequest[]>> = [];
-        let projects: string[] = [this.projectName];
+        let projects = Observable.from([this.projectName]);
 
         if (allProjects) {
-            projects = (await this.coreTfsClient.getProjects()).map((x) => x.name);
+            projects = Observable.fromPromise(this.coreTfsClient.getProjects())
+                .flatMap((x) => x)
+                .map((x) => x.name);
         }
 
-        for (const proj of projects) {
-            prPromises.push(this.gitClient.getPullRequestsByProject(proj, {
-                                                includeLinks: true,
-                                                creatorId: null,
-                                                repositoryId: null,
-                                                reviewerId: null,
-                                                sourceRefName: null,
-                                                status: 1,
-                                                targetRefName: null},
-                                            null,
-                                            0,
-                                            1000));
-        }
-
-        const allPrs = await Promise.all(prPromises);
-
-        return new Promise<GitPullRequest[]>((resolve, reject) => {
-            const all = ([].concat.apply([], allPrs));
-            // use ngzone to bring promise callback back into the angular zone
-            this.zone.run(() => resolve(all));
-        });*/
+        return projects
+            .map((proj) => Observable.fromPromise(this.gitClient.getPullRequestsByProject(proj, {
+                                includeLinks: true,
+                                creatorId: null,
+                                repositoryId: null,
+                                reviewerId: null,
+                                sourceRefName: null,
+                                status: 1,
+                                targetRefName: null},
+                            null, 0, 1000)))
+            .flatMap((prsObservable: Observable<GitPullRequest[]>) => prsObservable)
+            .flatMap((prs: GitPullRequest[]) => prs)
+            .flatMap((pr: GitPullRequest) => this.getPullRequestComplete(pr))
+            .flatMap((pr: GitPullRequest) => this.getPullRequestsWithStatus(pr));
     }
 
     public async getRepositories(allProjects?: boolean): Promise<GitRepository[]> {
@@ -90,6 +84,20 @@ export class ExtensionsApiTfsService extends TfsService {
             // use ngzone to bring promise callback back into the angular zone
             this.zone.run(() => resolve(repos));
         });
+    }
+
+    private getPullRequestComplete(pullRequest: GitPullRequest): Observable<GitPullRequest> {
+        return Observable.fromPromise(this.gitClient.getPullRequest(pullRequest.repository.id, pullRequest.pullRequestId));
+    }
+
+    private getPullRequestsWithStatus(pullRequest: GitPullRequest): Observable<GitPullRequestWithStatuses> {
+        return Observable
+            .fromPromise(this.gitClient.getPullRequestStatuses(pullRequest.repository.id, pullRequest.pullRequestId))
+            .map((statuses) => {
+                const patch: any = {statuses};
+                Object.assign(patch, pullRequest);
+                return patch;
+            });
     }
 
     private async getMembersOf(userId: string): Promise<Identity[]> {
