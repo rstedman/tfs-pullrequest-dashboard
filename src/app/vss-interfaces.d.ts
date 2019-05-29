@@ -1716,6 +1716,31 @@ interface GitClient {
      * @return IPromise<Contracts.GitPullRequest[]>
      */
     getPullRequestsByProject(project: string, searchCriteria: GitPullRequestSearchCriteria, maxCommentLength?: number, skip?: number, top?: number): Promise<GitPullRequest[]>;
+
+        /**
+     * Retrieve a pull request
+     *
+     * @param {string} repositoryId
+     * @param {number} pullRequestId
+     * @param {string} project - Project ID or project name
+     * @param {number} maxCommentLength
+     * @param {number} skip
+     * @param {number} top
+     * @param {boolean} includeCommits
+     * @param {boolean} includeWorkItemRefs
+     * @return IPromise<Contracts.GitPullRequest>
+     */
+    getPullRequest(repositoryId: string, pullRequestId: number, project?: string, maxCommentLength?: number, skip?: number, top?: number, includeCommits?: boolean, includeWorkItemRefs?: boolean): Promise<GitPullRequest>;
+
+    /**
+     * [Preview API] Get all the statuses associated with a pull request.
+     *
+     * @param {string} repositoryId
+     * @param {number} pullRequestId
+     * @param {string} project - Project ID or project name
+     * @return IPromise<Contracts.GitPullRequestStatus[]>
+     */
+    getPullRequestStatuses(repositoryId: string, pullRequestId: number, project?: string): Promise<GitPullRequestStatus[]>;
 }
 
 interface CoreHttpClientFactory { 
@@ -1835,6 +1860,34 @@ interface GitPullRequestCompletionOptions {
     deleteSourceBranch: boolean;
     mergeCommitMessage: string;
     squashMerge: boolean;
+}
+
+interface GitPullRequestStatus extends GitStatus {
+    iterationId: number;
+}
+
+interface GitStatus {
+    _links: any;
+    context: GitStatusContext;
+    createdBy: IdentityRef;
+    creationDate: Date;
+    description: string;
+    state?: GitStatusState;
+    targetUrl: string;
+    updatedDate: Date;
+}
+
+interface GitStatusContext {
+    genre: string;
+    name: string;
+}
+
+declare enum GitStatusState {
+    NotSet = 0,
+    Pending = 1,
+    Succeeded = 2,
+    Failed = 3,
+    Error = 4,
 }
 
 interface IdentityRef {

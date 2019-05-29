@@ -1,4 +1,4 @@
-import { PullRequestAsyncStatus, User } from "./model";
+import { GitPullRequestWithStatuses, PullRequestAsyncStatus, User } from "./model";
 
 export class PullRequestViewModel {
 
@@ -32,7 +32,9 @@ export class PullRequestViewModel {
 
     public reviewers: IdentityRefWithVote[];
 
-    constructor(public pullRequest: GitPullRequest, public repository: GitRepository, currentUser: User) {
+    public statuses: GitPullRequestStatus[];
+
+    constructor(public pullRequest: GitPullRequestWithStatuses, public repository: GitRepository, currentUser: User) {
         this.remoteUrl = `${repository._links.web.href}/pullrequest/${pullRequest.pullRequestId}`;
 
         this.requestedByMe = pullRequest.createdBy.id === currentUser.id;
@@ -72,6 +74,10 @@ export class PullRequestViewModel {
         }
         if (pullRequest.autoCompleteSetBy) {
             this.autoComplete = true;
+        }
+
+        if (pullRequest.statuses) {
+            this.statuses = pullRequest.statuses;
         }
     }
 }

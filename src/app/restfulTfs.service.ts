@@ -5,7 +5,7 @@ import { Observable } from "rxjs";
 import "rxjs/Rx";
 
 import {AppConfigService} from "./appConfig.service";
-import {PullRequestAsyncStatus, TfsService, User} from "./model";
+import {GitPullRequestWithStatuses, GitStatusState, PullRequestAsyncStatus, TfsService, User} from "./model";
 
 @Injectable()
 // Interacts with TFS REST APis.  Meant for use when not running in the context of a TFS extension (ie. development)
@@ -65,7 +65,7 @@ export class RestfulTfsService extends TfsService {
         return user;
     }
 
-    public getPullRequests(allProjects?: boolean): Observable<GitPullRequest> {
+    public getPullRequests(allProjects?: boolean): Observable<GitPullRequestWithStatuses> {
         let url = `${this.baseUri}/${this.currentProject}/_apis/git/pullRequests?status=active&$top=1000`;
         if (allProjects) {
             url = `${this.baseUri}/_apis/git/pullRequests?status=active&$top=1000`;
@@ -74,6 +74,8 @@ export class RestfulTfsService extends TfsService {
         return this.http.get(url, {withCredentials: true})
             .map((r: Response) => this.extractData(r))
             .mergeMap((prs: GitPullRequest[]) => prs)
+            .flatMap((pr) => this.getPullRequestComplete(pr))
+            .flatMap((pr) => this.getPullRequestWithStatuses(pr))
             .map((pr: any) => {
                 if (pr.mergeStatus) {
                     // the rest apis return a string for the mergestatus, but the VSS APIs convert that into
@@ -86,8 +88,7 @@ export class RestfulTfsService extends TfsService {
                     }
                 }
                 return pr;
-            })
-            .flatMap((pr) => this.getPullRequestComplete(pr));
+            });
     }
 
     public getRepositories(allProjects?: boolean): Promise<GitRepository[]> {
@@ -105,6 +106,29 @@ export class RestfulTfsService extends TfsService {
         const url = `${this.baseUri}/_apis/git/repositories/${pullRequest.repository.id}/pullRequests/${pullRequest.pullRequestId}`;
         return this.http.get(url, {withCredentials: true})
             .map((r: Response) => r.json());
+    }
+
+    private getPullRequestWithStatuses(pullRequest: GitPullRequest): Observable<GitPullRequestWithStatuses> {
+        const url = `${this.baseUri}/_apis/git/repositories/${pullRequest.repository.id}/pullRequests/${pullRequest.pullRequestId}/statuses`;
+        return this.http.get(url, {withCredentials: true})
+            .map((r: Response) => {
+                const res: any = {statuses: this.extractData(r)};
+                // The convert the rest api status to the enum for consistency with the extensions api
+                for (const status of res.statuses) {
+                    const statusUpdate = {state: GitStatusState.Pending};
+                    // pending statuses don't have a state set on them
+                    if (status.state) {
+                        if (status.state === "failed") {
+                            statusUpdate.state = GitStatusState.Failed;
+                        } else if (status.state === "succeeded") {
+                            statusUpdate.state = GitStatusState.Succeeded;
+                        }
+                    }
+                    Object.assign(status, statusUpdate);
+                }
+                Object.assign(res, pullRequest);
+                return res;
+            });
     }
 
     private async getMembersOf(userId: string): Promise<Identity[]> {

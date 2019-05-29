@@ -134,6 +134,7 @@ a.pull-request-title:hover {
   padding-left: 3px;
   padding-top: 1px;
   padding-right: 3px;
+  margin-right: 2px;
 }
 
 .conflicts {
@@ -147,6 +148,10 @@ a.pull-request-title:hover {
 .autocomplete {
   /* color: rgba(var(--palette-accent3,248, 168, 0),1); */
   color: #f8a800
+}
+
+.pending {
+  color: #9e9c9c;
 }
 
 .repo {

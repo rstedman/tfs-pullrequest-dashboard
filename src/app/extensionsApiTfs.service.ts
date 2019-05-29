@@ -1,7 +1,7 @@
 import {Injectable, NgZone} from "@angular/core";
 import { Observable } from "rxjs";
 
-import {TfsService, User} from "./model";
+import {GitPullRequestWithStatuses, TfsService, User} from "./model";
 
 // TfsService implementation which uses the VSS extension apis for fetching data
 @Injectable()
@@ -51,7 +51,7 @@ export class ExtensionsApiTfsService extends TfsService {
         });
     }
 
-    public getPullRequests(allProjects?: boolean): Observable<GitPullRequest> {
+    public getPullRequests(allProjects?: boolean): Observable<GitPullRequestWithStatuses> {
         return null;
         /*const project = (allProjects) ? null : this.projectName;
         const prPromises: Array<Promise<GitPullRequest[]>> = [];
