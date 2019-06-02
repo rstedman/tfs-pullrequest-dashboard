@@ -5,6 +5,10 @@ import "rxjs/Rx";
 
 import {GitPullRequestWithStatuses, TfsService, User} from "./model";
 
+// for some reason, Observable.from isn't working, regardless of anything I try.  However, Rx.Observable.from works, but
+// Rx isn't declared in the typings.  This works around that.
+declare var Rx: any;
+
 // TfsService implementation which uses the VSS extension apis for fetching data
 @Injectable()
 export class ExtensionsApiTfsService extends TfsService {
@@ -54,16 +58,16 @@ export class ExtensionsApiTfsService extends TfsService {
     }
 
     public getPullRequests(allProjects?: boolean): Observable<GitPullRequestWithStatuses> {
-        let projects = Observable.from([this.projectName]);
+        let projects = Rx.Observable.from([this.projectName]);
 
         if (allProjects) {
-            projects = Observable.fromPromise(this.coreTfsClient.getProjects())
+            projects = Rx.Observable.fromPromise(this.coreTfsClient.getProjects())
                 .flatMap((x) => x)
                 .map((x) => x.name);
         }
 
         return projects
-            .map((proj) => Observable.fromPromise(this.gitClient.getPullRequestsByProject(proj, {
+            .map((proj) => Rx.Observable.fromPromise(this.gitClient.getPullRequestsByProject(proj, {
                                 includeLinks: true,
                                 creatorId: null,
                                 repositoryId: null,
@@ -86,12 +90,14 @@ export class ExtensionsApiTfsService extends TfsService {
         });
     }
 
+    // the search endpoint for pull requests doesn't contain autocomplete info, so we need to requery each individual
+    // PR just to see if it has autocomplete set
     private getPullRequestComplete(pullRequest: GitPullRequest): Observable<GitPullRequest> {
-        return Observable.fromPromise(this.gitClient.getPullRequest(pullRequest.repository.id, pullRequest.pullRequestId));
+        return Rx.Observable.fromPromise(this.gitClient.getPullRequest(pullRequest.repository.id, pullRequest.pullRequestId));
     }
 
     private getPullRequestsWithStatus(pullRequest: GitPullRequest): Observable<GitPullRequestWithStatuses> {
-        return Observable
+        return Rx.Observable
             .fromPromise(this.gitClient.getPullRequestStatuses(pullRequest.repository.id, pullRequest.pullRequestId))
             .map((statuses) => {
                 const patch: any = {statuses};
