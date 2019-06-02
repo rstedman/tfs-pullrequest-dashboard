@@ -1,6 +1,10 @@
 import {AppComponent} from "../src/app/app.component";
 import {AppSettingsService, Layout, TfsService, User} from "../src/app/model";
 import {TestUtils} from "./testHelpers";
+import { NgZone, EventEmitter } from "@angular/core";
+import { Observable } from "rxjs";
+
+declare var Rx: any;
 
 describe("AppComponent", () => {
 
@@ -31,6 +35,7 @@ describe("AppComponent", () => {
 
     let tfsMock: TfsService;
     let settingsMock: AppSettingsService;
+    let zoneMock: NgZone;
 
     const repos = [TestUtils.createRepository("repo1"),
         TestUtils.createRepository("repo2"),
@@ -44,8 +49,8 @@ describe("AppComponent", () => {
             getCurrentUser: (): Promise<User> => {
                 return Promise.resolve(defaultUser);
             },
-            getPullRequests: (allProjects?: boolean): Promise<GitPullRequest[]> => {
-                return Promise.resolve([]);
+            getPullRequests: (allProjects?: boolean): Observable<GitPullRequest> => {
+                return Rx.Observable.from([]);
             },
             getRepositories: (): Promise<GitRepository[]> => {
                 return Promise.resolve(repos);
@@ -60,7 +65,20 @@ describe("AppComponent", () => {
         spyOn(settingsMock, "getRepoFilter");
         spyOn(settingsMock, "getShowAllProjects");
 
-        subject = new AppComponent(tfsMock, settingsMock);
+        zoneMock = {
+            run: (action: () => void) => action(),
+            hasPendingMacrotasks: false,
+            hasPendingMicrotasks: false,
+            isStable: true,
+            onError: null,
+            onMicrotaskEmpty: null,
+            onStable: null,
+            onUnstable: null,
+            runGuarded: null,
+            runOutsideAngular: null
+        }
+
+        subject = new AppComponent(tfsMock, settingsMock, zoneMock);
     });
 
     it("doesn't make any service calls in the constructor", () => {

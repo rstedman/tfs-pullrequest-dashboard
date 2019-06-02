@@ -1,7 +1,6 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, NgZone, OnInit } from "@angular/core";
 import { IMultiSelectOption, IMultiSelectSettings, IMultiSelectTexts } from "angular-2-dropdown-multiselect";
 
-import { AppConfigService } from "./appConfig.service";
 import { AppSettingsServiceProvider } from "./appSettingsService.provider";
 import { AppSettingsService, Layout, TfsService, User } from "./model";
 import { PullRequestViewModel } from "./pullRequestViewModel";
@@ -13,13 +12,6 @@ import { TfsServiceProvider } from "./tfsService.provider";
     providers: [new TfsServiceProvider(), new AppSettingsServiceProvider()],
 })
 export class AppComponent implements OnInit {
-
-    // settings key for the list of repositories that the user has unselected from the other section
-    private static repoFilterKey = "repoFilter";
-    // settings key for the datetime format the user wants dates to display in
-    private static dateFormatKey = "dateFormat";
-    // settings key for showing PRs across all projects instead of just the current
-    private static allProjectsKey = "allProjects";
 
     private static defaultDateFormat = "dd/MM/yyyy HH:mm";
 
@@ -65,7 +57,8 @@ export class AppComponent implements OnInit {
     public rowLimit: number = 0;
 
     constructor(private tfsService: TfsService,
-                private settings: AppSettingsService) {
+                private settings: AppSettingsService,
+                private zone: NgZone) {
 
         this.settings.layoutChanged().on((data) => this.updateLayout(data));
         this.hubUri = this.settings.getHubUri();
@@ -98,7 +91,6 @@ export class AppComponent implements OnInit {
         this.loading = true;
         try {
             const getReposPromise = this.tfsService.getRepositories(this.allProjects);
-            const getPRsPromise = this.tfsService.getPullRequests(this.allProjects);
 
             const repos = await getReposPromise;
             this.repositories = repos.sort((a, b) => {
@@ -112,6 +104,11 @@ export class AppComponent implements OnInit {
             });
 
             this.pullRequests = [];
+
+            this.tfsService.getPullRequests(this.allProjects)
+                .map((pr) => new PullRequestViewModel(pr, repoById[pr.repository.id], this.currentUser))
+                .subscribe((pr) => this.zone.run(() => this.pullRequests.push(pr)));
+
             this.repoOptions = [];
             this.unfilteredRepoSelections.length = 0;
             const repoById: Map<string, GitRepository> = new Map<string, GitRepository>();
@@ -127,11 +124,6 @@ export class AppComponent implements OnInit {
                 if (this.filteredRepoIds.indexOf(repo.id) < 0) {
                     this.unfilteredRepoSelections.push(i);
                 }
-            }
-
-            const prs = await getPRsPromise;
-            for (const pr of prs) {
-                this.pullRequests.push(new PullRequestViewModel(pr, repoById[pr.repository.id], this.currentUser));
             }
         } finally {
             this.loading = false;

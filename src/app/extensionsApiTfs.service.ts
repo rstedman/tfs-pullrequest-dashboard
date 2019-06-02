@@ -1,7 +1,13 @@
 import {Injectable, NgZone} from "@angular/core";
+
+import { Observable } from "rxjs";
 import "rxjs/Rx";
 
-import {TfsService, User} from "./model";
+import {GitPullRequestWithStatuses, TfsService, User} from "./model";
+
+// for some reason, Observable.from isn't working, regardless of anything I try.  However, Rx.Observable.from works, but
+// Rx isn't declared in the typings.  This works around that.
+declare var Rx: any;
 
 // TfsService implementation which uses the VSS extension apis for fetching data
 @Injectable()
@@ -51,36 +57,29 @@ export class ExtensionsApiTfsService extends TfsService {
         });
     }
 
-    public async getPullRequests(allProjects?: boolean): Promise<GitPullRequest[]> {
-        const project = (allProjects) ? null : this.projectName;
-        const prPromises: Array<Promise<GitPullRequest[]>> = [];
-        let projects: string[] = [this.projectName];
+    public getPullRequests(allProjects?: boolean): Observable<GitPullRequestWithStatuses> {
+        let projects = Rx.Observable.from([this.projectName]);
 
         if (allProjects) {
-            projects = (await this.coreTfsClient.getProjects()).map((x) => x.name);
+            projects = Rx.Observable.fromPromise(this.coreTfsClient.getProjects())
+                .flatMap((x) => x)
+                .map((x) => x.name);
         }
 
-        for (const proj of projects) {
-            prPromises.push(this.gitClient.getPullRequestsByProject(proj, {
-                                                includeLinks: true,
-                                                creatorId: null,
-                                                repositoryId: null,
-                                                reviewerId: null,
-                                                sourceRefName: null,
-                                                status: 1,
-                                                targetRefName: null},
-                                            null,
-                                            0,
-                                            1000));
-        }
-
-        const allPrs = await Promise.all(prPromises);
-
-        return new Promise<GitPullRequest[]>((resolve, reject) => {
-            const all = ([].concat.apply([], allPrs));
-            // use ngzone to bring promise callback back into the angular zone
-            this.zone.run(() => resolve(all));
-        });
+        return projects
+            .map((proj) => Rx.Observable.fromPromise(this.gitClient.getPullRequestsByProject(proj, {
+                                includeLinks: true,
+                                creatorId: null,
+                                repositoryId: null,
+                                reviewerId: null,
+                                sourceRefName: null,
+                                status: 1,
+                                targetRefName: null},
+                            null, 0, 1000)))
+            .flatMap((prsObservable: Observable<GitPullRequest[]>) => prsObservable)
+            .flatMap((prs: GitPullRequest[]) => prs)
+            .flatMap((pr: GitPullRequest) => this.getPullRequestComplete(pr))
+            .flatMap((pr: GitPullRequest) => this.getPullRequestsWithStatus(pr));
     }
 
     public async getRepositories(allProjects?: boolean): Promise<GitRepository[]> {
@@ -89,6 +88,22 @@ export class ExtensionsApiTfsService extends TfsService {
             // use ngzone to bring promise callback back into the angular zone
             this.zone.run(() => resolve(repos));
         });
+    }
+
+    // the search endpoint for pull requests doesn't contain autocomplete info, so we need to requery each individual
+    // PR just to see if it has autocomplete set
+    private getPullRequestComplete(pullRequest: GitPullRequest): Observable<GitPullRequest> {
+        return Rx.Observable.fromPromise(this.gitClient.getPullRequest(pullRequest.repository.id, pullRequest.pullRequestId));
+    }
+
+    private getPullRequestsWithStatus(pullRequest: GitPullRequest): Observable<GitPullRequestWithStatuses> {
+        return Rx.Observable
+            .fromPromise(this.gitClient.getPullRequestStatuses(pullRequest.repository.id, pullRequest.pullRequestId))
+            .map((statuses) => {
+                const patch: any = {statuses};
+                Object.assign(patch, pullRequest);
+                return patch;
+            });
     }
 
     private async getMembersOf(userId: string): Promise<Identity[]> {

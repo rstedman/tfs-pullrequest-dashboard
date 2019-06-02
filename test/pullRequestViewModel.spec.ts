@@ -1,4 +1,4 @@
-import {PullRequestAsyncStatus, User} from "../src/app/model";
+import {PullRequestAsyncStatus, User, GitPullRequestWithStatuses} from "../src/app/model";
 import {PullRequestViewModel} from "../src/app/pullRequestViewModel";
 import {TestUtils} from "./testHelpers";
 
@@ -16,7 +16,7 @@ describe("PullRequestViewModel", () => {
 
     const defaultRepository = TestUtils.createRepository("repo1");
 
-    function getSimplePR(): GitPullRequest {
+    function getSimplePR(): GitPullRequestWithStatuses {
         return TestUtils.createPullRequest({
             created: new Date(),
             createdById: "user1",

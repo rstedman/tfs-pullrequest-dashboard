@@ -104,7 +104,10 @@ describe("ExtensionsApiTfsService", () => {
                     return Promise.resolve(filtered);
                 }
                 return Promise.resolve(prs);
-            }
+            },
+            getPullRequest: (repositoryId: string, pullRequestId: number, project?: string, maxCommentLength?: number, skip?: number, top?: number, includeCommits?: boolean, includeWorkItemRefs?: boolean): Promise<GitPullRequest> => null,
+
+            getPullRequestStatuses: (repositoryId: string, pullRequestId: number, project?: string): Promise<GitPullRequestStatus[]> => null,
         };
 
         coreClient = {
@@ -179,28 +182,6 @@ describe("ExtensionsApiTfsService", () => {
         const expected = repos.filter((r) => r.project.name === projectName);
 
         expect(repositories).toEqual(expected);
-
-        done();
-    });
-
-    it("Returns PRs from all projects if allProjects true", async (done) => {
-        const subject = createSubject(true);
-
-        const result = await subject.getPullRequests(true);
-
-        expect(result).toEqual(prs);
-
-        done();
-    });
-
-    it("Returns PRs from only the current project if allProjects false", async (done) => {
-        const subject = createSubject(true);
-
-        const expected = prs.filter((p) => p.repository.project.name === projectName);
-
-        const result = await subject.getPullRequests(false);
-
-        expect(result).toEqual(expected);
 
         done();
     });

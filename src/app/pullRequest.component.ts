@@ -1,7 +1,13 @@
 import { Component, Input } from "@angular/core";
 
-import { Vote } from "./model";
+import { GitStatusState, Vote } from "./model";
 import { PullRequestViewModel } from "./pullRequestViewModel";
+
+interface Tag {
+    name: string;
+    description: string;
+    class: string;
+}
 
 @Component({
     selector: "pull-request",
@@ -77,5 +83,57 @@ export class PullRequestComponent {
         }
 
         return result;
+    }
+
+    public getTags(): Tag[] {
+        const tags = new Array<Tag>();
+        if (this.pullRequest.isDraft) {
+            tags.push({
+                name: "Draft",
+                description: "Pull request is in a draft state",
+                class: "draft"
+            });
+        }
+        if (this.pullRequest.hasMergeConflicts) {
+            tags.push({
+                name: "Conflicts",
+                description: "Conflicts exist between the source and target branch",
+                class: "failed"
+            });
+        }
+        if (this.pullRequest.statuses) {
+            for (const status of this.pullRequest.statuses) {
+                let cls = "pending";
+                let stateDesc = "Pending";
+                switch (status.state) {
+                    case GitStatusState.Error:
+                        cls = "rejected";
+                        stateDesc = "Error";
+                        break;
+                    case GitStatusState.Failed:
+                        cls = "failed";
+                        stateDesc = "Failed";
+                        break;
+                    case GitStatusState.Succeeded:
+                        cls = "approved";
+                        stateDesc = "Succeeded";
+                        break;
+                }
+
+                tags.push({
+                    name: status.context.name,
+                    description: `${status.description} - ${stateDesc}`,
+                    class: cls
+                });
+            }
+        }
+        if (this.pullRequest.autoComplete) {
+            tags.push({
+                name: "Auto-Complete",
+                description: "Pull Request is set to auto-complete once all policies have passed",
+                class: "autocomplete"
+            });
+        }
+        return tags;
     }
 }

@@ -26,8 +26,11 @@ Each pull request displayed shows a number of useful pieces of information.
 
 * PR Title & Author
 * Repository name, from branch & to branch
-* Merge conflicts - merge conflicts indicator displayed only if the PR has merge conflicts.
-* Drafts - draft PR indicator if the PR is in draft state
+* Tags - Status tags for the pull request
+    * Tag showing conflicts, if the pull request has conflicts
+    * Tag showing if the pull request is a draft
+    * Tag showing if the pull request is set to auto-complete
+    * Tag for each status set on the pull request
 * Reviewers
     * Each reviewer on the PR has an icon next to their name indicating their vote
         * Solid Green Circle Checkmark = Approved
@@ -83,6 +86,9 @@ Source code for this extension can be found in the [tfs-pullrequest-dashboard](h
 
 ## Change Log
 
+* (02/05/2019) 2.2.0
+    * feature: Add status tag if the pull request is set to auto complete
+    * feature: Add status tag for each status set on the pull request
 * (23/05/2019) 2.1.0 - feature: add indicator for draft PRs. Also change location of conflict indicator to be consistent.
 * (23/04/2019) 2.0.6 - bug fix: the dashboard widget stopped loading in Azure Devops 2019
 * (18/11/2018) 2.0.5 - bug fix: navigating to a PR from this extension would result in an error when using dev.azure.com.

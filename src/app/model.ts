@@ -1,4 +1,5 @@
-import {NgZone} from "@angular/core";
+import { NgZone } from "@angular/core";
+import { Observable } from "rxjs";
 
 // source: https://stackoverflow.com/a/14657922
 export interface ILiteEvent<T> {
@@ -75,9 +76,21 @@ export enum PullRequestAsyncStatus {
     Failure = 5,
 }
 
+export enum GitStatusState {
+    NotSet = 0,
+    Pending = 1,
+    Succeeded = 2,
+    Failed = 3,
+    Error = 4,
+}
+
+export interface GitPullRequestWithStatuses extends GitPullRequest {
+    statuses?: GitPullRequestStatus[];
+}
+
 export abstract class TfsService {
     public abstract getCurrentUser(): Promise<User>;
-    public abstract getPullRequests(allProjects?: boolean): Promise<GitPullRequest[]>;
+    public abstract getPullRequests(allProjects?: boolean): Observable<GitPullRequestWithStatuses>;
     public abstract getRepositories(allProjects?: boolean): Promise<GitRepository[]>;
 }
 

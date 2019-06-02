@@ -4,10 +4,13 @@
   </div>
   <div class="pull-request-details">
     <div class="title-container container-nowrap">
-      <span *ngIf="pullRequest.hasMergeConflicts" class="conflicts">Conflicts</span><span *ngIf="pullRequest.isDraft" class="draft">Draft</span><a class="pull-request-title" href="{{pullRequest.remoteUrl}}" target="_parent" title="{{pullRequest.title}}">{{pullRequest.title}}</a>
+      <a class="pull-request-title" href="{{pullRequest.remoteUrl}}" target="_parent" title="{{pullRequest.title}}">{{pullRequest.title}}</a>
     </div>
     <div *ngIf="!compactMode" class="details-container container-nowrap">
         by {{pullRequest.createdBy}} at {{pullRequest.createdDate | date: dateFormat}} into <i class="mdi mdi-git git-icon"></i><span class="repo">{{pullRequest.repositoryName}}</span> <i class="fa fa-code-fork branch-icon"></i>{{pullRequest.targetRefName}}
+    </div>
+    <div *ngIf="!compactMode">
+      <span *ngFor="let tag of getTags()"><span class="tag {{tag.class}}" title="{{tag.description}}">{{tag.name}}</span></span>
     </div>
     <div *ngIf="!compactMode" class="votes-container">
       <span *ngFor="let reviewer of pullRequest.reviewers; let i=index;"><span *ngIf="i>0">, </span><span class="vote-container"><i class={{getVoteClasses(reviewer.vote)}} title="{{getVoteTooltip(reviewer.vote)}}"></i><span title="{{reviewer.isRequired ? reviewer.displayName + ' (Required)' : reviewer.displayName}}">{{reviewer.isRequired ? reviewer.displayName + '*' : reviewer.displayName}}</span></span></span>

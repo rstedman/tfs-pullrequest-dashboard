@@ -1,9 +1,11 @@
 import {Injectable} from "@angular/core";
 import {Headers, Http, Response} from "@angular/http";
+
+import { Observable } from "rxjs";
 import "rxjs/Rx";
 
 import {AppConfigService} from "./appConfig.service";
-import {PullRequestAsyncStatus, TfsService, User} from "./model";
+import {GitPullRequestWithStatuses, GitStatusState, PullRequestAsyncStatus, TfsService, User} from "./model";
 
 @Injectable()
 // Interacts with TFS REST APis.  Meant for use when not running in the context of a TFS extension (ie. development)
@@ -63,32 +65,30 @@ export class RestfulTfsService extends TfsService {
         return user;
     }
 
-    public async getPullRequests(allProjects?: boolean): Promise<GitPullRequest[]> {
+    public getPullRequests(allProjects?: boolean): Observable<GitPullRequestWithStatuses> {
         let url = `${this.baseUri}/${this.currentProject}/_apis/git/pullRequests?status=active&$top=1000`;
         if (allProjects) {
             url = `${this.baseUri}/_apis/git/pullRequests?status=active&$top=1000`;
         }
 
-        const prs: any[] = await this.http.get(url, {withCredentials: true})
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
-
-        for (const pr of prs) {
-            if (pr.mergeStatus) {
-                // the rest apis return a string for the mergestatus, but the VSS APIs convert that into
-                // an int.  Do the same here, so we can treat PRs the same throughout the app.
-                // note - we only care about conflicts for now, since we only show something different on merge conflicts.
-                if (pr.mergeStatus === "conflicts") {
-                    pr.mergeStatus = PullRequestAsyncStatus.Conflicts;
-                } else {
-                    pr.mergeStatus = PullRequestAsyncStatus.Succeeded;
+        return this.http.get(url, {withCredentials: true})
+            .map((r: Response) => this.extractData(r))
+            .mergeMap((prs: GitPullRequest[]) => prs)
+            .flatMap((pr) => this.getPullRequestComplete(pr))
+            .flatMap((pr) => this.getPullRequestWithStatuses(pr))
+            .map((pr: any) => {
+                if (pr.mergeStatus) {
+                    // the rest apis return a string for the mergestatus, but the VSS APIs convert that into
+                    // an int.  Do the same here, so we can treat PRs the same throughout the app.
+                    // note - we only care about conflicts for now, since we only show something different on merge conflicts.
+                    if (pr.mergeStatus === "conflicts") {
+                        pr.mergeStatus = PullRequestAsyncStatus.Conflicts;
+                    } else {
+                        pr.mergeStatus = PullRequestAsyncStatus.Succeeded;
+                    }
                 }
-            }
-        }
-        // with the mergeStatus converted, we should be able to just treat the prs returned by the rest api
-        // as a GitPullRequest
-        return (prs as GitPullRequest[]);
+                return pr;
+            });
     }
 
     public getRepositories(allProjects?: boolean): Promise<GitRepository[]> {
@@ -100,6 +100,35 @@ export class RestfulTfsService extends TfsService {
             .toPromise()
             .then(this.extractData)
             .catch(this.handleError);
+    }
+
+    private getPullRequestComplete(pullRequest: GitPullRequest): Observable<GitPullRequest> {
+        const url = `${this.baseUri}/_apis/git/repositories/${pullRequest.repository.id}/pullRequests/${pullRequest.pullRequestId}`;
+        return this.http.get(url, {withCredentials: true})
+            .map((r: Response) => r.json());
+    }
+
+    private getPullRequestWithStatuses(pullRequest: GitPullRequest): Observable<GitPullRequestWithStatuses> {
+        const url = `${this.baseUri}/_apis/git/repositories/${pullRequest.repository.id}/pullRequests/${pullRequest.pullRequestId}/statuses`;
+        return this.http.get(url, {withCredentials: true})
+            .map((r: Response) => {
+                const res: any = {statuses: this.extractData(r)};
+                // The convert the rest api status to the enum for consistency with the extensions api
+                for (const status of res.statuses) {
+                    const statusUpdate = {state: GitStatusState.Pending};
+                    // pending statuses don't have a state set on them
+                    if (status.state) {
+                        if (status.state === "failed") {
+                            statusUpdate.state = GitStatusState.Failed;
+                        } else if (status.state === "succeeded") {
+                            statusUpdate.state = GitStatusState.Succeeded;
+                        }
+                    }
+                    Object.assign(status, statusUpdate);
+                }
+                Object.assign(res, pullRequest);
+                return res;
+            });
     }
 
     private async getMembersOf(userId: string): Promise<Identity[]> {
