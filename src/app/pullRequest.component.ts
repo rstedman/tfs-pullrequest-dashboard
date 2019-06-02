@@ -98,7 +98,7 @@ export class PullRequestComponent {
             tags.push({
                 name: "Conflicts",
                 description: "Conflicts exist between the source and target branch",
-                class: "conflicts"
+                class: "failed"
             });
         }
         if (this.pullRequest.statuses) {
@@ -111,7 +111,7 @@ export class PullRequestComponent {
                         stateDesc = "Error";
                         break;
                     case GitStatusState.Failed:
-                        cls = "rejected";
+                        cls = "failed";
                         stateDesc = "Failed";
                         break;
                     case GitStatusState.Succeeded:

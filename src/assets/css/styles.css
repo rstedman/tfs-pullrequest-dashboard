@@ -137,8 +137,10 @@ a.pull-request-title:hover {
   margin-right: 2px;
 }
 
-.conflicts {
+
+.failed {
   color: rgba( var(--palette-accent1,218, 10, 0) , 1 );
+  border-style: dotted;
 }
 
 .draft {
