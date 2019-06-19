@@ -107,7 +107,8 @@ export class AppComponent implements OnInit {
 
             this.tfsService.getPullRequests(this.allProjects)
                 .map((pr) => new PullRequestViewModel(pr, repoById[pr.repository.id], this.currentUser))
-                .subscribe((pr) => this.zone.run(() => this.pullRequests.push(pr)));
+                .bufferTime(500)
+                .subscribe((prs) => this.zone.run(() => this.pullRequests.push(...prs)));
 
             this.repoOptions = [];
             this.unfilteredRepoSelections.length = 0;

@@ -86,7 +86,8 @@ Source code for this extension can be found in the [tfs-pullrequest-dashboard](h
 
 ## Change Log
 
-* (02/05/2019) 2.2.0
+* (18/16/2019) 2.2.1 - bug fix: small change to attempt to reduce performance impact of features in 2.2.0 release
+* (02/06/2019) 2.2.0
     * feature: Add status tag if the pull request is set to auto complete
     * feature: Add status tag for each status set on the pull request
 * (23/05/2019) 2.1.0 - feature: add indicator for draft PRs. Also change location of conflict indicator to be consistent.
