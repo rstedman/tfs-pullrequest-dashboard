@@ -7,7 +7,7 @@
       <a class="pull-request-title" href="{{pullRequest.remoteUrl}}" target="_parent" title="{{pullRequest.title}}">{{pullRequest.title}}</a>
     </div>
     <div *ngIf="!compactMode" class="details-container container-nowrap">
-        by {{pullRequest.createdBy}} at {{pullRequest.createdDate | date: dateFormat}} into <i class="mdi mdi-git git-icon"></i><span class="repo">{{pullRequest.repositoryName}}</span> <i class="fa fa-code-fork branch-icon"></i>{{pullRequest.targetRefName}}
+        #{{pullRequest.id}} by {{pullRequest.createdBy}} at {{pullRequest.createdDate | date: dateFormat}} into <i class="mdi mdi-git git-icon"></i><span class="repo">{{pullRequest.repositoryName}}</span> <i class="fa fa-code-fork branch-icon"></i>{{pullRequest.targetRefName}}
     </div>
     <div *ngIf="!compactMode">
       <span *ngFor="let tag of getTags()"><span class="tag {{tag.class}}" title="{{tag.description}}">{{tag.name}}</span></span>

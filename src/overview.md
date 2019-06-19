@@ -86,7 +86,8 @@ Source code for this extension can be found in the [tfs-pullrequest-dashboard](h
 
 ## Change Log
 
-* (18/16/2019) 2.2.1 - bug fix: small change to attempt to reduce performance impact of features in 2.2.0 release
+* (18/06/2019) 2.3.0 - feature: add pull request id to PR view layout. 
+* (18/06/2019) 2.2.1 - bug fix: small change to attempt to reduce performance impact of features in 2.2.0 release.
 * (02/06/2019) 2.2.0
     * feature: Add status tag if the pull request is set to auto complete
     * feature: Add status tag for each status set on the pull request

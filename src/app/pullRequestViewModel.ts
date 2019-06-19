@@ -2,6 +2,8 @@ import { GitPullRequestWithStatuses, PullRequestAsyncStatus, User } from "./mode
 
 export class PullRequestViewModel {
 
+    public id: number;
+
     public remoteUrl: string;
 
     public requestedByMe: boolean;
@@ -35,6 +37,7 @@ export class PullRequestViewModel {
     public statuses: GitPullRequestStatus[];
 
     constructor(public pullRequest: GitPullRequestWithStatuses, public repository: GitRepository, currentUser: User) {
+        this.id = pullRequest.pullRequestId;
         this.remoteUrl = `${repository._links.web.href}/pullrequest/${pullRequest.pullRequestId}`;
 
         this.requestedByMe = pullRequest.createdBy.id === currentUser.id;
