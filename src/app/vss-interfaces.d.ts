@@ -64,6 +64,11 @@ interface IExtensionInitializationOptions {
     * which shares the same URI of the contribution that originally caused this extension frame to be loaded.
     */
     extensionReusedCallback?: (contribution: Contribution) => void;
+
+    /**
+     * If true, send back the theme data as part of the initial handshake
+     */
+    applyTheme?: boolean;
 }
 
 /**

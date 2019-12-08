@@ -31,15 +31,17 @@
     "rxjs": "5.5.12",
     "systemjs": "0.21.4",
     "typescript": "2.4.2",
-    "vss-web-extension-sdk": "2.117.0",
+    "vss-web-extension-sdk": "5.141.0",
     "zone.js": "0.8.16"
   },
   "devDependencies": {
+    "azure-devops-extension-api": "1.157.0",
+    "azure-devops-extension-sdk": "2.0.11",
     "del": "3.0.0",
     "gulp": "3.9.1",
     "gulp-angular2-embed-templates": "2.2.1",
     "gulp-concat": "2.6.1",
-    "gulp-connect": "5.0.0",
+    "gulp-connect": "5.7.0",
     "gulp-html-replace": "1.6.2",
     "gulp-live-server": "0.0.31",
     "gulp-rename": "1.2.2",
@@ -59,7 +61,7 @@
     "plugin-typescript": "7.0.6",
     "run-sequence": "2.1.0",
     "systemjs-builder": "0.16.9",
-    "tfx-cli": "0.4.9",
+    "tfx-cli": "0.7.8",
     "tslint": "5.5.0",
     "typings": "2.1.1"
   }

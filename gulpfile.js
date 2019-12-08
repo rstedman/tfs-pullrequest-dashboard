@@ -105,7 +105,7 @@ gulp.task('compile:sources', function(callback) {
     runSequence( ['tslint', 'compile:typecheck'], 'compile:copy', 'compile:embed', callback);
 });
 
-gulp.task('compile', ['copy:vendor', 'bundle:vendor', 'compile:sources', 'test']);
+gulp.task('compile', ['copy:vendor', 'bundle:vendor', 'compile:sources']);
 
 gulp.task('test', function(callback) {
     new karma.Server({
@@ -155,7 +155,9 @@ gulp.task('serve', ['compile'], function() {
     gulp.watch(['./src/**/*.*', './test/**/*.*', './tsconfig.json', './tslint.json'], ['compile:sources']);
 
     connect.server({
-        root: './build'
+        root: './build',
+        port: 5000,
+        https: true
     });
 });
 
