@@ -55,7 +55,7 @@ body {
 
 .pull-request-title {
   font-size: 14px;
-  color: rgb(var(--palette-primary-tint-10, 43, 136, 216));
+  color: rgb(var(--palette-primary-shade-10, 0, 90, 158));
   text-decoration: none;
 }
 
@@ -141,7 +141,6 @@ a.pull-request-title:hover {
   margin-right: 2px;
 }
 
-
 .failed {
   color: rgba( var(--palette-accent1,218, 10, 0) , 1 );
   border-style: dotted;
@@ -185,4 +184,24 @@ a.pull-request-title:hover {
   right: 0;
   padding: 5px 10px;
   z-index: 1050;
+}
+
+.btn, .dropdown-menu, .input-group-addon, .form-control {
+  background-color: rgba(var(--palette-neutral-0, 255, 255, 255), 1);
+  border-color: rgb(var(--palette-neutral-10, 72, 70, 86));
+  color: rgba(var(--palette-neutral-100, 0, 0, 0), 1) !important;
+}
+
+.dropdown-menu .divider {
+  background-color: rgb(var(--palette-neutral-10, 72, 70, 86));
+}
+
+.btn:hover, .open>.dropdown-toggle.btn-default {
+  background-color: rgba(var(--palette-neutral-20, 200, 200, 200), 1) !important;
+  border-color: rgb(var(--palette-neutral-30, 166, 166, 166)) !important;
+}
+
+.dropdown-menu>li>a {
+  background-color: rgba(var(--palette-neutral-0, 255, 255, 255), 1);
+  color: rgba(var(--palette-neutral-100, 0, 0, 0), 1);
 }
