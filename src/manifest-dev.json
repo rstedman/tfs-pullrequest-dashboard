@@ -42,7 +42,11 @@
             "properties": {
                 "name": "Pull Request Dashboard (dev)",
                 "order": 99,
-                "uri": "index.html"
+                "uri": "index.html",
+                "icon": { 
+                    "light": "assets/images/icon-light.png",
+                    "dark": "assets/images/icon-dark.png"
+                }
             }
         },
         {
