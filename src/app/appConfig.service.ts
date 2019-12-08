@@ -59,7 +59,8 @@ export class AppConfigService {
         VSS.init({
             usePlatformScripts: false,
             usePlatformStyles: false,
-            explicitNotifyLoaded: true
+            explicitNotifyLoaded: true,
+            applyTheme: true
         });
 
         VSS.require(["TFS/VersionControl/GitRestClient", "VSS/Identities/RestClient", "VSS/Context", "TFS/Dashboards/WidgetHelpers", "TFS/Core/RestClient"],

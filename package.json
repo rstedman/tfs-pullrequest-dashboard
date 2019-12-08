@@ -31,7 +31,7 @@
     "rxjs": "5.5.12",
     "systemjs": "0.21.4",
     "typescript": "2.4.2",
-    "vss-web-extension-sdk": "2.117.0",
+    "vss-web-extension-sdk": "5.141.0",
     "zone.js": "0.8.16"
   },
   "devDependencies": {
