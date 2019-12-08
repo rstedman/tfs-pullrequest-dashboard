@@ -86,6 +86,7 @@ Source code for this extension can be found in the [tfs-pullrequest-dashboard](h
 
 ## Change Log
 
+* (08/12/2019) 2.4.0 - feature: theming support
 * (23/07/2019) 2.3.1 - bug fix: dashboard widget does not load in AZDO
 * (18/06/2019) 2.3.0 - feature: add pull request id to PR view layout. 
 * (18/06/2019) 2.2.1 - bug fix: small change to attempt to reduce performance impact of features in 2.2.0 release.
