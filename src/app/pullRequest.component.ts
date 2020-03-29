@@ -101,8 +101,15 @@ export class PullRequestComponent {
                 class: "failed"
             });
         }
+
         if (this.pullRequest.statuses) {
+            const uniqueStatuses = new Map<string, GitPullRequestStatus>();
+
             for (const status of this.pullRequest.statuses) {
+                uniqueStatuses.set(status.context.name, status);
+            }
+
+            uniqueStatuses.forEach((status, key) => {
                 let cls = "pending";
                 let stateDesc = "Pending";
                 switch (status.state) {
@@ -125,7 +132,7 @@ export class PullRequestComponent {
                     description: `${status.description} - ${stateDesc}`,
                     class: cls
                 });
-            }
+            });
         }
         if (this.pullRequest.autoComplete) {
             tags.push({
