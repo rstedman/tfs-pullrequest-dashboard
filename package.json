@@ -61,7 +61,7 @@
     "plugin-typescript": "7.0.6",
     "run-sequence": "2.1.0",
     "systemjs-builder": "0.16.9",
-    "tfx-cli": "0.7.8",
+    "tfx-cli": "0.12.0",
     "tslint": "5.5.0",
     "typings": "2.1.1"
   }
