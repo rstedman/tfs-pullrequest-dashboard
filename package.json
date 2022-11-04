@@ -38,7 +38,7 @@
     "azure-devops-extension-api": "1.157.0",
     "azure-devops-extension-sdk": "2.0.11",
     "del": "3.0.0",
-    "gulp": "3.9.1",
+    "gulp": "4.0.2",
     "gulp-angular2-embed-templates": "2.2.1",
     "gulp-concat": "2.6.1",
     "gulp-connect": "5.7.0",
